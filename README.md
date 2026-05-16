@@ -1,4 +1,6 @@
 <div align="center">
+  <img src="assets/banner.png" alt="KolomboEdu Banner" width="100%">
+  <br>
   <h1>SD Muhammadiyah Kolombo Website</h1>
   <p>A modern, responsive, and dynamic web platform for SD Muhammadiyah Kolombo.</p>
 </div>
