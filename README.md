@@ -199,6 +199,30 @@ Aplikasi ini menggunakan modul-modul berikut untuk mengelola data:
 
 Berikut adalah struktur folder utama dari aplikasi ini:
 
+```text
+/
+├── app/
+│   ├── Http/Controllers/     # Logika aplikasi (Admin & Public)
+│   ├── Models/               # Representasi data (Berita, Guru, dll)
+├── database/
+│   ├── migrations/           # Skema tabel database
+│   ├── seeders/              # Data awal untuk database (Admin)
+├── public/                   # Aset publik (CSS, JS, Images, Uploads)
+├── resources/
+│   ├── views/
+│   │   ├── admin/            # Tampilan dashboard AdminLTE
+│   │   ├── layouts/          # Template induk (Public & Admin)
+│   │   ├── pages/            # Tampilan public (Beranda, Berita, dll)
+│   │   └── auth/             # Tampilan login
+├── routes/
+│   ├── web.php               # Routing untuk public portal
+│   └── auth.php              # Routing untuk area otentikasi
+├── compose.yaml              # Konfigurasi Docker (Laravel Sail)
+└── .env                      # Variabel lingkungan dan koneksi DB
+```
+
+### Penjelasan Detail
+
 | Folder / File | Fungsi & Penjelasan Detail |
 | :--- | :--- |
 | `app/Http/Controllers/` | **Otak Aplikasi**: Berisi logika yang menghubungkan tampilan (View) dengan database (Model). Contoh: `HomeController` untuk public, `BeritaController` untuk admin. |
