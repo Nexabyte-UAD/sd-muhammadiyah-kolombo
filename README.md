@@ -127,6 +127,7 @@ Website ini dapat dijalankan menggunakan **Docker** (direkomendasikan) atau **No
    ```
 4. **Generate Key & Migrasi**
    ```bash
+   copy .env.example .env
    php artisan key:generate
    php artisan migrate:fresh --seed
    ```
