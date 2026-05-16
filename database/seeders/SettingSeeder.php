@@ -13,7 +13,7 @@ class SettingSeeder extends Seeder
     public function run(): void
     {
         $settings = [
-            ['key' => 'nama_sekolah', 'value' => 'SD Muhammadiah Kolombo', 'type' => 'text'],
+            ['key' => 'nama_sekolah', 'value' => 'SD Muhammadiyah Kolombo', 'type' => 'text'],
             ['key' => 'logo', 'value' => null, 'type' => 'image'],
             ['key' => 'alamat', 'value' => 'Jl. Kolombo No. 123, Yogyakarta', 'type' => 'text'],
             ['key' => 'telepon', 'value' => '+62 274 1234567', 'type' => 'text'],

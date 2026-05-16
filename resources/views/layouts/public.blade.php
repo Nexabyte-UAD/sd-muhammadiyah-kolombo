@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $settings['nama_sekolah'] ?? 'SD Muhammadiah Kolombo' }}</title>
+    <title>{{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Kolombo' }}</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
@@ -148,7 +148,7 @@
         <!-- Tulisan Berjalan (Tengah) -->
         <div class="flex-grow-1 px-3 px-md-4 overflow-hidden align-items-center d-flex">
           <marquee behavior="scroll" direction="left" scrollamount="6" class="m-0 text-white" style="letter-spacing: 0.5px; font-size: 0.85rem; font-weight: 400;">
-             Selamat Datang di Website Resmi {{ $settings['nama_sekolah'] ?? 'SD Muhammadiah Kolombo' }} | Terdepan Dalam Mendidik Generasi Islami, Cerdas, Berprestasi, dan Berkarakter Mulia!
+             Selamat Datang di Website Resmi {{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Kolombo' }} | Terdepan Dalam Mendidik Generasi Islami, Cerdas, Berprestasi, dan Berkarakter Mulia!
           </marquee>
         </div>
 
@@ -266,7 +266,7 @@
         </div>
       </div>
       <div class="container text-center">
-        <p class="mb-0 text-light opacity-75">&copy; {{ date('Y') }} {{ $settings['nama_sekolah'] ?? 'SD Muhammadiah Kolombo' }}. All rights reserved.</p>
+        <p class="mb-0 text-light opacity-75">&copy; {{ date('Y') }} {{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Kolombo' }}. All rights reserved.</p>
       </div>
     </footer>
 
