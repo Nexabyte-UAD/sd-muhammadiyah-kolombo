@@ -80,24 +80,27 @@ Website ini dapat dijalankan menggunakan **Docker** (direkomendasikan) atau **No
 
 1. **Clone repository**
    ```bash
-   git clone <repo-url>
-   cd MuhammadiahKolombo
+   git clone https://github.com/Nexabyte-UAD/sd-muhammadiyah-kolombo.git
+   cd sd-muhammadiyah-kolombo
    ```
 2. **Persiapkan Environment**
    ```bash
    cp .env.example .env
    ```
-3. **Nyalakan Container & Build**
+3. **Install Dependensi Awal (Composer)**
+   Karena konfigurasi Docker dari Laravel Sail berada di dalam folder `vendor` yang disembunyikan dari GitHub, Anda harus menginstal dependensinya dulu via container composer sementara:
+   ```bash
+   docker run --rm -v "%cd%:/var/www/html" -w /var/www/html laravelsail/php82-composer:latest composer install --ignore-platform-reqs
+   ```
+   *(Catatan: Jika memakai Mac/Linux/WSL, ganti `"%cd%"` menjadi `"$(pwd)"`)*
+
+4. **Nyalakan Container & Build**
    ```bash
    docker-compose up -d --build
    ```
-4. **Install Dependensi & Konfigurasi**
+5. **Konfigurasi & Migrasi Database**
    ```bash
-   docker-compose exec laravel.test composer install
    docker-compose exec laravel.test php artisan key:generate
-   ```
-5. **Migrasi Database & Seeding**
-   ```bash
    docker-compose exec laravel.test php artisan migrate:fresh --seed
    ```
 6. **Akses Website**
@@ -112,7 +115,8 @@ Website ini dapat dijalankan menggunakan **Docker** (direkomendasikan) atau **No
    composer install
    ```
 3. **Konfigurasi Database**
-   Buka file `.env`, sesuaikan nama database, username, dan password:
+   - **Penting:** Buat database kosong terlebih dahulu di phpMyAdmin / HeidiSQL Anda (misalnya dengan nama `muhammadiahkolombo`).
+   - Buka file `.env`, lalu sesuaikan koneksinya:
    ```env
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
