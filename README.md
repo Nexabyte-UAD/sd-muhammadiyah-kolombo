@@ -29,16 +29,6 @@ Proyek ini dikembangkan oleh:
 
 ---
 
-## 📸 Screenshots
-
-*(Tambahkan URL gambar screenshot halaman utama, halaman berita, dan tampilan dashboard AdminLTE di sini).*
-
-- **Homepage**: `[Screenshot Placeholder]`
-- **Admin Dashboard**: `[Screenshot Placeholder]`
-- **Mobile View**: `[Screenshot Placeholder]`
-
----
-
 ## ✨ Features
 
 - **Dynamic Public Portal**: 
