@@ -199,27 +199,21 @@ Aplikasi ini menggunakan modul-modul berikut untuk mengelola data:
 
 Berikut adalah struktur folder utama dari aplikasi ini:
 
-```text
-/
-├── app/
-│   ├── Http/Controllers/     # Logika aplikasi (Admin & Public)
-│   ├── Models/               # Representasi data (Berita, Guru, dll)
-├── database/
-│   ├── migrations/           # Skema tabel database
-│   ├── seeders/              # Data awal untuk database (Admin)
-├── public/                   # Aset publik (CSS, JS, Images, Uploads)
-├── resources/
-│   ├── views/
-│   │   ├── admin/            # Tampilan dashboard AdminLTE
-│   │   ├── layouts/          # Template induk (Public & Admin)
-│   │   ├── pages/            # Tampilan public (Beranda, Berita, dll)
-│   │   └── auth/             # Tampilan login
-├── routes/
-│   ├── web.php               # Routing untuk public portal
-│   └── auth.php              # Routing untuk area otentikasi
-├── compose.yaml              # Konfigurasi Docker (Laravel Sail)
-└── .env                      # Variabel lingkungan dan koneksi DB
-```
+| Folder / File | Fungsi & Penjelasan Detail |
+| :--- | :--- |
+| `app/Http/Controllers/` | **Otak Aplikasi**: Berisi logika yang menghubungkan tampilan (View) dengan database (Model). Contoh: `HomeController` untuk public, `BeritaController` untuk admin. |
+| `app/Models/` | **Representasi Database**: Mengatur interaksi langsung dengan tabel database seperti `Berita`, `GuruStaff`, dll menggunakan Eloquent ORM. |
+| `database/migrations/` | **Skema Database**: *Blueprint* otomatis untuk membuat struktur tabel (kolom, tipe data) di MySQL. |
+| `database/seeders/` | **Data Awal**: Berisi skrip untuk memasukkan data *dummy* atau data bawaan (seperti akun Admin `admin@sekolah.com`). |
+| `public/` | **Aset Publik**: Folder yang dapat diakses langsung oleh internet. Berisi CSS, JS, font, serta file gambar yang di-upload. |
+| `resources/views/admin/` | **Tampilan Admin**: Kode HTML/Blade khusus untuk Dashboard AdminLTE (manajemen data). |
+| `resources/views/layouts/` | **Template Induk**: Kerangka utama website (seperti header & footer yang diulang-ulang). Terdapat layout `public` dan `admin`. |
+| `resources/views/pages/` | **Tampilan Publik**: Kode HTML/Blade untuk halaman depan yang dilihat masyarakat umum (Beranda, Berita, dll). |
+| `routes/web.php` | **Navigasi Utama**: Mengatur URL website. Mengarahkan pengunjung ke *Controller* yang tepat. |
+| `routes/auth.php` | **Navigasi Login**: Rute khusus untuk sistem otentikasi (login, logout, lupa password). |
+| `.env` | **Konfigurasi Rahasia**: File untuk menyimpan *password* database, koneksi server, dan kunci API. (Aman dan tidak diunggah ke GitHub). |
+| `compose.yaml` | **Resep Docker**: Konfigurasi otomatis untuk menyalakan server PHP, MySQL, Redis, dan Cloudflare Tunnel secara bersamaan. |
+| `composer.json` | **Daftar Dependensi**: Mencatat pustaka pihak ketiga (seperti framework Laravel, AdminLTE, dll) yang dibutuhkan aplikasi. |
 
 ---
 
