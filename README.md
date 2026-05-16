@@ -139,17 +139,6 @@ Website ini dapat dijalankan menggunakan **Docker** (direkomendasikan) atau **No
 
 ---
 
-## 🔑 Admin Credentials (Demo)
-
-Setelah menjalankan `php artisan migrate:fresh --seed`, Anda dapat mengakses halaman Admin Dashboard melalui rute `/login`.
-
-- **Email**: `admin@sekolah.com`
-- **Password**: `password`
-
-*(Pastikan untuk mengubah password bawaan ini setelah aplikasi berada di tahap produksi).*
-
----
-
 ## 🌐 Deployment
 
 Untuk melakukan deployment ke server production (VPS / Shared Hosting):
