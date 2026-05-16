@@ -222,16 +222,6 @@ Berikut adalah struktur folder utama dari aplikasi ini:
 
 ---
 
-## 🗺 Roadmap
-
-- [x] Konversi tema dari Hijau (Default) ke Navy Blue.
-- [x] Setup environment pengembangan menggunakan Docker.
-- [ ] Integrasi fitur export Laporan Pendaftaran/Pesan (PDF/Excel).
-- [ ] Penambahan fitur Galeri Foto/Video.
-- [ ] Peningkatan SEO untuk halaman profil dan artikel berita.
-
----
-
 ## 📄 License
 
 Proyek ini dilisensikan di bawah **MIT License**. Lihat file [LICENSE](LICENSE) untuk informasi lebih lanjut.
