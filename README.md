@@ -19,13 +19,13 @@ Proyek ini dibangun dengan memprioritaskan antarmuka yang modern, kecepatan akse
 
 Proyek ini dikembangkan oleh:
 
-| Peran (Role) | Nama Lengkap | NIM |
-| :--- | :--- | :--- |
-| Project Manager | Dzaky Ridhwan Rosyada | 2300018398 |
-| UI/UX Designer | Fauziyah Tahta Dirgantari | 2300018252 |
-| Frontend Developer | M Ilham Nurdin | 2300018406 |
-| Backend Developer | Aditya Bintang Rianda Syahputra | 2300018399 |
-| Quality Assurance (Tester) | Trizana Wafi Reswara | 2300018258 |
+| Peran (Role) | Nama Lengkap | NIM | Kontribusi |
+| :--- | :--- | :--- | :--- |
+| Project Manager | Dzaky Ridhwan Rosyada | 2300018398 | Project Planning & Coordination |
+| UI/UX Designer | Fauziyah Tahta Dirgantari | 2300018252 | Wireframe & Design System |
+| Frontend Developer | M Ilham Nurdin | 2300018406 | Frontend Development |
+| Backend Developer | Aditya Bintang Rianda Syahputra | 2300018399 | Backend, Database & Docker |
+| Quality Assurance (Tester) | Trizana Wafi Reswara | 2300018258 | Testing & Quality Assurance |
 
 ---
 
