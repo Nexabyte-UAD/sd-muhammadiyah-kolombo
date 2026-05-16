@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Setting;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+class SettingController extends Controller
+{
+    public function edit()
+    {
+        $settings = Setting::all()->pluck('value', 'key')->toArray();
+        return view('admin.settings.edit', compact('settings'));
+    }
+
+    public function update(Request $request)
+    {
+        $data = $request->except(['_token', '_method', 'logo', 'hero_image']); // Ambil semua kecuali token dan file
+
+        // Update text/url settings
+        foreach ($data as $key => $value) {
+            Setting::updateOrCreate(['key' => $key], ['value' => $value]);
+        }
+
+        // Handle logo file upload
+        if ($request->hasFile('logo')) {
+            $request->validate([
+                'logo' => 'image|mimes:jpeg,png,jpg,svg|max:2048',
+            ]);
+
+            $path = $request->file('logo')->store('settings', 'public');
+            
+            // Hapus logo lama jika ada
+            $oldSetting = Setting::where('key', 'logo')->first();
+            if ($oldSetting && $oldSetting->value) {
+                Storage::disk('public')->delete($oldSetting->value);
+            }
+
+            Setting::updateOrCreate(['key' => 'logo'], ['value' => $path]);
+        }
+
+        // Handle hero image file upload
+        if ($request->hasFile('hero_image')) {
+            $request->validate([
+                'hero_image' => 'image|mimes:jpeg,png,jpg|max:4096',
+            ]);
+
+            $path = $request->file('hero_image')->store('settings', 'public');
+            
+            // Hapus gambar hero lama jika ada
+            $oldHero = Setting::where('key', 'hero_image')->first();
+            if ($oldHero && $oldHero->value) {
+                Storage::disk('public')->delete($oldHero->value);
+            }
+
+            Setting::updateOrCreate(['key' => 'hero_image'], ['value' => $path]);
+        }
+
+        return redirect()->route('admin.settings.edit')->with('success', 'Konfigurasi Sistem berhasil diperbarui.');
+    }
+}

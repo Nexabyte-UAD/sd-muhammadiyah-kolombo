@@ -1,0 +1,70 @@
+@extends('adminlte::page')
+
+@section('title', 'Edit User')
+
+@section('content_header')
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Edit Data User</h1>
+        </div>
+        <div class="col-sm-6 text-right">
+            <a href="{{ route('admin.users.index') }}" class="btn btn-default">
+                <i class="fas fa-arrow-left mr-1"></i> Kembali
+            </a>
+        </div>
+    </div>
+@stop
+
+@section('content')
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">Form Edit User</h3>
+            </div>
+            <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="name">Nama Lengkap <span class="text-danger">*</span></label>
+                        <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $user->name) }}" required>
+                        @error('name')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" id="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $user->email) }}" required>
+                        @error('email')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="alert alert-info mt-4">
+                        <h5><i class="icon fas fa-info"></i> Ubah Password</h5>
+                        Biarkan kosong jika tidak ingin mengubah password saat ini.
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password Baru</label>
+                        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="Minimal 8 karakter">
+                        @error('password')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password_confirmation">Konfirmasi Password Baru</label>
+                        <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="Ulangi password baru">
+                    </div>
+                </div>
+                <div class="card-footer text-right">
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Update User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@stop
