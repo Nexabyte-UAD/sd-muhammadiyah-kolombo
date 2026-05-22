@@ -223,6 +223,212 @@ Berikut adalah struktur folder utama dari aplikasi ini:
 | `test/user` | **Testing**:  Berisi file automation testing untuk fitur user/public website seperti navigation, dropdown, dan contact form. |
 
 ---
+# 🏫 SD Muhammadiyah Kolombo - Automation Testing
+
+Project automation testing untuk website sekolah menggunakan:
+
+* Python
+* Playwright
+* Pytest
+
+Testing difokuskan pada fitur user/public website seperti:
+
+* Navigation menu
+* Dropdown menu
+* Contact form
+
+---
+
+# 🐍 Setup Python Virtual Environment
+
+## 2. Membuat Virtual Environment
+
+```bash
+python -m venv venv
+```
+
+---
+
+## 3. Aktivasi Virtual Environment
+
+### Windows PowerShell
+
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+### Windows CMD
+
+```cmd
+venv\Scripts\activate
+```
+
+---
+
+# 📚 Install Dependency
+
+## 4. Install Playwright dan Pytest
+
+```bash
+pip install playwright pytest
+```
+
+---
+
+## 5. Install Browser Playwright
+
+```bash
+playwright install
+```
+
+---
+
+# 🚀 Menjalankan Laravel
+
+Pastikan server Laravel berjalan.
+
+```bash
+php artisan serve
+```
+
+Default:
+
+```txt
+http://127.0.0.1:8000
+```
+
+---
+
+# 📁 Struktur Folder Testing
+
+```txt
+test/
+│
+├── user/
+│   ├── test_navigation.py
+│   ├── test_profile.py
+│   ├── test_structural.py
+│   └── test_contact.py
+```
+
+---
+
+# 🧪 Automation Testing
+
+## 1. Navigation Testing
+
+File:
+
+```txt
+test/user/test_navigation.py
+```
+
+Fitur yang dites:
+
+* Homepage
+* Prestasi
+* Berita
+* Ekstrakurikuler
+* Kontak
+
+Menjalankan test:
+
+```bash
+pytest test/user/test_navigation.py
+```
+
+---
+
+## 2. Profile Dropdown Testing
+
+File:
+
+```txt
+test/user/test_profile.py
+```
+
+Fitur yang dites:
+
+* Kata Sambutan
+* Tentang
+* Visi & Misi
+* Akreditasi
+
+Menjalankan test:
+
+```bash
+pytest test/user/test_profile.py
+```
+
+---
+
+## 3. Structural Dropdown Testing
+
+File:
+
+```txt
+test/user/test_structural.py
+```
+
+Fitur yang dites:
+
+* Guru
+* Staf
+
+Menjalankan test:
+
+```bash
+pytest test/user/test_structural.py
+```
+
+---
+
+## 4. Contact Form Testing
+
+File:
+
+```txt
+test/user/test_contact.py
+```
+
+Fitur yang dites:
+
+* Input nama
+* Input email
+* Input pesan
+* Submit form
+
+Menjalankan test:
+
+```bash
+pytest test/user/test_contact.py
+```
+
+---
+
+# ▶️ Menjalankan Semua Testing
+
+```bash
+pytest test/user
+```
+
+---
+
+# ✅ Hasil Testing
+
+Jika berhasil:
+
+```txt
+4 passed
+```
+
+atau sesuai jumlah test yang dijalankan.
+
+---
+
+# 👨‍💻 Developer
+
+Automation testing dibuat untuk kebutuhan project website sekolah SD Muhammadiyah Kolombo.
 
 ## 📄 License
 
