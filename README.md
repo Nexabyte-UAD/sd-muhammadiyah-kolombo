@@ -220,6 +220,7 @@ Berikut adalah struktur folder utama dari aplikasi ini:
 | `.env` | **Konfigurasi Rahasia**: File untuk menyimpan *password* database, koneksi server, dan kunci API. (Aman dan tidak diunggah ke GitHub). |
 | `compose.yaml` | **Resep Docker**: Konfigurasi otomatis untuk menyalakan server PHP, MySQL, Redis, dan Cloudflare Tunnel secara bersamaan. |
 | `composer.json` | **Daftar Dependensi**: Mencatat pustaka pihak ketiga (seperti framework Laravel, AdminLTE, dll) yang dibutuhkan aplikasi. |
+| `test/user` | **Testing**:  Berisi file automation testing untuk fitur user/public website seperti navigation, dropdown, dan contact form. |
 
 ---
 
