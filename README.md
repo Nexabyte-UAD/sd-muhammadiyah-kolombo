@@ -243,9 +243,69 @@ Testing difokuskan pada fitur user/public website seperti:
 
 ## 2. Membuat Virtual Environment
 
+HEAD
 ```bash
 python -m venv venv
 ```
+
+### Opsi 1: Menggunakan Docker (Rekomendasi)
+*Syarat: Docker Desktop harus terinstal dan berjalan.*
+
+1. **Clone repository**
+   ```bash
+   git clone <repo-url>
+   cd MuhammadiahKolombo
+   ```
+2. **Persiapkan Environment**
+   ```bash
+   cp .env.example .env
+   ```
+3. **Nyalakan Container & Build**
+   ```bash
+   docker-compose up -d --build
+   ```
+4. **Install Dependensi & Konfigurasi**
+   ```bash
+   docker-compose exec laravel.test composer install
+   docker-compose exec laravel.test php artisan key:generate
+   ```
+5. **Migrasi Database & Seeding**
+   ```bash
+   docker-compose exec laravel.test php artisan migrate:fresh --seed
+   ```
+6. **Akses Website**
+   Buka `http://localhost` di browser Anda.
+
+### Opsi 2: Non-Docker (Laragon / XAMPP)
+*Syarat: PHP 8.2+, Composer, dan MySQL/MariaDB.*
+
+1. **Clone dan persiapkan repo** (sama seperti langkah 1 & 2 di atas).
+2. **Install Dependensi**
+   ```bash
+   composer install
+   ```
+3. **Konfigurasi Database**
+   Buka file `.env`, sesuaikan nama database, username, dan password:
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=muhammadiahkolombo
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
+4. **Environment & Generate Key & Migrasi **
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   php artisan migrate:fresh --seed
+   ```
+5. **Jalankan Server Lokal**
+   ```bash
+   php artisan serve
+   ```
+   Akses di `http://127.0.0.1:8000`.
+41f3f76 (Menambahkan automation testing Playwright untuk user)
 
 ---
 

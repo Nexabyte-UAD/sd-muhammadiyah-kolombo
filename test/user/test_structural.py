@@ -1,0 +1,51 @@
+from playwright.sync_api import sync_playwright
+
+def test_structural():
+
+    with sync_playwright() as p:
+
+        browser = p.chromium.launch(headless=False)
+
+        page = browser.new_page()
+
+        # Homepage
+        page.goto("http://127.0.0.1:8000")
+
+        page.wait_for_timeout(2000)
+
+        # =========================
+        # Guru
+        # =========================
+        page.get_by_role(
+            "link",
+            name="Struktural"
+        ).hover()
+
+        page.wait_for_timeout(1000)
+
+        page.get_by_role(
+            "link",
+            name="Guru"
+        ).click()
+
+        page.wait_for_timeout(2000)
+
+        # =========================
+        # Staf
+        # =========================
+        page.get_by_role(
+            "link",
+            name="Struktural"
+        ).hover()
+
+        page.wait_for_timeout(1000)
+
+        page.get_by_role(
+            "link",
+            name="Staf"
+        ).click()
+
+        page.wait_for_timeout(5000)
+
+        browser.close()
+        

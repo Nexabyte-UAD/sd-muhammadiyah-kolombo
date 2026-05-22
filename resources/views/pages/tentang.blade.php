@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('content')
-<x-breadcrumb>Profil Sekolah</x-breadcrumb>
+<x-breadcrumb>Tentang</x-breadcrumb>
 
 <section class="py-5 bg-light">
     <div class="container">

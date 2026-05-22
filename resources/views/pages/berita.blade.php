@@ -18,21 +18,28 @@
             <div class="col-md-6 col-lg-4">
                 <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white">
                     @if($berita->gambar)
-                        <img src="{{ asset('storage/' . $berita->gambar) }}" class="card-img-top border-bottom" alt="{{ $berita->judul }}" style="height: 220px; object-fit: cover;">
+                    <img src="{{ asset('storage/' . $berita->gambar) }}" class="card-img-top border-bottom"
+                        alt="{{ $berita->judul }}" style="height: 220px; object-fit: cover;">
                     @else
-                        <div class="bg-light d-flex align-items-center justify-content-center border-bottom" style="height: 220px;">
-                            <i class="bi bi-image text-secondary opacity-25" style="font-size: 4rem;"></i>
-                        </div>
+                    <div class="bg-light d-flex align-items-center justify-content-center border-bottom"
+                        style="height: 220px;">
+                        <i class="bi bi-image text-secondary opacity-25" style="font-size: 4rem;"></i>
+                    </div>
                     @endif
                     <div class="card-body p-4 d-flex flex-column">
                         <div class="mb-3">
-                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill fw-medium">Informasi</span>
-                            <small class="text-secondary ms-2 fw-medium"><i class="bi bi-calendar3 me-1"></i> {{ \Carbon\Carbon::parse($berita->tanggal)->translatedFormat('d F Y') }}</small>
+                            <span
+                                class="badge bg-success-subtle text-success border border-success-subtle rounded-pill fw-medium">Informasi</span>
+                            <small class="text-secondary ms-2 fw-medium"><i class="bi bi-calendar3 me-1"></i>
+                                {{ \Carbon\Carbon::parse($berita->tanggal)->translatedFormat('d F Y') }}</small>
                         </div>
                         <h5 class="card-title fw-bold text-dark mb-3" style="line-height: 1.5;">
-                            <a href="{{ route('berita.detail', $berita->id) }}" class="text-dark text-decoration-none stretched-link">{{ $berita->judul }}</a>
+                            <a href="{{ route('berita.detail', $berita->id) }}"
+                                class="text-dark text-decoration-none stretched-link">{{ $berita->judul }}</a>
                         </h5>
-                        <p class="card-text text-secondary mb-0 flex-grow-1" style="font-size: 0.95rem; line-height: 1.6;">{{ Str::limit(strip_tags($berita->isi), 100) }}</p>
+                        <p class="card-text text-secondary mb-0 flex-grow-1"
+                            style="font-size: 0.95rem; line-height: 1.6;">
+                            {{ Str::limit(strip_tags($berita->isi), 100) }}</p>
                     </div>
                 </div>
             </div>
@@ -45,7 +52,7 @@
                 </div>
             </div>
             @endforelse
-            
+
             <div class="col-12 d-flex justify-content-center mt-5">
                 {{ $beritas->links('pagination::bootstrap-5') }}
             </div>
