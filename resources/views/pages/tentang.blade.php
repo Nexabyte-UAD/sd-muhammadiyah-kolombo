@@ -3,7 +3,7 @@
 @section('content')
 <x-breadcrumb>Tentang</x-breadcrumb>
 
-<section class="py-5 bg-light">
+<section class="py-5 bg-white min-vh-100">
     <div class="container">
         <div class="row align-items-center g-4">
             <div class="col-lg-6">
