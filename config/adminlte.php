@@ -318,6 +318,22 @@ return [
         ],
         ['header' => 'KONTEN WEBSITE'],
         [
+            'text' => 'Data Siswa',
+            'icon' => 'fas fa-fw fa-user-graduate',
+            'submenu' => [
+                [
+                    'text' => 'Kelola Siswa',
+                    'url'  => 'admin/siswa',
+                    'active' => ['admin/siswa*'],
+                ],
+                [
+                    'text' => 'Kenaikan Kelas & Kelulusan',
+                    'url'  => 'admin/siswa-kenaikan-kelas',
+                    'active' => ['admin/siswa-kenaikan-kelas'],
+                ],
+            ]
+        ],
+        [
             'text' => 'Berita Utama',
             'url'  => 'admin/berita',
             'icon' => 'fas fa-fw fa-newspaper',

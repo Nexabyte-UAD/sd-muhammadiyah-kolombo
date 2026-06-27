@@ -200,6 +200,16 @@
                 <li><a class="dropdown-item" href="{{ route('guru', ['tipe' => 'staf']) }}">Staf</a></li>
               </ul>
             </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle {{ request()->routeIs('siswa', 'kelas', 'alumni') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Kesiswaan
+              </a>
+              <ul class="dropdown-menu border-0 shadow-sm">
+                <li><a class="dropdown-item" href="{{ route('siswa') }}">Data Siswa</a></li>
+                <li><a class="dropdown-item" href="{{ route('kelas') }}">Data Kelas</a></li>
+                <li><a class="dropdown-item" href="{{ route('alumni') }}">Data Alumni</a></li>
+              </ul>
+            </li>
             <li class="nav-item">
               <a class="nav-link {{ request()->routeIs('berita') ? 'active' : '' }}" href="{{ route('berita') }}">Berita</a>
             </li>

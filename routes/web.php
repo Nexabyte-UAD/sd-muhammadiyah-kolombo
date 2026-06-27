@@ -11,6 +11,9 @@ Route::get('/akreditasi', [HomeController::class, 'akreditasi'])->name('akredita
 Route::get('/guru', [HomeController::class, 'guru'])->name('guru');
 Route::get('/prestasi', [HomeController::class, 'prestasi'])->name('prestasi');
 Route::get('/ekstrakurikuler', [HomeController::class, 'ekstrakurikuler'])->name('ekstrakurikuler');
+Route::get('/siswa', [HomeController::class, 'siswa'])->name('siswa');
+Route::get('/kelas', [HomeController::class, 'kelas'])->name('kelas');
+Route::get('/alumni', [HomeController::class, 'alumni'])->name('alumni');
 Route::get('/berita', [HomeController::class, 'berita'])->name('berita');
 Route::get('/berita/{berita}', [HomeController::class, 'detailBerita'])->name('berita.detail');
 Route::post('/pesan', [HomeController::class, 'storePesan'])->name('pesan.store');
@@ -22,12 +25,14 @@ Route::get('/dashboard', function () {
     $countPrestasi = \App\Models\Prestasi::count();
     $countPesan = \App\Models\Pesan::count();
     $countUser = \App\Models\User::count();
+    $countSiswa = \App\Models\Siswa::aktif()->count();
+    $countAlumni = \App\Models\Siswa::alumni()->count();
     
     $latestBerita = \App\Models\Berita::orderBy('created_at', 'desc')->take(4)->get();
     $latestPesan = \App\Models\Pesan::orderBy('created_at', 'desc')->take(3)->get();
     $recentActivities = \App\Models\ActivityLog::orderBy('created_at', 'desc')->take(5)->get();
     
-    return view('dashboard', compact('countGuru', 'countBerita', 'countPrestasi', 'countPesan', 'countUser', 'latestBerita', 'latestPesan', 'recentActivities'));
+    return view('dashboard', compact('countGuru', 'countBerita', 'countPrestasi', 'countPesan', 'countUser', 'countSiswa', 'countAlumni', 'latestBerita', 'latestPesan', 'recentActivities'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -45,6 +50,10 @@ Route::middleware('auth')->group(function () {
     Route::put('admin/pengaturan', [\App\Http\Controllers\SettingController::class, 'update'])->name('admin.settings.update');
     
     Route::resource('admin/users', \App\Http\Controllers\UserController::class)->names('admin.users');
+    
+    Route::get('admin/siswa-kenaikan-kelas', [\App\Http\Controllers\SiswaController::class, 'promotePage'])->name('admin.siswa.promote.page');
+    Route::post('admin/siswa-kenaikan-kelas', [\App\Http\Controllers\SiswaController::class, 'promote'])->name('admin.siswa.promote');
+    Route::resource('admin/siswa', \App\Http\Controllers\SiswaController::class)->names('admin.siswa');
 });
 
 require __DIR__.'/auth.php';

@@ -1,77 +1,89 @@
 @extends('layouts.public')
 
 @section('content')
-<x-breadcrumb>Visi & Misi</x-breadcrumb>
+<x-breadcrumb>Profil: Visi & Misi</x-breadcrumb>
 
 @php
-    // Logika Pintar untuk Memisahkan Teks Visi dan Misi dari 1 Database Column
-    $rawKonten = optional($profil)->konten ?? '';
+    $konten = $profil->konten ?? '';
     
-    // Pisahkan teks berdasarkan kata "Misi" atau "Misi:"
-    $parts = preg_split('/(?i)(Misi\s*:?\s*)/', $rawKonten);
+    // Split content into Vision and Mission sections based on the word "Misi" at start or newlines
+    $parts = preg_split('/(?i)(?:^|\n)\s*Misi\s*:?\s*/', $konten);
     
-    // Ambil bagian pertama sebagai Visi
+    // Extract Visi statement
     $visiText = trim($parts[0] ?? '');
-    // Hapus kata "Visi:" di awal kalimat jika ada
-    $visiText = preg_replace('/(?i)^(Visi\s*:?\s*)/', '', $visiText);
-    if(empty($visiText)) $visiText = 'Belum ada data visi.';
+    $visiText = preg_replace('/(?i)^\s*Visi\s*:?\s*/', '', $visiText);
+    if (empty($visiText)) {
+        $visiText = 'Belum ada data visi.';
+    }
     
-    // Ambil bagian kedua sebagai Misi
+    // Extract Misi statements
     $misiText = trim($parts[1] ?? '');
-    if(empty($misiText)) {
-        $misiText = 'Belum ada data misi.';
+    $misiItems = [];
+    if (!empty($misiText)) {
+        $lines = explode("\n", $misiText);
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line)) continue;
+            
+            // Clean up leading lists or numbering structures (e.g. "1. ", "- ", "* ")
+            $cleanedLine = preg_replace('/^(?:\d+[\.\)]|-|\*)\s*/', '', $line);
+            if (!empty($cleanedLine)) {
+                $misiItems[] = $cleanedLine;
+            }
+        }
+    }
+    
+    if (empty($misiItems)) {
+        $misiItems = ['Belum ada data misi.'];
     }
 @endphp
 
 <section class="py-5 bg-white min-vh-100">
     <div class="container">
         
-        <!-- Gambar Utama (Jika Ada) -->
+        <!-- Page Header -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <h2 class="fw-bold text-dark mb-2">Visi & Misi</h2>
+                <p class="text-secondary mb-0">
+                    Arah pandang dan komitmen SD Muhammadiyah Kolombo dalam mewujudkan pendidikan dasar berkualitas.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Header Image (If Uploaded) -->
         @if(isset($profil) && $profil->gambar)
-            <div class="row justify-content-center mb-5">
-                <div class="col-lg-8">
-                    <div class="rounded-4 overflow-hidden shadow-sm border">
-                        <img src="{{ asset('storage/' . $profil->gambar) }}" class="w-100" style="max-height: 400px; object-fit: cover;" alt="Visi Misi">
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="rounded-3 overflow-hidden border border-light">
+                        <img src="{{ asset('storage/' . $profil->gambar) }}" class="w-100" style="max-height: 400px; object-fit: cover;" alt="Visi Misi SD Muhammadiyah Kolombo">
                     </div>
                 </div>
             </div>
         @endif
 
-        <div class="row justify-content-center g-4">
+        <!-- 2-Column Grid -->
+        <div class="row g-4">
             
-            <!-- Grid Visi (Atas) -->
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm rounded-4 bg-white position-relative overflow-hidden">
-                    <div class="position-absolute top-0 start-0 h-100" style="width: 6px; background-color: #1e3a8a;"></div>
-                    <div class="card-body p-4 p-md-5 ps-md-5">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                                <i class="bi bi-eye text-primary fs-4"></i>
-                            </div>
-                            <h3 class="fw-bold text-dark mb-0" style="font-size: 1.6rem; letter-spacing: -0.5px;">Visi Kami</h3>
-                        </div>
-                        <div class="text-secondary" style="font-size: 1.1rem; line-height: 1.8;">
-                            {!! nl2br(e($visiText)) !!}
-                        </div>
-                    </div>
+            <!-- Vision Section (Left) -->
+            <div class="col-md-6">
+                <div class="p-4 bg-light rounded-3 h-100 border">
+                    <h3 class="fw-bold text-dark mb-3">Visi</h3>
+                    <p class="text-secondary lh-base fs-5" style="font-style: italic;">
+                        "{{ $visiText }}"
+                    </p>
                 </div>
             </div>
 
-            <!-- Grid Misi (Bawah) -->
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm rounded-4 bg-white position-relative overflow-hidden">
-                    <div class="position-absolute top-0 start-0 h-100" style="width: 6px; background-color: #2563eb;"></div>
-                    <div class="card-body p-4 p-md-5 ps-md-5">
-                        <div class="d-flex align-items-center mb-4">
-                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
-                                <i class="bi bi-bullseye text-success fs-4"></i>
-                            </div>
-                            <h3 class="fw-bold text-dark mb-0" style="font-size: 1.6rem; letter-spacing: -0.5px;">Misi Kami</h3>
-                        </div>
-                        <div class="text-secondary" style="font-size: 1.05rem; line-height: 1.8;">
-                            {!! nl2br(e($misiText)) !!}
-                        </div>
-                    </div>
+            <!-- Mission Section (Right) -->
+            <div class="col-md-6">
+                <div class="p-4 bg-light rounded-3 h-100 border">
+                    <h3 class="fw-bold text-dark mb-3">Misi</h3>
+                    <ol class="text-secondary ps-3 mb-0 lh-lg fs-6">
+                        @foreach($misiItems as $item)
+                            <li class="mb-2">{{ $item }}</li>
+                        @endforeach
+                    </ol>
                 </div>
             </div>
             

@@ -18,24 +18,56 @@
 
 @section('content')
     <div class="row">
+        <!-- Total Siswa Aktif -->
+        <div class="col-lg-2 col-6">
+            <div class="small-box bg-indigo">
+                <div class="inner">
+                    <h3>{{ $countSiswa }}</h3>
+                    <p>Siswa Aktif</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-user-graduate"></i>
+                </div>
+                <a href="{{ route('admin.siswa.index', ['status' => 'aktif']) }}" class="small-box-footer">
+                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Total Alumni -->
+        <div class="col-lg-2 col-6">
+            <div class="small-box bg-teal">
+                <div class="inner">
+                    <h3>{{ $countAlumni }}</h3>
+                    <p>Total Alumni</p>
+                </div>
+                <div class="icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <a href="{{ route('admin.siswa.index', ['status' => 'alumni']) }}" class="small-box-footer">
+                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
+                </a>
+            </div>
+        </div>
+
         <!-- Total Guru -->
-        <div class="col-lg-3 col-6">
+        <div class="col-lg-2 col-6">
             <div class="small-box bg-info">
                 <div class="inner">
                     <h3>{{ $countGuru }}</h3>
-                    <p>Total Guru</p>
+                    <p>Total Guru & Staf</p>
                 </div>
                 <div class="icon">
                     <i class="fas fa-users"></i>
                 </div>
                 <a href="{{ route('admin.guru-staff.index') }}" class="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
+                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
 
         <!-- Total Berita -->
-        <div class="col-lg-3 col-6">
+        <div class="col-lg-2 col-6">
             <div class="small-box bg-success">
                 <div class="inner">
                     <h3>{{ $countBerita }}</h3>
@@ -45,13 +77,13 @@
                     <i class="fas fa-newspaper"></i>
                 </div>
                 <a href="{{ route('admin.berita.index') }}" class="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
+                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
 
         <!-- Total Prestasi -->
-        <div class="col-lg-3 col-6">
+        <div class="col-lg-2 col-6">
             <div class="small-box bg-warning">
                 <div class="inner">
                     <h3>{{ $countPrestasi }}</h3>
@@ -61,13 +93,13 @@
                     <i class="fas fa-trophy"></i>
                 </div>
                 <a href="{{ route('admin.prestasi.index') }}" class="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
+                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
 
         <!-- Pesan Masuk -->
-        <div class="col-lg-3 col-6">
+        <div class="col-lg-2 col-6">
             <div class="small-box bg-danger">
                 <div class="inner">
                     <h3>{{ $countPesan }}</h3>
@@ -77,7 +109,7 @@
                     <i class="fas fa-envelope"></i>
                 </div>
                 <a href="{{ route('admin.pesan.index') }}" class="small-box-footer">
-                    More info <i class="fas fa-arrow-circle-right"></i>
+                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
                 </a>
             </div>
         </div>
