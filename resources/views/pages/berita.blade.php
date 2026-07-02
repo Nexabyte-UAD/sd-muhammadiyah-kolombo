@@ -9,7 +9,7 @@
             <div class="col-lg-8 text-center">
                 <h2 class="fw-bold text-dark mb-3">Papan Berita</h2>
                 <p class="text-secondary" style="font-size: 1.05rem;">
-                    Kumpulan informasi, pengumuman, dan artikel terbaru dari SD Muhammadiyah Kolombo.
+                    Kumpulan informasi, pengumuman, dan artikel terbaru dari SD Muhammadiyah Komplek Kolombo.
                 </p>
             </div>
         </div>

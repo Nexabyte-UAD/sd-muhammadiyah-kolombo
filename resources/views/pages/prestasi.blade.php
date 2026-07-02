@@ -11,7 +11,7 @@
             <div class="col-lg-8 text-center">
                 <h2 class="fw-bold text-dark mb-3">Prestasi Siswa</h2>
                 <p class="text-secondary" style="font-size: 1.05rem;">
-                    Catatan pencapaian dan penghargaan yang berhasil diraih oleh siswa-siswi SD Muhammadiyah Kolombo.
+                    Catatan pencapaian dan penghargaan yang berhasil diraih oleh siswa-siswi SD Muhammadiyah Komplek Kolombo.
                 </p>
             </div>
         </div>

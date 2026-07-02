@@ -13,6 +13,29 @@
 @section('content')
 <div class="row">
     <div class="col-12">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="icon fas fa-check-circle mr-1"></i> {{ session('success') }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <h5><i class="icon fas fa-ban mr-1"></i> Terjadi Kesalahan!</h5>
+                <ul class="mb-0 pl-3">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        @endif
+
         <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -80,27 +103,70 @@
                             <h4 class="mb-3 text-primary">Desain Halaman Depan Web</h4>
                             <hr>
                             
-                            <!-- Hero Banner Upload -->
-                            <div class="form-group">
-                                <label><i class="fas fa-image text-primary mr-1"></i> Gambar Utama Hero Banner (Lebar)</label>
-                                <div class="mb-2">
-                                    @if(isset($settings['hero_image']) && $settings['hero_image'])
-                                        <img src="{{ asset('storage/' . $settings['hero_image']) }}" class="img-thumbnail" style="height: 140px; object-fit: cover;" alt="Hero">
-                                    @else
-                                        <div class="bg-light border d-flex align-items-center justify-content-center text-muted" style="width: 250px; height: 140px;">
-                                            <i class="fas fa-panorama fa-3x"></i>
+                            <!-- Hero Banners Grid -->
+                            <div class="row">
+                                <!-- Banner 1 -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><i class="fas fa-image text-primary mr-1"></i> Banner Utama 1</label>
+                                        <div class="mb-2">
+                                            @if(isset($settings['hero_image']) && $settings['hero_image'])
+                                                <img src="{{ asset('storage/' . $settings['hero_image']) }}" class="img-thumbnail w-100" style="height: 120px; object-fit: cover;" alt="Hero 1">
+                                            @else
+                                                <div class="bg-light border d-flex align-items-center justify-content-center text-muted" style="height: 120px;">
+                                                    <i class="fas fa-image fa-2x"></i>
+                                                </div>
+                                            @endif
                                         </div>
-                                    @endif
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="hero_image" id="hero_image" accept="image/*">
+                                            <label class="custom-file-label text-truncate" for="hero_image">Pilih Banner 1</label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="custom-file w-50">
-                                    <input type="file" class="custom-file-input" name="hero_image" id="hero_image" accept="image/*">
-                                    <label class="custom-file-label" for="hero_image">Pilih gambar hero</label>
+                                <!-- Banner 2 -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><i class="fas fa-image text-primary mr-1"></i> Banner Slide 2 (Opsional)</label>
+                                        <div class="mb-2">
+                                            @if(isset($settings['hero_image_2']) && $settings['hero_image_2'])
+                                                <img src="{{ asset('storage/' . $settings['hero_image_2']) }}" class="img-thumbnail w-100" style="height: 120px; object-fit: cover;" alt="Hero 2">
+                                            @else
+                                                <div class="bg-light border d-flex align-items-center justify-content-center text-muted" style="height: 120px;">
+                                                    <i class="fas fa-image fa-2x"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="hero_image_2" id="hero_image_2" accept="image/*">
+                                            <label class="custom-file-label text-truncate" for="hero_image_2">Pilih Banner 2</label>
+                                        </div>
+                                    </div>
                                 </div>
-                                <small class="form-text text-muted">
-                                    Resolusi disarankan: minimum <strong>1920x800px</strong> (Rasio Landscape).<br>
-                                    Foto ini akan langsung menyambut pengunjung saat membuka alamat sekolah.
-                                </small>
+                                <!-- Banner 3 -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label><i class="fas fa-image text-primary mr-1"></i> Banner Slide 3 (Opsional)</label>
+                                        <div class="mb-2">
+                                            @if(isset($settings['hero_image_3']) && $settings['hero_image_3'])
+                                                <img src="{{ asset('storage/' . $settings['hero_image_3']) }}" class="img-thumbnail w-100" style="height: 120px; object-fit: cover;" alt="Hero 3">
+                                            @else
+                                                <div class="bg-light border d-flex align-items-center justify-content-center text-muted" style="height: 120px;">
+                                                    <i class="fas fa-image fa-2x"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" name="hero_image_3" id="hero_image_3" accept="image/*">
+                                            <label class="custom-file-label text-truncate" for="hero_image_3">Pilih Banner 3</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            <small class="form-text text-muted mb-4">
+                                Resolusi disarankan: minimum <strong>1920x800px</strong> (Rasio Landscape).<br>
+                                Jika mengunggah lebih dari 1 gambar, banner di beranda otomatis berubah menjadi slide carousel yang bergerak secara berkala.
+                            </small>
 
                             <div class="row mt-4">
                                 <!-- Area Penamaan -->
@@ -171,7 +237,7 @@
 
                             <h5 class="mt-4 mb-3">Tautan Sosial Media Platform</h5>
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
@@ -181,7 +247,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
@@ -191,13 +257,23 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fab fa-youtube text-danger"></i></span>
                                             </div>
                                             <input type="url" class="form-control" name="youtube" value="{{ $settings['youtube'] ?? '' }}" placeholder="https://youtube.com/...">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fab fa-tiktok text-dark"></i></span>
+                                            </div>
+                                            <input type="url" class="form-control" name="tiktok" value="{{ $settings['tiktok'] ?? '' }}" placeholder="https://tiktok.com/@...">
                                         </div>
                                     </div>
                                 </div>

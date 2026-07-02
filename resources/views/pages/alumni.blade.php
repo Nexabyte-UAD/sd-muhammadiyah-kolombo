@@ -10,7 +10,7 @@
             <div class="col-lg-10">
                 <h2 class="fw-bold text-dark mb-0">Direktori Alumni</h2>
                 <p class="text-secondary small mt-1 mb-0">
-                    Daftar alumni lulusan SD Muhammadiyah Kolombo yang telah berhasil menyelesaikan pendidikan dasar.
+                    Daftar alumni lulusan SD Muhammadiyah Komplek Kolombo yang telah berhasil menyelesaikan pendidikan dasar.
                 </p>
             </div>
         </div>

@@ -4,35 +4,58 @@
 <x-breadcrumb>Profil: Visi & Misi</x-breadcrumb>
 
 @php
-    $konten = $profil->konten ?? '';
+    $konten = trim($profil->konten ?? '');
     
-    // Split content into Vision and Mission sections based on the word "Misi" at start or newlines
-    $parts = preg_split('/(?i)(?:^|\n)\s*Misi\s*:?\s*/', $konten);
+    $visiLines = [];
+    $misiLines = [];
+    $isMisiSection = false;
     
-    // Extract Visi statement
-    $visiText = trim($parts[0] ?? '');
-    $visiText = preg_replace('/(?i)^\s*Visi\s*:?\s*/', '', $visiText);
-    if (empty($visiText)) {
-        $visiText = 'Belum ada data visi.';
-    }
-    
-    // Extract Misi statements
-    $misiText = trim($parts[1] ?? '');
-    $misiItems = [];
-    if (!empty($misiText)) {
-        $lines = explode("\n", $misiText);
+    if (!empty($konten)) {
+        $lines = explode("\n", str_replace("\r", "", $konten));
         foreach ($lines as $line) {
-            $line = trim($line);
-            if (empty($line)) continue;
+            $trimmedLine = trim($line);
             
-            // Clean up leading lists or numbering structures (e.g. "1. ", "- ", "* ")
-            $cleanedLine = preg_replace('/^(?:\d+[\.\)]|-|\*)\s*/', '', $line);
-            if (!empty($cleanedLine)) {
-                $misiItems[] = $cleanedLine;
+            // Check if this line signals the start of the Mission section
+            $isMisiHeader = false;
+            if (preg_match('/^(?i)\s*(?:Misi|Misi\s*Sekolah|Misi\s*Kami|Misi\s*:\s*)\s*:?\s*$/', $trimmedLine)) {
+                $isMisiHeader = true;
+            }
+            
+            // If we find the Misi header, switch to the Misi section
+            if ($isMisiHeader) {
+                $isMisiSection = true;
+                continue; // Skip the header line itself
+            }
+            
+            // Clean up Visi header if it exists
+            if (!$isMisiSection && preg_match('/^(?i)\s*(?:Visi|Visi\s*Sekolah|Visi\s*Kami|Visi\s*:\s*)\s*:?\s*$/', $trimmedLine)) {
+                continue; // Skip the Visi header line
+            }
+            
+            if ($isMisiSection) {
+                if ($trimmedLine !== '') {
+                    // Clean up leading list/numbering indicators (e.g. "1. ", "- ", "* ")
+                    $cleanedLine = preg_replace('/^(?:\d+[\.\)]|-|\*)\s*/', '', $trimmedLine);
+                    if ($cleanedLine !== '') {
+                        $misiLines[] = $cleanedLine;
+                    }
+                }
+            } else {
+                if ($trimmedLine !== '') {
+                    $visiLines[] = $trimmedLine;
+                }
             }
         }
     }
     
+    // Join Visi lines together
+    $visiText = implode("\n", $visiLines);
+    $visiText = preg_replace('/(?i)^\s*Visi\s*:?\s*/', '', $visiText); // Final fallback cleanup
+    if (empty($visiText)) {
+        $visiText = 'Belum ada data visi.';
+    }
+    
+    $misiItems = $misiLines;
     if (empty($misiItems)) {
         $misiItems = ['Belum ada data misi.'];
     }
@@ -46,7 +69,7 @@
             <div class="col-12">
                 <h2 class="fw-bold text-dark mb-2">Visi & Misi</h2>
                 <p class="text-secondary mb-0">
-                    Arah pandang dan komitmen SD Muhammadiyah Kolombo dalam mewujudkan pendidikan dasar berkualitas.
+                    Arah pandang dan komitmen SD Muhammadiyah Komplek Kolombo dalam mewujudkan pendidikan dasar berkualitas.
                 </p>
             </div>
         </div>
@@ -56,37 +79,44 @@
             <div class="row mb-5">
                 <div class="col-12">
                     <div class="rounded-3 overflow-hidden border border-light">
-                        <img src="{{ asset('storage/' . $profil->gambar) }}" class="w-100" style="max-height: 400px; object-fit: cover;" alt="Visi Misi SD Muhammadiyah Kolombo">
+                        <img src="{{ asset('storage/' . $profil->gambar) }}" class="w-100" style="max-height: 400px; object-fit: cover;" alt="Visi Misi SD Muhammadiyah Komplek Kolombo">
                     </div>
                 </div>
             </div>
         @endif
 
-        <!-- 2-Column Grid -->
-        <div class="row g-4">
-            
-            <!-- Vision Section (Left) -->
-            <div class="col-md-6">
-                <div class="p-4 bg-light rounded-3 h-100 border">
-                    <h3 class="fw-bold text-dark mb-3">Visi</h3>
-                    <p class="text-secondary lh-base fs-5" style="font-style: italic;">
-                        "{{ $visiText }}"
-                    </p>
-                </div>
-            </div>
+        <!-- Unified Visi Misi Card -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm border">
+                    <!-- Visi Section -->
+                    <div class="text-center mb-5">
+                        <h4 class="text-primary fw-bold text-uppercase tracking-wider mb-3" style="font-size: 0.9rem; letter-spacing: 1.5px;">Visi Sekolah</h4>
+                        <p class="text-dark fs-2 fw-bold lh-sm mb-0" style="letter-spacing: -0.5px; font-family: 'Outfit', sans-serif;">
+                            “{{ $visiText }}”
+                        </p>
+                    </div>
 
-            <!-- Mission Section (Right) -->
-            <div class="col-md-6">
-                <div class="p-4 bg-light rounded-3 h-100 border">
-                    <h3 class="fw-bold text-dark mb-3">Misi</h3>
-                    <ol class="text-secondary ps-3 mb-0 lh-lg fs-6">
-                        @foreach($misiItems as $item)
-                            <li class="mb-2">{{ $item }}</li>
-                        @endforeach
-                    </ol>
+                    <hr class="my-5" style="opacity: 0.15;">
+
+                    <!-- Misi Section -->
+                    <div>
+                        <h4 class="text-primary fw-bold text-uppercase tracking-wider text-center mb-4" style="font-size: 0.9rem; letter-spacing: 1.5px;">Misi Sekolah</h4>
+                        <div class="d-flex flex-column gap-3">
+                            @foreach($misiItems as $index => $item)
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="d-flex align-items-center justify-content-center text-primary rounded-circle fw-bold" style="width: 28px; height: 28px; font-size: 0.9rem; flex-shrink: 0; background-color: #eff6ff;">
+                                        {{ $index + 1 }}
+                                    </div>
+                                    <div class="text-secondary lh-lg mb-0" style="font-size: 1.05rem; text-align: justify;">
+                                        {{ $item }}
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
             </div>
-            
         </div>
 
     </div>

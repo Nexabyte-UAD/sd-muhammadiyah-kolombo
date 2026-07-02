@@ -16,7 +16,8 @@ class HomeController extends Controller
     public function index()
     {
         $beritas = Berita::where('status', 'published')->orderBy('tanggal', 'desc')->take(4)->get();
-        $profil = ProfilSekolah::where('type', 'beranda')->first();
+        $profilSingkat = ProfilSekolah::where('type', 'profil_singkat')->first();
+        $sambutan = ProfilSekolah::where('type', 'sambutan')->first();
         $gurus = GuruStaff::where('tipe', 'guru')->take(4)->get(); // Show only guru on homepage for now
         $prestasis = Prestasi::orderBy('tanggal', 'desc')->take(4)->get();
         $ekstrakurikulers = Ekstrakurikuler::take(4)->get();
@@ -25,7 +26,7 @@ class HomeController extends Controller
         $countEkstra = Ekstrakurikuler::count();
         $countPrestasi = Prestasi::count();
         
-        return view('welcome', compact('beritas', 'profil', 'gurus', 'prestasis', 'ekstrakurikulers', 'countGuru', 'countEkstra', 'countPrestasi'));
+        return view('welcome', compact('beritas', 'profilSingkat', 'sambutan', 'gurus', 'prestasis', 'ekstrakurikulers', 'countGuru', 'countEkstra', 'countPrestasi'));
     }
 
     public function sambutan()
@@ -37,7 +38,8 @@ class HomeController extends Controller
     public function tentang()
     {
         $profil = ProfilSekolah::where('type', 'tentang')->first();
-        return view('pages.tentang', compact('profil'));
+        $profilSingkat = ProfilSekolah::where('type', 'profil_singkat')->first();
+        return view('pages.tentang', compact('profil', 'profilSingkat'));
     }
 
     public function visiMisi()

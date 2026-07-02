@@ -384,6 +384,10 @@ return [
                     'text' => 'Profil Singkat',
                     'url'  => 'admin/profil/profil_singkat',
                 ],
+                [
+                    'text' => 'Akreditasi',
+                    'url'  => 'admin/profil/akreditasi',
+                ],
             ]
         ],
         ['header' => 'INTERAKSI & PENGATURAN'],

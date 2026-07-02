@@ -16,7 +16,7 @@ class SettingController extends Controller
 
     public function update(Request $request)
     {
-        $data = $request->except(['_token', '_method', 'logo', 'hero_image']); // Ambil semua kecuali token dan file
+        $data = $request->except(['_token', '_method', 'logo', 'hero_image', 'hero_image_2', 'hero_image_3']); // Ambil semua kecuali token dan file
 
         // Update text/url settings
         foreach ($data as $key => $value) {
@@ -55,6 +55,40 @@ class SettingController extends Controller
             }
 
             Setting::updateOrCreate(['key' => 'hero_image'], ['value' => $path]);
+        }
+
+        // Handle hero image 2 file upload
+        if ($request->hasFile('hero_image_2')) {
+            $request->validate([
+                'hero_image_2' => 'image|mimes:jpeg,png,jpg|max:4096',
+            ]);
+
+            $path = $request->file('hero_image_2')->store('settings', 'public');
+            
+            // Hapus gambar hero lama jika ada
+            $oldHero = Setting::where('key', 'hero_image_2')->first();
+            if ($oldHero && $oldHero->value) {
+                Storage::disk('public')->delete($oldHero->value);
+            }
+
+            Setting::updateOrCreate(['key' => 'hero_image_2'], ['value' => $path]);
+        }
+
+        // Handle hero image 3 file upload
+        if ($request->hasFile('hero_image_3')) {
+            $request->validate([
+                'hero_image_3' => 'image|mimes:jpeg,png,jpg|max:4096',
+            ]);
+
+            $path = $request->file('hero_image_3')->store('settings', 'public');
+            
+            // Hapus gambar hero lama jika ada
+            $oldHero = Setting::where('key', 'hero_image_3')->first();
+            if ($oldHero && $oldHero->value) {
+                Storage::disk('public')->delete($oldHero->value);
+            }
+
+            Setting::updateOrCreate(['key' => 'hero_image_3'], ['value' => $path]);
         }
 
         return redirect()->route('admin.settings.edit')->with('success', 'Konfigurasi Sistem berhasil diperbarui.');

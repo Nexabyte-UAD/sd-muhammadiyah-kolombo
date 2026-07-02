@@ -9,7 +9,7 @@
             <div class="col-lg-8 text-center">
                 <h2 class="fw-bold text-dark mb-3">Struktural: {{ ucfirst($tipe) }}</h2>
                 <p class="text-secondary" style="font-size: 1.05rem;">
-                    Daftar tenaga pendidik dan kependidikan di lingkungan SD Muhammadiyah Kolombo.
+                    Daftar tenaga pendidik dan kependidikan di lingkungan SD Muhammadiyah Komplek Kolombo.
                 </p>
             </div>
         </div>

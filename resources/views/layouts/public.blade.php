@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Kolombo' }}</title>
+    <title>{{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Komplek Kolombo' }}</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
@@ -148,7 +148,7 @@
         <!-- Tulisan Berjalan (Tengah) -->
         <div class="flex-grow-1 px-3 px-md-4 overflow-hidden align-items-center d-flex">
           <marquee behavior="scroll" direction="left" scrollamount="6" class="m-0 text-white" style="letter-spacing: 0.5px; font-size: 0.85rem; font-weight: 400;">
-             Selamat Datang di Website Resmi {{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Kolombo' }} | Terdepan Dalam Mendidik Generasi Islami, Cerdas, Berprestasi, dan Berkarakter Mulia!
+             Selamat Datang di Website Resmi {{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Komplek Kolombo' }} | Terdepan Dalam Mendidik Generasi Islami, Cerdas, Berprestasi, dan Berkarakter Mulia!
           </marquee>
         </div>
 
@@ -234,21 +234,22 @@
           <!-- Hubungi Kami -->
           <div class="col-lg-4 col-md-6">
             <h5 class="fw-bold text-white mb-4">Hubungi Kami</h5>
-            <div class="d-flex mb-3">
+            <a href="https://www.google.com/maps/search/?api=1&query=SD+Muhammadiyah+Komplek+Kolombo" target="_blank" class="d-flex mb-3 text-decoration-none text-light hover-white align-items-start">
               <i class="bi bi-geo-alt-fill text-warning me-3 fs-5"></i>
-              <span class="text-light">{{ $settings['alamat'] ?? 'Jl. Kolombo No. 123, Yogyakarta' }}</span>
-            </div>
+              <span>{{ $settings['alamat'] ?? 'Jl. Rajawali No. 10, Demangan Baru, Depok, Sleman, Yogyakarta' }}</span>
+            </a>
             <div class="d-flex mb-3">
               <i class="bi bi-telephone-fill text-warning me-3 fs-5"></i>
               <span class="text-light">{{ $settings['telepon'] ?? '+62 274 1234567' }}</span>
             </div>
             <div class="d-flex mb-4">
               <i class="bi bi-envelope-fill text-warning me-3 fs-5"></i>
-              <span class="text-light">{{ $settings['email'] ?? 'info@sdmuhkolombo.sch.id' }}</span>
+              <span class="text-light">{{ $settings['email'] ?? 'sdmuhkkolombo@gmail.com' }}</span>
             </div>
             <div class="d-flex gap-3">
               @if(!empty($settings['facebook'])) <a href="{{ $settings['facebook'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;"><i class="bi bi-facebook"></i></a> @endif
               @if(!empty($settings['instagram'])) <a href="{{ $settings['instagram'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;"><i class="bi bi-instagram"></i></a> @endif
+              @if(!empty($settings['tiktok'])) <a href="{{ $settings['tiktok'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;"><i class="bi bi-tiktok"></i></a> @endif
               @if(!empty($settings['youtube'])) <a href="{{ $settings['youtube'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;"><i class="bi bi-youtube"></i></a> @endif
             </div>
           </div>
@@ -269,14 +270,16 @@
           <!-- Lokasi Sekolah -->
           <div class="col-lg-5 col-md-12">
             <h5 class="fw-bold text-white mb-4">Lokasi Kami</h5>
-            <div class="rounded overflow-hidden">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0981966141443!2d110.3855523!3d-7.7794195!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59c0d30de0ad%3A0xe324dcd981d3f6d7!2sUniversitas%20Negeri%20Yogyakarta!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <div class="position-relative rounded overflow-hidden">
+              <!-- Overlay link to open Google Maps directly in new tab -->
+              <a href="https://www.google.com/maps/search/?api=1&query=SD+Muhammadiyah+Komplek+Kolombo" target="_blank" class="position-absolute top-0 start-0 w-100 h-100 d-block" style="z-index: 10; background: rgba(0,0,0,0);" title="Buka di Google Maps"></a>
+              <iframe src="https://maps.google.com/maps?q=SD%20Muhammadiyah%20Komplek%20Kolombo&t=&z=17&ie=UTF8&iwloc=&output=embed" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
           </div>
         </div>
       </div>
       <div class="container text-center">
-        <p class="mb-0 text-light opacity-75">&copy; {{ date('Y') }} {{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Kolombo' }}. All rights reserved.</p>
+        <p class="mb-0 text-light opacity-75">&copy; {{ date('Y') }} {{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Komplek Kolombo' }}. All rights reserved.</p>
       </div>
     </footer>
 

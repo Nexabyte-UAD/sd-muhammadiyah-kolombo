@@ -3,45 +3,71 @@
 @section('content')
 
     <!-- Hero Section -->
+    @php
+        $heroSlides = [];
+        
+        // Cek slide kustom 1
+        if (isset($settings['hero_image']) && $settings['hero_image'] && file_exists(public_path('storage/' . $settings['hero_image']))) {
+            $heroSlides[] = [
+                'url' => asset('storage/' . $settings['hero_image']),
+                'alt' => $settings['nama_sekolah'] ?? 'Sekolah'
+            ];
+        }
+        
+        // Dukungan untuk slide kustom tambahan di masa mendatang
+        if (isset($settings['hero_image_2']) && $settings['hero_image_2'] && file_exists(public_path('storage/' . $settings['hero_image_2']))) {
+            $heroSlides[] = [
+                'url' => asset('storage/' . $settings['hero_image_2']),
+                'alt' => 'Slide 2'
+            ];
+        }
+        if (isset($settings['hero_image_3']) && $settings['hero_image_3'] && file_exists(public_path('storage/' . $settings['hero_image_3']))) {
+            $heroSlides[] = [
+                'url' => asset('storage/' . $settings['hero_image_3']),
+                'alt' => 'Slide 3'
+            ];
+        }
+
+        // Jika tidak ada gambar kustom yang berhasil dimuat/diunggah, gunakan 1 gambar default saja
+        if (empty($heroSlides)) {
+            $heroSlides[] = [
+                'url' => 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2000&auto=format&fit=crop',
+                'alt' => 'Fasilitas Sekolah'
+            ];
+        }
+    @endphp
+
     <div class="position-relative bg-dark hero-wrapper" style="overflow: hidden;">
-        <div id="heroCarousel" class="carousel slide carousel-fade h-100" data-bs-ride="carousel" data-bs-interval="4000">
-            <div class="carousel-inner h-100">
-                <!-- Slide 1 -->
-                <div class="carousel-item active h-100">
-                    @if(isset($settings['hero_image']) && $settings['hero_image'])
-                        <img src="{{ asset('storage/' . $settings['hero_image']) }}" class="d-block w-100 h-100"
-                            style="object-fit: cover; object-position: center;"
-                            alt="{{ $settings['nama_sekolah'] ?? 'Sekolah' }}">
-                    @else
-                        <!-- Placeholder default jika tidak ada gambar hero -->
-                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2000&auto=format&fit=crop"
-                            class="d-block w-100 h-100" style="object-fit: cover; object-position: center;"
-                            alt="Fasilitas Sekolah">
-                    @endif
+        @if(count($heroSlides) > 1)
+            <div id="heroCarousel" class="carousel slide carousel-fade h-100" data-bs-ride="carousel" data-bs-interval="4000">
+                <div class="carousel-inner h-100">
+                    @foreach($heroSlides as $index => $slide)
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }} h-100">
+                            <img src="{{ $slide['url'] }}" class="d-block w-100 h-100"
+                                style="object-fit: cover; object-position: center;"
+                                alt="{{ $slide['alt'] }}">
+                        </div>
+                    @endforeach
                 </div>
-                <!-- Slide 2 -->
-                <div class="carousel-item h-100">
-                    <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=2000&auto=format&fit=crop"
-                        class="d-block w-100 h-100" style="object-fit: cover; object-position: center;"
-                        alt="Kegiatan Belajar">
-                </div>
-                <!-- Slide 3 -->
-                <div class="carousel-item h-100">
-                    <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=2000&auto=format&fit=crop"
-                        class="d-block w-100 h-100" style="object-fit: cover; object-position: center;"
-                        alt="Prestasi Siswa">
+                <!-- Indicators / Bullets (Hanya muncul jika lebih dari 1 gambar) -->
+                <div class="carousel-indicators mb-4">
+                    @foreach($heroSlides as $index => $slide)
+                        <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="{{ $index }}" 
+                            class="{{ $index === 0 ? 'active' : '' }}" 
+                            aria-current="{{ $index === 0 ? 'true' : 'false' }}"
+                            aria-label="Slide {{ $index + 1 }}" 
+                            style="width: 12px; height: 12px; border-radius: 50%; margin: 0 6px;"></button>
+                    @endforeach
                 </div>
             </div>
-            <!-- Indicators / Bullets -->
-            <div class="carousel-indicators mb-4">
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true"
-                    aria-label="Slide 1" style="width: 12px; height: 12px; border-radius: 50%; margin: 0 6px;"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"
-                    style="width: 12px; height: 12px; border-radius: 50%; margin: 0 6px;"></button>
-                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"
-                    style="width: 12px; height: 12px; border-radius: 50%; margin: 0 6px;"></button>
+        @else
+            <!-- Tampilan Static Banner jika hanya 1 gambar (tanpa indikator & tanpa slide berpindah) -->
+            <div class="h-100 w-100">
+                <img src="{{ $heroSlides[0]['url'] }}" class="d-block w-100 h-100"
+                    style="object-fit: cover; object-position: center;"
+                    alt="{{ $heroSlides[0]['alt'] }}">
             </div>
-        </div>
+        @endif
     </div>
 
     <style>
@@ -253,7 +279,7 @@
                 <h2 class="fw-bolder mb-3 lh-sm" style="font-size: clamp(1.75rem, 3vw, 2.25rem); letter-spacing: -0.5px; color: #0f172a;">
                     Selamat Datang di<br>
                     <span style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">
-                        {{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Kolombo' }}
+                        {{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Komplek Kolombo' }}
                     </span>
                 </h2>
                 
@@ -379,8 +405,12 @@
             <div class="profil-grid-container">
                 <!-- Foto Tunggal (Kiri) -->
                 <div class="profil-grid-item">
-                    <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800&auto=format&fit=crop"
-                        class="w-100 h-100" alt="Foto Fasilitas Sekolah" style="object-fit: cover;">
+                    @if(isset($profilSingkat) && $profilSingkat->gambar && file_exists(public_path('storage/' . $profilSingkat->gambar)))
+                        <img src="{{ asset('storage/' . $profilSingkat->gambar) }}" class="w-100 h-100" alt="Foto Profil Sekolah" style="object-fit: cover;">
+                    @else
+                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800&auto=format&fit=crop"
+                            class="w-100 h-100" alt="Foto Fasilitas Sekolah" style="object-fit: cover;">
+                    @endif
                 </div>
                 <!-- Teks Penuh (Kanan) -->
                 <div class="profil-grid-item p-4 p-xl-5 d-flex flex-column justify-content-center"
@@ -388,10 +418,10 @@
                     <h6 class="text-uppercase fw-bold text-primary mb-2" style="font-size: 0.9rem; letter-spacing: 1px;">
                         Profil Singkat</h6>
                     <h3 class="fw-bold text-dark mb-3 lh-sm" style="font-size: 1.6rem;">Membentuk Generasi <span
-                            class="text-primary">{{ $settings['beranda_profil_judul'] ?? 'Islami & Berprestasi' }}</span>
+                            class="text-primary">{{ optional($profilSingkat)->judul ?? 'Islami & Berprestasi' }}</span>
                     </h3>
                     <p class="text-secondary mb-4" style="line-height: 1.7; font-size: 1rem;">
-                        {{ $settings['beranda_profil_teks'] ?? ($settings['nama_sekolah'] ?? 'SD Muhammadiyah Kolombo' . ' hadir sebagai bangku pendidikan dasar yang mengintegrasikan kurikulum ilmu pengetahuan mutakhir dengan penanaman nilai-nilai adab dan akhlak Islam secara menyeluruh (holistik). Kami senantiasa berkomitmen untuk memberikan pembelajaran terbaik bagi tumbuh kembang putra-putri bangsa.') }}
+                        {{ Str::limit(strip_tags(optional($profilSingkat)->konten ?? 'SD Muhammadiyah Komplek Kolombo hadir sebagai lembaga pendidikan dasar Islam yang mengintegrasikan kurikulum ilmu pengetahuan umum dengan penanaman nilai-nilai adab dan akhlak Islam secara menyeluruh (holistik). Kami senantiasa berkomitmen untuk memberikan pembelajaran terbaik guna mendukung tumbuh kembang rohani, jasmani, dan intelektual putra-putri bangsa agar siap menghadapi tantangan zaman.'), 220) }}
                     </p>
                     <div>
                         <a href="{{ route('tentang') }}"
@@ -415,25 +445,31 @@
         <div class="container">
             <div class="seamless-grid-container">
 
-                <!-- Grid 1: Foto Kepala Sekolah (Dikosongkan sesuai permintaan) -->
+                <!-- Grid 1: Foto Kepala Sekolah -->
                 <div class="seamless-grid-item">
-                    <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
-                        <i class="bi bi-person text-secondary opacity-25" style="font-size: 6rem;"></i>
-                    </div>
+                    @if(isset($sambutan) && $sambutan->gambar && file_exists(public_path('storage/' . $sambutan->gambar)))
+                        <img src="{{ asset('storage/' . $sambutan->gambar) }}" class="w-100 h-100" 
+                            style="object-fit: cover; object-position: top;" 
+                            alt="Foto {{ optional($sambutan)->judul ?? 'Kepala Sekolah' }}">
+                    @else
+                        <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
+                            <i class="bi bi-person text-secondary opacity-25" style="font-size: 6rem;"></i>
+                        </div>
+                    @endif
                 </div>
 
                 <!-- Grid 2: Sambutan Box -->
                 <div class="seamless-grid-item p-3 p-xl-4 d-flex flex-column justify-content-center border-0"
                     style="background-color: #1e3a8a;">
                     <h4 class="text-white fw-bold mb-1 lh-sm" style="font-size: 1.1rem;">
-                        {{ $settings['kepsek_nama'] ?? 'Drs. Ahmad Dahlan, M.Pd.' }}</h4>
+                        {{ optional($sambutan)->judul ?? 'Drs. Ahmad Dahlan, M.Pd.' }}</h4>
                     <span class="text-warning mb-3 d-block" style="font-size: 0.85rem;">Kepala Sekolah</span>
 
                     <h6 class="text-white fw-bold text-uppercase mb-2" style="font-size: 0.9rem;">Kata Sambutan</h6>
 
                     <p class="text-white-50 small mb-4"
                         style="line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;">
-                        {{ $settings['kepsek_sambutan'] ?? "Assalamu'alaikum warahmatullahi wabarakaatuh. Alhamdulillahirobbil 'aalamiin. Salam Bahagia... Kita panjatkan puji syukur ke hadirat Allah SWT, atas limpahan rahmat, taufik, hidayah, dan inayah-Nya." }}
+                        {{ strip_tags(optional($sambutan)->konten ?? "Assalamu'alaikum warahmatullahi wabarakaatuh. Alhamdulillahirobbil 'aalamiin. Salam Bahagia... Kita panjatkan puji syukur ke hadirat Allah SWT, atas limpahan rahmat, taufik, hidayah, dan inayah-Nya.") }}
                     </p>
 
                     <div>
@@ -638,6 +674,14 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
         }
 
+        .hover-primary-link:hover h6 {
+            color: #172554 !important;
+        }
+
+        .hover-primary-link:hover p {
+            color: #2563eb !important;
+        }
+
         .opacity-0 {
             opacity: 0;
         }
@@ -667,13 +711,13 @@
                     </p>
 
                     <div class="d-flex flex-column gap-4">
-                        <div class="d-flex align-items-start gap-3">
+                        <a href="https://www.google.com/maps/search/?api=1&query=SD+Muhammadiyah+Komplek+Kolombo" target="_blank" class="d-flex align-items-start gap-3 text-decoration-none hover-primary-link">
                             <div>
                                 <h6 class="fw-bold mb-1 text-dark">Alamat Sekolah</h6>
                                 <p class="text-secondary mb-0 small">
-                                    {{ $settings['alamat'] ?? 'Jl. Kolombo No. 123, Yogyakarta' }}</p>
+                                    {{ $settings['alamat'] ?? 'Jl. Rajawali No. 10, Demangan Baru, Depok, Sleman, Yogyakarta' }}</p>
                             </div>
-                        </div>
+                        </a>
                         <div class="d-flex align-items-start gap-3">
                             <div>
                                 <h6 class="fw-bold mb-1 text-dark">Layanan Telepon</h6>
@@ -683,7 +727,7 @@
                         <div class="d-flex align-items-start gap-3">
                             <div>
                                 <h6 class="fw-bold mb-1 text-dark">Dukungan Email</h6>
-                                <p class="text-secondary mb-0 small">{{ $settings['email'] ?? 'info@sdmuhkolombo.sch.id' }}
+                                <p class="text-secondary mb-0 small">{{ $settings['email'] ?? 'sdmuhkkolombo@gmail.com' }}
                                 </p>
                             </div>
                         </div>
