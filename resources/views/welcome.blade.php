@@ -314,7 +314,7 @@
                                 <i class="bi bi-person-badge-fill" style="font-size: 1.25rem;"></i>
                             </div>
                             <h2 class="fw-bolder text-dark mb-1" style="font-size: 2.2rem; letter-spacing: -1px;">
-                                {{ $countGuru }}<span class="text-warning" style="font-size: 1.2rem; vertical-align: middle;">+</span>
+                                {{ $countTenagaPendidik }}<span class="text-warning" style="font-size: 1.2rem; vertical-align: middle;">+</span>
                             </h2>
                             <p class="text-secondary fw-bold text-uppercase mb-0 tracking-wider" style="font-size: 0.7rem;">Tenaga Pendidik</p>
                         </div>
@@ -331,9 +331,11 @@
                                 <i class="bi bi-mortarboard-fill" style="font-size: 1.25rem;"></i>
                             </div>
                             <h2 class="fw-bolder text-dark mb-1" style="font-size: 2.2rem; letter-spacing: -1px;">
-                                450<span class="text-success" style="font-size: 1.2rem; vertical-align: middle;">+</span>
+                                {{ $countPesertaDidik }}<span class="text-success" style="font-size: 1.2rem; vertical-align: middle;">+</span>
                             </h2>
-                            <p class="text-secondary fw-bold text-uppercase mb-0 tracking-wider" style="font-size: 0.7rem;">Peserta Didik</p>
+                            <a href="{{ route('siswa') }}"
+                               class="text-secondary fw-bold text-uppercase mb-0 tracking-wider text-decoration-none stretched-link"
+                               style="font-size: 0.7rem;">Peserta Didik</a>
                         </div>
                     </div>
                 </div>
@@ -350,7 +352,9 @@
                             <h2 class="fw-bolder text-dark mb-1" style="font-size: 2.2rem; letter-spacing: -1px;">
                                 {{ $countEkstra }}
                             </h2>
-                            <p class="text-secondary fw-bold text-uppercase mb-0 tracking-wider" style="font-size: 0.7rem;">Kegiatan Ekstra</p>
+                            <a href="{{ route('ekstrakurikuler') }}"
+                               class="text-secondary fw-bold text-uppercase mb-0 tracking-wider text-decoration-none stretched-link"
+                               style="font-size: 0.7rem;">Kegiatan Ekstra</a>
                         </div>
                     </div>
                 </div>
@@ -367,7 +371,7 @@
                             <h2 class="fw-bolder text-dark mb-1" style="font-size: 2.2rem; letter-spacing: -1px;">
                                 {{ $countPrestasi }}<span class="text-warning" style="font-size: 1.2rem; vertical-align: middle;">+</span>
                             </h2>
-                            <p class="text-secondary fw-bold text-uppercase mb-0 tracking-wider" style="font-size: 0.7rem;">Penghargaan</p>
+                            <a href="{{ route('prestasi') }}" class="text-secondary fw-bold text-uppercase mb-0 tracking-wider text-decoration-none stretched-link" style="font-size: 0.7rem;">Penghargaan</a>
                         </div>
                     </div>
                 </div>
@@ -479,16 +483,16 @@
                     </div>
                 </div>
 
-                <!-- Grid 3, 4, 5: Swiper Guru -->
+                <!-- Grid 3, 4, 5: Guru dan staf dari menu Struktural -->
                 <div class="seamless-grid-item seamless-grid-span-3">
                     <div class="swiper guruSwiper h-100 w-100 bg-light">
                         <div class="swiper-wrapper">
-                            @forelse($gurus as $index => $guru)
+                            @forelse($tenagaPendidik as $index => $tenaga)
                                 <div class="swiper-slide">
                                     <div class="guru-slide-card">
                                         <div class="guru-slide-img {{ $index % 2 == 0 ? 'bg-red-custom' : 'bg-blue-custom' }}">
-                                            @if($guru->foto)
-                                                <img src="{{ asset('storage/' . $guru->foto) }}" alt="{{ $guru->nama }}">
+                                            @if($tenaga->foto)
+                                                <img src="{{ asset('storage/' . $tenaga->foto) }}" alt="{{ $tenaga->nama }}">
                                             @else
                                                 <div
                                                     class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute bg-dark bg-opacity-25">
@@ -497,10 +501,21 @@
                                             @endif
                                         </div>
                                         <div class="guru-slide-info">
-                                            <p class="text-dark opacity-75 mb-1" style="font-size: 0.85rem;">
-                                                {{ $guru->jabatan ?? 'Tenaga Pendidik' }}</p>
+                                            <div class="d-flex align-items-center gap-2 mb-1">
+                                                <span class="badge {{ $tenaga->tipe === 'guru' ? 'bg-primary' : 'bg-secondary' }} text-uppercase"
+                                                      style="font-size: 0.6rem;">
+                                                    {{ $tenaga->tipe === 'guru' ? 'Guru' : 'Staf' }}
+                                                </span>
+                                                <span class="text-dark opacity-75 text-truncate" style="font-size: 0.8rem;">
+                                                    {{ $tenaga->jabatan ?? 'Tenaga Pendidik' }}
+                                                </span>
+                                            </div>
                                             <h6 class="text-dark fw-bold mb-0 lh-sm" style="font-size: 0.95rem;">
-                                                {{ $guru->nama }}</h6>
+                                                <a href="{{ route('guru', ['tipe' => $tenaga->tipe]) }}"
+                                                   class="text-dark text-decoration-none">
+                                                    {{ $tenaga->nama }}
+                                                </a>
+                                            </h6>
                                         </div>
                                     </div>
                                 </div>
@@ -614,24 +629,28 @@
         </div>
     </section>
 
-    <!-- Prestasi Highlight -->
+    <!-- Penghargaan terbaru, bersumber dari data Prestasi -->
     <section class="py-5 bg-white">
         <div class="container">
             <div class="d-flex justify-content-between align-items-end mb-4">
-                <div class="section-title mb-0" style="font-size: 1.4rem;">Prestasi Siswa</div>
+                <div>
+                    <div class="section-title mb-1" style="font-size: 1.4rem;">Penghargaan & Prestasi</div>
+                    <p class="text-secondary small mb-0">Pencapaian terbaru siswa-siswi kami</p>
+                </div>
                 <a href="{{ route('prestasi') }}" class="btn btn-outline-primary rounded-1 btn-sm fw-bold">Lihat Semua</a>
             </div>
             <div class="row g-4">
                 @forelse($prestasis as $prestasi)
                     <div class="col-md-6 col-lg-3">
-                        <div class="card bg-white shadow-sm border-0 h-100 group-hover rounded-4">
+                        <article class="card bg-white shadow-sm border-0 h-100 group-hover rounded-4 overflow-hidden">
                             <div class="position-relative rounded-top-4 overflow-hidden mb-3" style="height: 200px;">
-                                @if($prestasi->foto)
-                                    <img src="{{ asset('storage/' . $prestasi->foto) }}" class="w-100 h-100"
+                                @if($prestasi->gambar)
+                                    <img src="{{ asset('storage/' . $prestasi->gambar) }}" class="w-100 h-100"
                                         style="object-fit: cover;" alt="{{ $prestasi->judul }}">
                                 @else
-                                    <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-trophy text-secondary fs-1 opacity-50"></i>
+                                    <div class="w-100 h-100 bg-light d-flex flex-column align-items-center justify-content-center text-secondary">
+                                        <i class="bi bi-image fs-1 opacity-25 mb-2"></i>
+                                        <span class="small fw-semibold opacity-50">No Image</span>
                                     </div>
                                 @endif
                                 <div
@@ -641,10 +660,26 @@
                                 </div>
                             </div>
                             <div class="p-3 pt-0">
-                                <h5 class="fw-bold mb-1 text-dark" style="font-size: 1.1rem;">{{ $prestasi->judul }}</h5>
-                                <p class="text-secondary small mb-0">{{ Str::limit($prestasi->deskripsi, 50) }}</p>
+                                <span class="badge rounded-pill mb-2 px-3 py-2" style="background: #e8eefc; color: #172554;">
+                                    {{ \App\Models\Prestasi::KATEGORI[$prestasi->kategori] ?? ucfirst($prestasi->kategori) }}
+                                </span>
+                                <h5 class="fw-bold mb-1" style="font-size: 1.1rem;">
+                                    <a href="{{ route('prestasi') }}#kategori-{{ $prestasi->kategori }}"
+                                       class="text-dark text-decoration-none stretched-link">
+                                        {{ $prestasi->judul }}
+                                    </a>
+                                </h5>
+                                <p class="text-dark small fw-semibold mb-1">
+                                    <i class="bi bi-person me-1 text-secondary"></i>{{ $prestasi->nama_siswa ?: 'Nama siswa belum diisi' }}
+                                </p>
+                                <p class="small fw-bold mb-1" style="color: #172554;">
+                                    <i class="bi bi-award me-1"></i>{{ $prestasi->prestasi_medali ?: 'Prestasi belum diisi' }}
+                                </p>
+                                <p class="text-secondary small mb-0">
+                                    {{ $prestasi->penyelenggara ?: Str::limit($prestasi->deskripsi, 50) }}
+                                </p>
                             </div>
-                        </div>
+                        </article>
                     </div>
                 @empty
                     <div class="col-12 py-5 text-center text-muted">

@@ -36,10 +36,16 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::resource('admin/berita', \App\Http\Controllers\BeritaController::class)->names('admin.berita')->parameters(['berita' => 'berita']);
-    Route::resource('admin/guru-staff', \App\Http\Controllers\GuruStaffController::class)->names('admin.guru-staff')->parameters(['guru_staff' => 'guruStaff']);
-    Route::resource('admin/prestasi', \App\Http\Controllers\PrestasiController::class)->names('admin.prestasi')->parameters(['prestasi' => 'prestasi']);
-    Route::resource('admin/ekstrakurikuler', \App\Http\Controllers\EkstrakurikulerController::class)->names('admin.ekstrakurikuler')->parameters(['ekstrakurikuler' => 'ekstrakurikuler']);
+    Route::resource('admin/berita', \App\Http\Controllers\BeritaController::class)
+        ->except('show')
+        ->names('admin.berita')
+        ->parameters(['berita' => 'berita']);
+    Route::resource('admin/guru-staff', \App\Http\Controllers\GuruStaffController::class)
+        ->except('show')
+        ->names('admin.guru-staff')
+        ->parameters(['guru-staff' => 'guruStaff']);
+    Route::resource('admin/prestasi', \App\Http\Controllers\PrestasiController::class)->except('show')->names('admin.prestasi');
+    Route::resource('admin/ekstrakurikuler', \App\Http\Controllers\EkstrakurikulerController::class)->except('show')->names('admin.ekstrakurikuler');
     Route::get('admin/pesan', [\App\Http\Controllers\PesanController::class, 'index'])->name('admin.pesan.index');
     Route::delete('admin/pesan/{pesan}', [\App\Http\Controllers\PesanController::class, 'destroy'])->name('admin.pesan.destroy');
     
@@ -49,11 +55,11 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/pengaturan', [\App\Http\Controllers\SettingController::class, 'edit'])->name('admin.settings.edit');
     Route::put('admin/pengaturan', [\App\Http\Controllers\SettingController::class, 'update'])->name('admin.settings.update');
     
-    Route::resource('admin/users', \App\Http\Controllers\UserController::class)->names('admin.users');
+    Route::resource('admin/users', \App\Http\Controllers\UserController::class)->except('show')->names('admin.users');
     
     Route::get('admin/siswa-kenaikan-kelas', [\App\Http\Controllers\SiswaController::class, 'promotePage'])->name('admin.siswa.promote.page');
     Route::post('admin/siswa-kenaikan-kelas', [\App\Http\Controllers\SiswaController::class, 'promote'])->name('admin.siswa.promote');
-    Route::resource('admin/siswa', \App\Http\Controllers\SiswaController::class)->names('admin.siswa');
+    Route::resource('admin/siswa', \App\Http\Controllers\SiswaController::class)->except('show')->names('admin.siswa');
 });
 
 require __DIR__.'/auth.php';

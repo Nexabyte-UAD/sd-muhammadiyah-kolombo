@@ -24,8 +24,11 @@
                     <thead>
                         <tr>
                             <th>Gambar</th>
-                            <th>Nama Prestasi</th>
-                            <th>Tanggal</th>
+                            <th>Nama Lomba / Siswa</th>
+                            <th>Prestasi / Medali</th>
+                            <th>Penyelenggara</th>
+                            <th>Kategori</th>
+                            <th>Tanggal Pelaksanaan</th>
                             <th class="text-right">Aksi</th>
                         </tr>
                     </thead>
@@ -36,17 +39,26 @@
                                 @if($item->gambar)
                                     <img src="{{ asset('storage/' . $item->gambar) }}" alt="Foto" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
                                 @else
-                                    <div class="bg-light d-flex align-items-center justify-content-center text-muted border" style="width: 60px; height: 60px;">
-                                        <i class="fas fa-trophy"></i>
+                                    <div class="bg-light d-flex flex-column align-items-center justify-content-center text-muted border rounded"
+                                         style="width: 60px; height: 60px;">
+                                        <i class="far fa-image"></i>
+                                        <small style="font-size: 8px;">No Image</small>
                                     </div>
                                 @endif
                             </td>
                             <td class="align-middle">
+                                <span class="badge badge-primary px-2 py-1">
+                                    {{ \App\Models\Prestasi::KATEGORI[$item->kategori] ?? ucfirst($item->kategori) }}
+                                </span>
+                            </td>
+                            <td class="align-middle">
                                 <strong>{{ $item->judul }}</strong>
                                 <div class="text-muted small mt-1">
-                                    {{ Str::limit($item->deskripsi, 50) }}
+                                    <i class="fas fa-user mr-1"></i>{{ $item->nama_siswa ?: '-' }}
                                 </div>
                             </td>
+                            <td class="align-middle">{{ $item->prestasi_medali ?: '-' }}</td>
+                            <td class="align-middle">{{ $item->penyelenggara ?: '-' }}</td>
                             <td class="align-middle">
                                 <span class="badge badge-success px-2 py-1">
                                     {{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->format('d M Y') : '-' }}
@@ -67,7 +79,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center py-5 text-muted">
+                            <td colspan="7" class="text-center py-5 text-muted">
                                 <i class="fas fa-folder-open fa-3x d-block mb-3"></i>
                                 Belum ada data prestasi.
                             </td>

@@ -9,7 +9,22 @@ class Prestasi extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['judul', 'deskripsi', 'tanggal', 'gambar'];
+    public const KATEGORI = [
+        'akademik' => 'Akademik',
+        'nonakademik' => 'Nonakademik',
+        'keagamaan' => 'Keagamaan',
+    ];
+
+    protected $fillable = [
+        'judul',
+        'kategori',
+        'nama_siswa',
+        'prestasi_medali',
+        'penyelenggara',
+        'deskripsi',
+        'tanggal',
+        'gambar',
+    ];
 
     protected $casts = [
         'tanggal' => 'date',

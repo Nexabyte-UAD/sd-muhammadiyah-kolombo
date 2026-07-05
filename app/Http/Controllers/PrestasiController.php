@@ -6,6 +6,7 @@ use App\Models\Prestasi;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class PrestasiController extends Controller
 {
@@ -17,19 +18,33 @@ class PrestasiController extends Controller
 
     public function create()
     {
-        return view('admin.prestasi.create');
+        $kategoriPrestasi = Prestasi::KATEGORI;
+
+        return view('admin.prestasi.create', compact('kategoriPrestasi'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'judul' => 'required|string|max:255',
+            'kategori' => ['required', Rule::in(array_keys(Prestasi::KATEGORI))],
+            'nama_siswa' => 'required|string|max:255',
+            'prestasi_medali' => 'required|string|max:255',
+            'penyelenggara' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'tanggal' => 'required|date',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $data = $request->only(['judul', 'deskripsi', 'tanggal']);
+        $data = $request->only([
+            'judul',
+            'kategori',
+            'nama_siswa',
+            'prestasi_medali',
+            'penyelenggara',
+            'deskripsi',
+            'tanggal',
+        ]);
 
         if ($request->hasFile('gambar')) {
             $data['gambar'] = $request->file('gambar')->store('prestasi', 'public');
@@ -49,19 +64,33 @@ class PrestasiController extends Controller
 
     public function edit(Prestasi $prestasi)
     {
-        return view('admin.prestasi.edit', compact('prestasi'));
+        $kategoriPrestasi = Prestasi::KATEGORI;
+
+        return view('admin.prestasi.edit', compact('prestasi', 'kategoriPrestasi'));
     }
 
     public function update(Request $request, Prestasi $prestasi)
     {
         $request->validate([
             'judul' => 'required|string|max:255',
+            'kategori' => ['required', Rule::in(array_keys(Prestasi::KATEGORI))],
+            'nama_siswa' => 'required|string|max:255',
+            'prestasi_medali' => 'required|string|max:255',
+            'penyelenggara' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'tanggal' => 'required|date',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $data = $request->only(['judul', 'deskripsi', 'tanggal']);
+        $data = $request->only([
+            'judul',
+            'kategori',
+            'nama_siswa',
+            'prestasi_medali',
+            'penyelenggara',
+            'deskripsi',
+            'tanggal',
+        ]);
 
         if ($request->hasFile('gambar')) {
             if ($prestasi->gambar && Storage::disk('public')->exists($prestasi->gambar)) {

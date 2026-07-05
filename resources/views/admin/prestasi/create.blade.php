@@ -26,22 +26,54 @@
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="judul">Judul Prestasi <span class="text-danger">*</span></label>
-                        <input type="text" name="judul" id="judul" class="form-control @error('judul') is-invalid @enderror" value="{{ old('judul') }}" required placeholder="Masukkan judul prestasi">
+                        <label for="judul">Nama Lomba <span class="text-danger">*</span></label>
+                        <input type="text" name="judul" id="judul" class="form-control @error('judul') is-invalid @enderror" value="{{ old('judul') }}" required placeholder="Contoh: Olimpiade Matematika Nasional">
                         @error('judul')
                             <span class="error invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="tanggal">Tanggal <span class="text-danger">*</span></label>
+                        <label for="kategori">Kategori <span class="text-danger">*</span></label>
+                        <select name="kategori" id="kategori" class="form-control @error('kategori') is-invalid @enderror" required>
+                            @foreach($kategoriPrestasi as $value => $label)
+                                <option value="{{ $value }}" @selected(old('kategori', 'akademik') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                        @error('kategori')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="nama_siswa">Nama Siswa <span class="text-danger">*</span></label>
+                        <input type="text" name="nama_siswa" id="nama_siswa" class="form-control @error('nama_siswa') is-invalid @enderror" value="{{ old('nama_siswa') }}" required placeholder="Nama siswa peraih prestasi">
+                        @error('nama_siswa')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="prestasi_medali">Prestasi / Medali <span class="text-danger">*</span></label>
+                        <input type="text" name="prestasi_medali" id="prestasi_medali" class="form-control @error('prestasi_medali') is-invalid @enderror" value="{{ old('prestasi_medali') }}" required placeholder="Contoh: Juara 1 / Medali Emas">
+                        @error('prestasi_medali')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="penyelenggara">Penyelenggara <span class="text-danger">*</span></label>
+                        <input type="text" name="penyelenggara" id="penyelenggara" class="form-control @error('penyelenggara') is-invalid @enderror" value="{{ old('penyelenggara') }}" required placeholder="Nama instansi penyelenggara">
+                        @error('penyelenggara')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="tanggal">Tanggal Pelaksanaan <span class="text-danger">*</span></label>
                         <input type="date" name="tanggal" id="tanggal" class="form-control @error('tanggal') is-invalid @enderror" value="{{ old('tanggal', date('Y-m-d')) }}" required>
                         @error('tanggal')
                             <span class="error invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="deskripsi">Deskripsi <span class="text-danger">*</span></label>
-                        <textarea name="deskripsi" id="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" rows="4" required placeholder="Deskripsi prestasi...">{{ old('deskripsi') }}</textarea>
+                        <label for="deskripsi">Keterangan / Tingkat <span class="text-danger">*</span></label>
+                        <textarea name="deskripsi" id="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" rows="3" required placeholder="Contoh: Tingkat Kabupaten Sleman">{{ old('deskripsi') }}</textarea>
                         @error('deskripsi')
                             <span class="error invalid-feedback">{{ $message }}</span>
                         @enderror
