@@ -47,6 +47,16 @@
                             <span class="error invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>
+                    <div class="form-group">
+                        <label for="status">Status Publikasi <span class="text-danger">*</span></label>
+                        <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
+                            <option value="published" {{ old('status', $berita->status) == 'published' ? 'selected' : '' }}>Published (Tampil di Website)</option>
+                            <option value="draft" {{ old('status', $berita->status) == 'draft' ? 'selected' : '' }}>Draft (Belum Ditampilkan)</option>
+                        </select>
+                        @error('status')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
                     
                     <div class="form-group">
                         <label>Gambar Saat Ini</label>

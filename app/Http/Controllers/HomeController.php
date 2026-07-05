@@ -160,7 +160,7 @@ class HomeController extends Controller
             'pesan' => 'required|string'
         ]);
 
-        $data = $request->all();
+        $data = $request->only(['nama', 'email', 'pesan']);
         $data['isi'] = $data['pesan']; // Map pesan to isi
         unset($data['pesan']);
         

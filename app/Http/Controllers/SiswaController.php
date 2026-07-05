@@ -87,6 +87,7 @@ class SiswaController extends Controller
         Siswa::create($data);
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Tambah',
             'module' => 'Siswa',
             'description' => 'Menambahkan siswa baru: ' . $data['nama'] . ($data['status'] === 'alumni' ? ' (Alumni)' : ' (Kelas ' . $data['kelas'] . ')'),
@@ -142,6 +143,7 @@ class SiswaController extends Controller
         $siswa->update($data);
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Update',
             'module' => 'Siswa',
             'description' => 'Memperbarui biodata siswa: ' . $data['nama'],
@@ -164,6 +166,7 @@ class SiswaController extends Controller
         $siswa->delete();
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Hapus',
             'module' => 'Siswa',
             'description' => 'Menghapus data siswa: ' . $nama,
@@ -214,6 +217,7 @@ class SiswaController extends Controller
         });
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Update',
             'module' => 'Siswa',
             'description' => 'Melakukan Kenaikan Kelas & Kelulusan Massal Siswa',

@@ -47,6 +47,16 @@
                         @enderror
                     </div>
                     <div class="form-group">
+                        <label for="status">Status Publikasi <span class="text-danger">*</span></label>
+                        <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
+                            <option value="published" {{ old('status', 'published') == 'published' ? 'selected' : '' }}>Published (Tampil di Website)</option>
+                            <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft (Belum Ditampilkan)</option>
+                        </select>
+                        @error('status')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
                         <label for="gambar">Gambar (Opsional)</label>
                         <div class="custom-file">
                             <input type="file" name="gambar" class="custom-file-input @error('gambar') is-invalid @enderror" id="gambar" accept="image/*">

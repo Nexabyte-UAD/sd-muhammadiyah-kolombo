@@ -27,10 +27,11 @@ class BeritaController extends Controller
             'judul' => 'required|string|max:255',
             'isi' => 'required',
             'tanggal' => 'required|date',
+            'status' => 'required|in:draft,published',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $data = $request->only(['judul', 'isi', 'tanggal']);
+        $data = $request->only(['judul', 'isi', 'tanggal', 'status']);
         $data['user_id'] = auth()->id();
 
         if ($request->hasFile('gambar')) {
@@ -41,6 +42,7 @@ class BeritaController extends Controller
         Berita::create($data);
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Tambah',
             'module' => 'Berita',
             'description' => 'Menambahkan berita baru: ' . Str::limit($data['judul'], 50),
@@ -60,10 +62,11 @@ class BeritaController extends Controller
             'judul' => 'required|string|max:255',
             'isi' => 'required',
             'tanggal' => 'required|date',
+            'status' => 'required|in:draft,published',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $data = $request->only(['judul', 'isi', 'tanggal']);
+        $data = $request->only(['judul', 'isi', 'tanggal', 'status']);
 
         if ($request->hasFile('gambar')) {
             if ($berita->gambar && Storage::disk('public')->exists($berita->gambar)) {
@@ -76,6 +79,7 @@ class BeritaController extends Controller
         $berita->update($data);
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Update',
             'module' => 'Berita',
             'description' => 'Memperbarui berita: ' . Str::limit($data['judul'], 50),
@@ -94,6 +98,7 @@ class BeritaController extends Controller
         $berita->delete();
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Hapus',
             'module' => 'Berita',
             'description' => 'Menghapus berita: ' . Str::limit($judul, 50),

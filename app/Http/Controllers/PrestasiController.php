@@ -38,6 +38,7 @@ class PrestasiController extends Controller
         Prestasi::create($data);
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Tambah',
             'module' => 'Prestasi',
             'description' => 'Menambahkan prestasi: ' . $data['judul'],
@@ -72,6 +73,7 @@ class PrestasiController extends Controller
         $prestasi->update($data);
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Update',
             'module' => 'Prestasi',
             'description' => 'Memperbarui prestasi: ' . $data['judul'],
@@ -90,6 +92,7 @@ class PrestasiController extends Controller
         $prestasi->delete();
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Hapus',
             'module' => 'Prestasi',
             'description' => 'Menghapus prestasi: ' . $judul,

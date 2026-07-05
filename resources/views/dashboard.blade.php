@@ -142,7 +142,13 @@
                                 @foreach($latestBerita as $berita)
                                 <tr>
                                     <td>
-                                        <img src="{{ asset('storage/'.$berita->gambar) }}" class="img-circle" style="width: 40px; height: 40px; object-fit: cover;" alt="">
+                                        @if($berita->gambar)
+                                            <img src="{{ asset('storage/'.$berita->gambar) }}" class="img-circle" style="width: 40px; height: 40px; object-fit: cover;" alt="">
+                                        @else
+                                            <div class="bg-light d-flex align-items-center justify-content-center text-muted border img-circle" style="width: 40px; height: 40px;">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                        @endif
                                     </td>
                                     <td>{{ Str::limit($berita->judul, 50) }}</td>
                                     <td>{{ $berita->tanggal->translatedFormat('d M Y') }}</td>

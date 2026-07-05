@@ -41,6 +41,7 @@ class GuruStaffController extends Controller
         GuruStaff::create($data);
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Tambah',
             'module' => 'Struktural',
             'description' => 'Menambahkan ' . $data['tipe'] . ': ' . $data['nama'],
@@ -49,12 +50,12 @@ class GuruStaffController extends Controller
         return redirect()->route('admin.guru-staff.index', ['tipe' => $data['tipe']])->with('success', 'Data berhasil ditambahkan');
     }
 
-    public function edit(GuruStaff $guru)
+    public function edit(GuruStaff $guruStaff)
     {
-        return view('admin.guru-staff.edit', compact('guru'));
+        return view('admin.guru-staff.edit', ['guru' => $guruStaff]);
     }
 
-    public function update(Request $request, GuruStaff $guru)
+    public function update(Request $request, GuruStaff $guruStaff)
     {
         $request->validate([
             'tipe' => 'required|in:guru,staf',
@@ -67,15 +68,16 @@ class GuruStaffController extends Controller
         $data = $request->only(['tipe', 'nama', 'jabatan', 'nip']);
 
         if ($request->hasFile('foto')) {
-            if ($guru->foto && Storage::disk('public')->exists($guru->foto)) {
-                Storage::disk('public')->delete($guru->foto);
+            if ($guruStaff->foto && Storage::disk('public')->exists($guruStaff->foto)) {
+                Storage::disk('public')->delete($guruStaff->foto);
             }
             $data['foto'] = $request->file('foto')->store('guru-staff', 'public');
         }
 
-        $guru->update($data);
+        $guruStaff->update($data);
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Update',
             'module' => 'Struktural',
             'description' => 'Memperbarui ' . $data['tipe'] . ': ' . $data['nama'],
@@ -84,17 +86,18 @@ class GuruStaffController extends Controller
         return redirect()->route('admin.guru-staff.index', ['tipe' => $data['tipe']])->with('success', 'Data berhasil diupdate');
     }
 
-    public function destroy(GuruStaff $guru)
+    public function destroy(GuruStaff $guruStaff)
     {
-        if ($guru->foto && Storage::disk('public')->exists($guru->foto)) {
-            Storage::disk('public')->delete($guru->foto);
+        if ($guruStaff->foto && Storage::disk('public')->exists($guruStaff->foto)) {
+            Storage::disk('public')->delete($guruStaff->foto);
         }
         
-        $nama = $guru->nama;
-        $tipe = $guru->tipe;
-        $guru->delete();
+        $nama = $guruStaff->nama;
+        $tipe = $guruStaff->tipe;
+        $guruStaff->delete();
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Hapus',
             'module' => 'Struktural',
             'description' => 'Menghapus ' . $tipe . ': ' . $nama,

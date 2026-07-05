@@ -6,5 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActivityLog extends Model
 {
-    protected $fillable = ['action_type', 'module', 'description'];
+    protected $fillable = ['user_id', 'action_type', 'module', 'description'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

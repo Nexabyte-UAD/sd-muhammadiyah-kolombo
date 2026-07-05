@@ -39,6 +39,7 @@ class EkstrakurikulerController extends Controller
         Ekstrakurikuler::create($data);
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Tambah',
             'module' => 'Ekstrakurikuler',
             'description' => 'Menambahkan ekstrakurikuler: ' . $data['nama'],
@@ -74,6 +75,7 @@ class EkstrakurikulerController extends Controller
         $ekstrakurikuler->update($data);
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Update',
             'module' => 'Ekstrakurikuler',
             'description' => 'Memperbarui ekstrakurikuler: ' . $data['nama'],
@@ -92,6 +94,7 @@ class EkstrakurikulerController extends Controller
         $ekstrakurikuler->delete();
 
         ActivityLog::create([
+            'user_id' => auth()->id(),
             'action_type' => 'Hapus',
             'module' => 'Ekstrakurikuler',
             'description' => 'Menghapus ekstrakurikuler: ' . $nama,

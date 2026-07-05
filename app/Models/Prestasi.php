@@ -10,4 +10,8 @@ class Prestasi extends Model
     use HasFactory;
 
     protected $fillable = ['judul', 'deskripsi', 'tanggal', 'gambar'];
+
+    protected $casts = [
+        'tanggal' => 'date',
+    ];
 }

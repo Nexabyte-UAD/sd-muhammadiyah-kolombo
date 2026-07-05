@@ -26,6 +26,7 @@
                             <th>Gambar</th>
                             <th>Judul Berita</th>
                             <th>Tanggal Rilis</th>
+                            <th>Status</th>
                             <th class="text-right">Aksi</th>
                         </tr>
                     </thead>
@@ -52,6 +53,13 @@
                                     {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') }}
                                 </span>
                             </td>
+                            <td class="align-middle">
+                                @if($item->status === 'published')
+                                    <span class="badge badge-success px-2 py-1">Published</span>
+                                @else
+                                    <span class="badge badge-secondary px-2 py-1">Draft</span>
+                                @endif
+                            </td>
                             <td class="align-middle text-right">
                                 <a href="{{ route('admin.berita.edit', $item->id) }}" class="btn btn-sm btn-info" title="Edit">
                                     <i class="fas fa-edit"></i>
@@ -67,7 +75,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center py-5 text-muted">
+                            <td colspan="5" class="text-center py-5 text-muted">
                                 <i class="fas fa-folder-open fa-3x d-block mb-3"></i>
                                 Belum ada data berita.
                             </td>
