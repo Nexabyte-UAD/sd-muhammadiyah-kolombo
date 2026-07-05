@@ -1,123 +1,252 @@
 @extends('adminlte::page')
 
-@section('title', 'Kenaikan Kelas Massal')
+@section('title', 'Status Akhir Tahun')
 
 @section('content_header')
-    <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Kenaikan Kelas & Kelulusan Massal</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="m-0 text-dark">Penetapan Status Akhir Tahun</h1>
+            <p class="text-muted mb-0">Kenaikan kelas, tinggal kelas, kelulusan, dan perpindahan siswa.</p>
         </div>
-        <div class="col-sm-6 text-right">
-            <a href="{{ route('admin.siswa.index') }}" class="btn btn-default">
-                <i class="fas fa-arrow-left mr-1"></i> Kembali
-            </a>
-        </div>
+        <a href="{{ route('admin.siswa.index') }}" class="btn btn-default">
+            <i class="fas fa-arrow-left mr-1"></i> Kembali
+        </a>
     </div>
 @stop
 
 @section('content')
-<div class="row">
-    <!-- Left Column: Summary of Students -->
-    <div class="col-md-5">
-        <div class="card card-primary card-outline">
-            <div class="card-header">
-                <h3 class="card-title">Rekapitulasi Jumlah Siswa</h3>
-            </div>
-            <div class="card-body p-0">
-                <table class="table table-striped m-0">
-                    <thead>
-                        <tr>
-                            <th>Kelas / Status</th>
-                            <th class="text-right">Jumlah Siswa</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($daftarKelas as $itemKelas)
-                        <tr>
-                            <td><strong>{{ $itemKelas->tingkat }}</strong></td>
-                            <td class="text-right"><span class="badge badge-info px-2 py-1">{{ $rekapSiswa[$itemKelas->tingkat] }} siswa</span></td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="2" class="text-center text-muted">Belum ada kelas yang dibuat.</td>
-                        </tr>
-                        @endforelse
-                        <tr class="bg-light">
-                            <td><strong>Alumni (Telah Lulus)</strong></td>
-                            <td class="text-right"><span class="badge badge-success px-2 py-1">{{ $rekapSiswa['alumni'] }} alumni</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+    @if(session('success'))
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
         </div>
+    @endif
+
+    <div class="card card-primary card-outline">
+        <div class="card-header">
+            <h3 class="card-title">1. Pilih Periode dan Kelas Asal</h3>
+        </div>
+        <form method="GET" action="{{ route('admin.siswa.promote.page') }}">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group mb-md-0">
+                            <label for="tahun_ajaran">Tahun Ajaran</label>
+                            <input type="text" name="tahun_ajaran" id="tahun_ajaran" class="form-control"
+                                   value="{{ $tahunAjaran }}" pattern="\d{4}/\d{4}" placeholder="2026/2027" required>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group mb-md-0">
+                            <label for="kelas">Kelas Asal</label>
+                            <select name="kelas" id="kelas" class="form-control" required>
+                                <option value="">-- Pilih Kelas --</option>
+                                @foreach($daftarKelas as $kelas)
+                                    <option value="{{ $kelas->tingkat }}" @selected($kelasAsal === $kelas->tingkat)>
+                                        {{ $kelas->tingkat }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-users mr-1"></i> Tampilkan Siswa
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
-    <!-- Right Column: Promotion Panel -->
-    <div class="col-md-7">
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="icon fas fa-check mr-2"></i> {{ session('success') }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
+    @if($kelasAsal)
+        <form method="POST" action="{{ route('admin.siswa.promote') }}" id="form-status-akhir">
+            @csrf
+            <input type="hidden" name="kelas_asal" value="{{ $kelasAsal }}">
+            <input type="hidden" name="tahun_ajaran" value="{{ $tahunAjaran }}">
 
-        <div class="card card-warning card-outline">
-            <div class="card-header">
-                <h3 class="card-title text-warning"><i class="fas fa-exclamation-triangle mr-2"></i> PERHATIAN & KONFIRMASI</h3>
-            </div>
-            <div class="card-body">
-                <div class="alert alert-warning">
-                    <h5><i class="icon fas fa-info-circle"></i> Cara Kerja Kenaikan Kelas Massal:</h5>
-                    <ul class="mb-0 pl-4">
-                        <li>Kenaikan mengikuti urutan nama kelas pada Data Kelas.</li>
-                        <li>Siswa pada kelas terakhir, <strong>{{ $daftarKelas->last()?->tingkat ?? '-' }}</strong>, akan menjadi alumni dengan tahun lulus <strong>{{ date('Y') }}</strong>.</li>
-                        <li>Siswa pada setiap kelas lainnya akan dipindahkan ke kelas berikutnya.</li>
-                        <li>Siswa baru pada kelas pertama diinput manual setelah proses selesai.</li>
-                    </ul>
+            <div class="card card-success card-outline">
+                <div class="card-header">
+                    <h3 class="card-title">2. Tentukan Keputusan Siswa — {{ $kelasAsal }}</h3>
+                    <div class="card-tools">
+                        <span class="badge badge-info">{{ $siswas->count() }} siswa</span>
+                    </div>
                 </div>
-
-                <div class="callout callout-danger mt-3">
-                    <h5><i class="fas fa-skull-crossbones text-danger mr-2"></i> Tindakan Ini Tidak Dapat Dibatalkan!</h5>
-                    <p class="mb-0">Pastikan seluruh data siswa sudah benar dan up-to-date sebelum melakukan kenaikan kelas massal. Tindakan ini akan memodifikasi status akademik seluruh siswa aktif sekaligus.</p>
+                <div class="card-body p-0 table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th style="width: 55px">No</th>
+                                <th>Nama Siswa</th>
+                                <th style="width: 180px">Keputusan</th>
+                                <th style="width: 220px">Kelas Tujuan</th>
+                                <th>Catatan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($siswas as $siswa)
+                                @php($oldStatus = old("keputusan.{$siswa->id}.status", 'naik'))
+                                <tr>
+                                    <td class="align-middle">{{ $loop->iteration }}</td>
+                                    <td class="align-middle">
+                                        <strong>{{ $siswa->nama }}</strong>
+                                        <div class="small text-muted">NIS: {{ $siswa->nis ?: '-' }}</div>
+                                    </td>
+                                    <td class="align-middle">
+                                        <select name="keputusan[{{ $siswa->id }}][status]"
+                                                class="form-control keputusan-status"
+                                                data-siswa="{{ $siswa->id }}" required>
+                                            <option value="naik" @selected($oldStatus === 'naik')>Naik Kelas</option>
+                                            <option value="tinggal" @selected($oldStatus === 'tinggal')>Tinggal Kelas</option>
+                                            <option value="lulus" @selected($oldStatus === 'lulus')>Lulus</option>
+                                            <option value="pindah" @selected($oldStatus === 'pindah')>Pindah / Keluar</option>
+                                        </select>
+                                    </td>
+                                    <td class="align-middle">
+                                        <select name="keputusan[{{ $siswa->id }}][kelas_tujuan]"
+                                                id="kelas-tujuan-{{ $siswa->id }}"
+                                                class="form-control kelas-tujuan @error("keputusan.{$siswa->id}.kelas_tujuan") is-invalid @enderror">
+                                            <option value="">-- Pilih Tujuan --</option>
+                                            @foreach($daftarKelas->where('tingkat', '!=', $kelasAsal) as $kelasTujuan)
+                                                <option value="{{ $kelasTujuan->tingkat }}"
+                                                    @selected(old("keputusan.{$siswa->id}.kelas_tujuan") === $kelasTujuan->tingkat)>
+                                                    {{ $kelasTujuan->tingkat }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error("keputusan.{$siswa->id}.kelas_tujuan")
+                                            <span class="invalid-feedback">{{ $message }}</span>
+                                        @enderror
+                                    </td>
+                                    <td class="align-middle">
+                                        <input type="text" name="keputusan[{{ $siswa->id }}][catatan]"
+                                               class="form-control" maxlength="500"
+                                               value="{{ old("keputusan.{$siswa->id}.catatan") }}"
+                                               placeholder="Opsional">
+                                        <div class="transfer-fields mt-2" id="transfer-fields-{{ $siswa->id }}" style="display:none">
+                                            <input type="text" name="keputusan[{{ $siswa->id }}][sekolah_tujuan]"
+                                                   class="form-control mb-2"
+                                                   value="{{ old("keputusan.{$siswa->id}.sekolah_tujuan") }}"
+                                                   placeholder="Sekolah tujuan">
+                                            <input type="date" name="keputusan[{{ $siswa->id }}][tanggal_keluar]"
+                                                   class="form-control"
+                                                   value="{{ old("keputusan.{$siswa->id}.tanggal_keluar", date('Y-m-d')) }}">
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-5">
+                                        Tidak ada siswa aktif di {{ $kelasAsal }}.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-            <div class="card-footer">
-                @if(collect($rekapSiswa)->except('alumni')->sum() > 0)
-                    <form action="{{ route('admin.siswa.promote') }}" method="POST" onsubmit="return confirmPromo(event)">
-                        @csrf
-                        <button type="submit" class="btn btn-danger btn-block btn-lg py-3 font-weight-bold" id="btn-submit-promote">
-                            <i class="fas fa-arrow-up mr-2"></i> PROSES KENAIKAN KELAS & KELULUSAN MASSAL
+                @if($siswas->isNotEmpty())
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            Riwayat keputusan, waktu proses, dan akun admin akan disimpan.
+                        </small>
+                        <button type="submit" class="btn btn-success" id="btn-proses">
+                            <i class="fas fa-clipboard-check mr-1"></i> Tinjau dan Proses
                         </button>
-                    </form>
-                @else
-                    <button class="btn btn-secondary btn-block btn-lg py-3 font-weight-bold" disabled>
-                        <i class="fas fa-ban mr-2"></i> TIDAK ADA SISWA AKTIF UNTUK DIPROMOSIKAN
-                    </button>
+                    </div>
                 @endif
             </div>
+        </form>
+    @endif
+
+    <div class="card card-secondary card-outline">
+        <div class="card-header">
+            <h3 class="card-title">Riwayat Proses Terbaru</h3>
+        </div>
+        <div class="card-body p-0 table-responsive">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th>Waktu</th>
+                        <th>Tahun Ajaran</th>
+                        <th>Siswa</th>
+                        <th>Kelas Asal</th>
+                        <th>Keputusan</th>
+                        <th>Kelas Tujuan</th>
+                        <th>Diproses Oleh</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($riwayat as $item)
+                        <tr>
+                            <td>{{ $item->tanggal_proses->format('d/m/Y H:i') }}</td>
+                            <td>{{ $item->tahun_ajaran }}</td>
+                            <td>{{ $item->siswa?->nama ?? 'Siswa dihapus' }}</td>
+                            <td>{{ $item->kelas_asal ?: '-' }}</td>
+                            <td>
+                                <span class="badge badge-{{
+                                    match($item->keputusan) {
+                                        'naik' => 'success',
+                                        'tinggal' => 'warning',
+                                        'lulus' => 'primary',
+                                        default => 'secondary'
+                                    }
+                                }}">
+                                    {{ match($item->keputusan) {
+                                        'naik' => 'Naik Kelas',
+                                        'tinggal' => 'Tinggal Kelas',
+                                        'lulus' => 'Lulus',
+                                        default => 'Pindah / Keluar'
+                                    } }}
+                                </span>
+                            </td>
+                            <td>{{ $item->kelas_tujuan ?: '-' }}</td>
+                            <td>{{ $item->pemroses?->name ?? '-' }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">
+                                Belum ada riwayat status akhir tahun.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
-</div>
 @stop
 
 @push('js')
 <script>
-    function confirmPromo(event) {
-        event.preventDefault();
-        
-        let confirm1 = confirm("Apakah Anda benar-benar yakin ingin memproses kenaikan kelas dan kelulusan massal?");
-        if (confirm1) {
-            let confirm2 = confirm("PERINGATAN KEDUA: Seluruh siswa kelas 6 akan langsung lulus menjadi alumni dan siswa kelas 1-5 akan naik 1 tingkat. Lanjutkan?");
-            if (confirm2) {
-                // Disable button to prevent double submit
-                $('#btn-submit-promote').attr('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i> Sedang Memproses Kenaikan Kelas...');
-                event.target.submit();
-                return true;
+    $(function () {
+        function toggleKelasTujuan(select) {
+            const siswaId = select.data('siswa');
+            const tujuan = $('#kelas-tujuan-' + siswaId);
+            const perluTujuan = select.val() === 'naik';
+            const pindah = select.val() === 'pindah';
+
+            tujuan.prop('disabled', !perluTujuan);
+            tujuan.prop('required', perluTujuan);
+            if (!perluTujuan) {
+                tujuan.val('');
             }
+            $('#transfer-fields-' + siswaId).toggle(pindah)
+                .find('input[name*="[sekolah_tujuan]"]').prop('required', pindah);
         }
-        return false;
-    }
+
+        $('.keputusan-status').each(function () {
+            toggleKelasTujuan($(this));
+        }).on('change', function () {
+            toggleKelasTujuan($(this));
+        });
+
+        $('#form-status-akhir').on('submit', function (event) {
+            if (!confirm('Proses keputusan akhir tahun untuk seluruh siswa yang ditampilkan? Data akan dicatat dalam riwayat akademik.')) {
+                event.preventDefault();
+                return;
+            }
+
+            $('#btn-proses').prop('disabled', true)
+                .html('<i class="fas fa-spinner fa-spin mr-1"></i> Memproses...');
+        });
+    });
 </script>
 @endpush

@@ -18,6 +18,7 @@ class Prestasi extends Model
     protected $fillable = [
         'judul',
         'kategori',
+        'siswa_id',
         'nama_siswa',
         'prestasi_medali',
         'penyelenggara',
@@ -29,4 +30,9 @@ class Prestasi extends Model
     protected $casts = [
         'tanggal' => 'date',
     ];
+
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class);
+    }
 }

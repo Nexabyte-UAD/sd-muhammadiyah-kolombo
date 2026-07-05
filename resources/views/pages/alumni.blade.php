@@ -75,7 +75,15 @@
                             @forelse($alumni as $index => $item)
                             <tr>
                                 <td class="py-2.5 td-no">{{ $index + 1 }}</td>
-                                <td class="py-2.5 text-start fw-semibold text-dark ps-4">{{ $item->nama }}</td>
+                                <td class="py-2.5 text-start fw-semibold text-dark ps-4">
+                                    {{ $item->nama }}
+                                    <span class="visually-hidden">
+                                        {{ $item->riwayatPendidikan->pluck('institusi')->join(' ') }}
+                                        {{ $item->riwayatPendidikan->pluck('jurusan')->join(' ') }}
+                                        {{ $item->riwayatPekerjaan->pluck('pekerjaan')->join(' ') }}
+                                        {{ $item->riwayatPekerjaan->pluck('perusahaan')->join(' ') }}
+                                    </span>
+                                </td>
                                 <td class="py-2.5 text-secondary">Tahun {{ $item->tahun_masuk }}</td>
                                 <td class="py-2.5 text-success fw-bold">Lulus {{ $item->tahun_lulus }}</td>
                                 <td class="py-2.5">
@@ -84,13 +92,17 @@
                                             data-bs-target="#detailAlumniModal" 
                                             data-nama="{{ $item->nama }}"
                                             data-nis="{{ $item->nis ?? '-' }}"
-                                            data-nisn="{{ $item->nisn ?? '-' }}"
+                                            data-agama="{{ $item->agama ?? '-' }}"
                                             data-angkatan="{{ $item->tahun_masuk }}"
                                             data-lulus="{{ $item->tahun_lulus }}"
                                             data-jk="{{ $item->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}"
                                             data-ttl="{{ $item->tempat_lahir ?? '-' }}, {{ $item->tanggal_lahir ? $item->tanggal_lahir->translatedFormat('d F Y') : '-' }}"
                                             data-alamat="{{ $item->alamat ?? '-' }}"
-                                            data-foto="{{ $item->foto ? asset('storage/' . $item->foto) : '' }}"
+                                            data-pendidikan="{{ $item->riwayatPendidikan->map(fn ($r) => trim($r->jenjang.' — '.$r->institusi.($r->jurusan ? ' ('.$r->jurusan.')' : '')))->toJson() }}"
+                                            data-pekerjaan="{{ $item->riwayatPekerjaan->map(fn ($r) => trim($r->pekerjaan.($r->perusahaan ? ' — '.$r->perusahaan : '')))->toJson() }}"
+                                            data-prestasi="{{ $item->prestasis->map(fn ($r) => trim($r->judul.' — '.$r->prestasi_medali))->toJson() }}"
+                                            data-ekstrakurikuler="{{ $item->ekstrakurikulers->pluck('nama')->toJson() }}"
+                                            data-foto="{{ $item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto) ? asset('storage/' . $item->foto) : '' }}"
                                             data-huruf="{{ substr($item->nama, 0, 1) }}">
                                         <i class="bi bi-eye-fill me-1"></i> Detail
                                     </button>
@@ -136,8 +148,8 @@
                         <div class="col-4 text-secondary">NIS</div>
                         <div class="col-8 text-dark fw-medium" id="modal-nis">-</div>
                         
-                        <div class="col-4 text-secondary">NISN</div>
-                        <div class="col-8 text-dark fw-medium" id="modal-nisn">-</div>
+                        <div class="col-4 text-secondary">Agama</div>
+                        <div class="col-8 text-dark fw-medium" id="modal-agama">-</div>
 
                         <div class="col-4 text-secondary">Angkatan</div>
                         <div class="col-8 text-dark fw-medium" id="modal-angkatan">-</div>
@@ -153,6 +165,20 @@
 
                         <div class="col-4 text-secondary">Alamat</div>
                         <div class="col-8 text-dark fw-medium" id="modal-alamat">-</div>
+
+                        <div class="col-12"><hr class="my-2"></div>
+
+                        <div class="col-4 text-secondary">Riwayat Pendidikan</div>
+                        <div class="col-8 text-dark fw-medium" id="modal-pendidikan">-</div>
+
+                        <div class="col-4 text-secondary">Riwayat Pekerjaan</div>
+                        <div class="col-8 text-dark fw-medium" id="modal-pekerjaan">-</div>
+
+                        <div class="col-4 text-secondary">Prestasi</div>
+                        <div class="col-8 text-dark fw-medium" id="modal-prestasi">-</div>
+
+                        <div class="col-4 text-secondary">Ekstrakurikuler</div>
+                        <div class="col-8 text-dark fw-medium" id="modal-ekstrakurikuler">-</div>
                     </div>
                 </div>
             </div>
@@ -243,35 +269,47 @@
         const modalNama = document.getElementById("modal-nama");
         const modalAlumniBadge = document.getElementById("modal-alumni-badge");
         const modalNis = document.getElementById("modal-nis");
-        const modalNisn = document.getElementById("modal-nisn");
+        const modalAgama = document.getElementById("modal-agama");
         const modalAngkatan = document.getElementById("modal-angkatan");
         const modalLulus = document.getElementById("modal-lulus");
         const modalJk = document.getElementById("modal-jk");
         const modalTtl = document.getElementById("modal-ttl");
         const modalAlamat = document.getElementById("modal-alamat");
+        const modalPendidikan = document.getElementById("modal-pendidikan");
+        const modalPekerjaan = document.getElementById("modal-pekerjaan");
+        const modalPrestasi = document.getElementById("modal-prestasi");
+        const modalEkstrakurikuler = document.getElementById("modal-ekstrakurikuler");
 
         detailButtons.forEach(button => {
             button.addEventListener("click", function() {
                 const nama = this.getAttribute("data-nama");
                 const nis = this.getAttribute("data-nis");
-                const nisn = this.getAttribute("data-nisn");
+                const agama = this.getAttribute("data-agama");
                 const angkatan = this.getAttribute("data-angkatan");
                 const lulus = this.getAttribute("data-lulus");
                 const jk = this.getAttribute("data-jk");
                 const ttl = this.getAttribute("data-ttl");
                 const alamat = this.getAttribute("data-alamat");
+                const pendidikan = JSON.parse(this.getAttribute("data-pendidikan") || "[]");
+                const pekerjaan = JSON.parse(this.getAttribute("data-pekerjaan") || "[]");
+                const prestasi = JSON.parse(this.getAttribute("data-prestasi") || "[]");
+                const ekstrakurikuler = JSON.parse(this.getAttribute("data-ekstrakurikuler") || "[]");
                 const foto = this.getAttribute("data-foto");
                 const huruf = this.getAttribute("data-huruf");
 
                 modalNama.textContent = nama;
                 modalAlumniBadge.textContent = "Alumni Lulus " + lulus;
                 modalNis.textContent = nis;
-                modalNisn.textContent = nisn;
+                modalAgama.textContent = agama;
                 modalAngkatan.textContent = "Tahun Masuk " + angkatan;
                 modalLulus.textContent = "Tahun Lulus " + lulus;
                 modalJk.textContent = jk;
                 modalTtl.textContent = ttl;
                 modalAlamat.textContent = alamat;
+                modalPendidikan.textContent = pendidikan.length ? pendidikan.join("; ") : "-";
+                modalPekerjaan.textContent = pekerjaan.length ? pekerjaan.join("; ") : "-";
+                modalPrestasi.textContent = prestasi.length ? prestasi.join("; ") : "-";
+                modalEkstrakurikuler.textContent = ekstrakurikuler.length ? ekstrakurikuler.join(", ") : "-";
 
                 if (foto) {
                     modalFoto.src = foto;

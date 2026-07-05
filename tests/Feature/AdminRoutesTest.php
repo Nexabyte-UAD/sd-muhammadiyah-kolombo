@@ -4,6 +4,9 @@ namespace Tests\Feature;
 
 use App\Models\GuruStaff;
 use App\Models\Kelas;
+use App\Models\Ekstrakurikuler;
+use App\Models\RiwayatAkademik;
+use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -131,6 +134,17 @@ class AdminRoutesTest extends TestCase
         ]);
     }
 
+    public function test_class_name_and_major_are_capitalized_when_saved(): void
+    {
+        $kelas = Kelas::create([
+            'tingkat' => '  kelas   1a ',
+            'jurusan' => 'program tahfiz',
+        ]);
+
+        $this->assertSame('Kelas 1A', $kelas->tingkat);
+        $this->assertSame('Program Tahfiz', $kelas->jurusan);
+    }
+
     public function test_student_form_uses_classes_created_by_admin(): void
     {
         $user = User::create([
@@ -150,6 +164,7 @@ class AdminRoutesTest extends TestCase
             ->post(route('admin.siswa.store'), [
                 'nama' => 'Siswa Dinamis',
                 'jenis_kelamin' => 'L',
+                'agama' => 'Islam',
                 'kelas' => 'Kelas Bintang',
                 'status' => 'aktif',
                 'tahun_masuk' => 2026,
@@ -160,6 +175,129 @@ class AdminRoutesTest extends TestCase
             'nama' => 'Siswa Dinamis',
             'kelas' => 'Kelas Bintang',
         ]);
+    }
+
+    public function test_student_can_be_connected_to_extracurricular_activities(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Ekstra Siswa',
+            'email' => 'ekstra-siswa@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        $kelas = Kelas::create(['tingkat' => 'Kelas Ekstra']);
+        $ekstrakurikuler = Ekstrakurikuler::create(['nama' => 'Robotika']);
+
+        $this->actingAs($user)->post(route('admin.siswa.store'), [
+            'nama' => 'Siswa Robotika',
+            'jenis_kelamin' => 'P',
+            'agama' => 'Islam',
+            'kelas' => $kelas->tingkat,
+            'status' => 'aktif',
+            'tahun_masuk' => 2026,
+            'ekstrakurikuler_ids' => [$ekstrakurikuler->id],
+        ])->assertSessionHasNoErrors();
+
+        $siswa = \App\Models\Siswa::where('nama', 'Siswa Robotika')->firstOrFail();
+        $this->assertTrue($siswa->ekstrakurikulers->contains($ekstrakurikuler));
+    }
+
+    public function test_admin_can_set_individual_end_of_year_decisions(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Akademik',
+            'email' => 'akademik@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        Kelas::create(['tingkat' => 'Kelas 1A']);
+        Kelas::create(['tingkat' => 'Kelas 2A']);
+
+        $naik = Siswa::create([
+            'nama' => 'Siswa Naik',
+            'jenis_kelamin' => 'L',
+            'agama' => 'Islam',
+            'kelas' => 'Kelas 1A',
+            'status' => 'aktif',
+            'tahun_masuk' => 2025,
+        ]);
+        $tinggal = Siswa::create([
+            'nama' => 'Siswa Tinggal',
+            'jenis_kelamin' => 'P',
+            'agama' => 'Islam',
+            'kelas' => 'Kelas 1A',
+            'status' => 'aktif',
+            'tahun_masuk' => 2025,
+        ]);
+
+        $this->actingAs($user)->post(route('admin.siswa.promote'), [
+            'kelas_asal' => 'Kelas 1A',
+            'tahun_ajaran' => '2025/2026',
+            'keputusan' => [
+                $naik->id => [
+                    'status' => 'naik',
+                    'kelas_tujuan' => 'Kelas 2A',
+                    'catatan' => 'Naik dengan baik',
+                ],
+                $tinggal->id => [
+                    'status' => 'tinggal',
+                    'kelas_tujuan' => '',
+                    'catatan' => 'Perlu pendampingan',
+                ],
+            ],
+        ])->assertSessionHasNoErrors();
+
+        $this->assertSame('Kelas 2A', $naik->fresh()->kelas);
+        $this->assertSame('Kelas 1A', $tinggal->fresh()->kelas);
+        $this->assertDatabaseHas('riwayat_akademik', [
+            'siswa_id' => $naik->id,
+            'tahun_ajaran' => '2025/2026',
+            'kelas_asal' => 'Kelas 1A',
+            'kelas_tujuan' => 'Kelas 2A',
+            'keputusan' => 'naik',
+            'diproses_oleh' => $user->id,
+        ]);
+        $this->assertSame(2, RiwayatAkademik::count());
+    }
+
+    public function test_student_nis_must_be_unique_but_can_be_kept_when_editing(): void
+    {
+        $user = User::create([
+            'name' => 'Admin NIS',
+            'email' => 'nis@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        $kelas = Kelas::create(['tingkat' => 'Kelas NIS']);
+        $siswa = Siswa::create([
+            'nama' => 'Pemilik NIS',
+            'nis' => '001234',
+            'jenis_kelamin' => 'L',
+            'agama' => 'Islam',
+            'kelas' => $kelas->tingkat,
+            'status' => 'aktif',
+            'tahun_masuk' => 2026,
+        ]);
+
+        $this->actingAs($user)->post(route('admin.siswa.store'), [
+            'nama' => 'Duplikat NIS',
+            'nis' => '001234',
+            'jenis_kelamin' => 'P',
+            'agama' => 'Islam',
+            'kelas' => $kelas->tingkat,
+            'status' => 'aktif',
+            'tahun_masuk' => 2026,
+        ])->assertSessionHasErrors('nis');
+
+        $this->actingAs($user)->put(route('admin.siswa.update', $siswa), [
+            'nama' => 'Pemilik NIS Diperbarui',
+            'nis' => '001234',
+            'jenis_kelamin' => 'L',
+            'agama' => 'Islam',
+            'kelas' => $kelas->tingkat,
+            'status' => 'aktif',
+            'tahun_masuk' => 2026,
+        ])->assertSessionHasNoErrors();
     }
 
     public function test_guru_staff_rejects_values_outside_the_allowed_biodata_enums(): void
@@ -190,5 +328,190 @@ class AdminRoutesTest extends TestCase
             ]);
 
         $this->assertDatabaseMissing('guru_staffs', ['nama' => 'Data Tidak Valid']);
+    }
+
+    public function test_guru_staff_nip_must_be_unique_but_can_be_kept_when_editing(): void
+    {
+        $user = User::create([
+            'name' => 'Admin NIP',
+            'email' => 'nip@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        $guru = GuruStaff::create([
+            'tipe' => 'guru',
+            'nama' => 'Pemilik NIP',
+            'jenis_kelamin' => 'laki_laki',
+            'jabatan' => 'Guru',
+            'nip' => '1987654321',
+            'status_kepegawaian' => 'PNS',
+            'pendidikan_terakhir' => 'S1',
+            'agama' => 'Islam',
+        ]);
+
+        $this->actingAs($user)->post(route('admin.guru-staff.store'), [
+            'tipe' => 'staf',
+            'nama' => 'Duplikat NIP',
+            'jenis_kelamin' => 'perempuan',
+            'jabatan' => 'Staf',
+            'nip' => '1987654321',
+            'status_kepegawaian' => 'PNS',
+            'pendidikan_terakhir' => 'S1',
+            'agama' => 'Islam',
+        ])->assertSessionHasErrors('nip');
+
+        $this->actingAs($user)->put(route('admin.guru-staff.update', $guru), [
+            'tipe' => 'guru',
+            'nama' => 'Pemilik NIP Diperbarui',
+            'jenis_kelamin' => 'laki_laki',
+            'jabatan' => 'Guru',
+            'nip' => '1987654321',
+            'status_kepegawaian' => 'PNS',
+            'pendidikan_terakhir' => 'S1',
+            'agama' => 'Islam',
+        ])->assertSessionHasNoErrors();
+    }
+
+    public function test_non_admin_cannot_access_admin_pages(): void
+    {
+        $user = User::create([
+            'name' => 'Bukan Admin',
+            'email' => 'user@example.test',
+            'password' => 'password',
+            'role' => 'User',
+        ]);
+
+        $this->actingAs($user)->get(route('admin.siswa.index'))->assertForbidden();
+    }
+
+    public function test_class_capacity_is_enforced(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Kapasitas',
+            'email' => 'kapasitas@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        $kelas = Kelas::create(['tingkat' => 'Kelas Penuh', 'kapasitas' => 1]);
+        Siswa::create([
+            'nama' => 'Pengisi Kelas',
+            'jenis_kelamin' => 'L',
+            'agama' => 'Islam',
+            'kelas' => $kelas->tingkat,
+            'kelas_id' => $kelas->id,
+            'status' => 'aktif',
+            'tahun_masuk' => 2026,
+        ]);
+
+        $this->actingAs($user)->post(route('admin.siswa.store'), [
+            'nama' => 'Siswa Kedua',
+            'jenis_kelamin' => 'P',
+            'agama' => 'Islam',
+            'kelas' => $kelas->tingkat,
+            'status' => 'aktif',
+            'tahun_masuk' => 2026,
+        ])->assertSessionHasErrors('kelas');
+    }
+
+    public function test_archived_student_can_be_restored(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Arsip',
+            'email' => 'arsip@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        $siswa = Siswa::create([
+            'nama' => 'Siswa Arsip',
+            'jenis_kelamin' => 'L',
+            'agama' => 'Islam',
+            'status' => 'alumni',
+            'tahun_masuk' => 2018,
+            'tahun_lulus' => 2024,
+        ]);
+
+        $this->actingAs($user)->delete(route('admin.siswa.destroy', $siswa))->assertSessionHasNoErrors();
+        $this->assertSoftDeleted('siswas', ['id' => $siswa->id]);
+
+        $this->actingAs($user)->patch(route('admin.siswa.restore', $siswa->id))->assertSessionHasNoErrors();
+        $this->assertNotSoftDeleted('siswas', ['id' => $siswa->id]);
+    }
+
+    public function test_outgoing_student_details_can_be_saved_and_edited(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Pindah',
+            'email' => 'pindah@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        $siswa = Siswa::create([
+            'nama' => 'Siswa Pindah',
+            'jenis_kelamin' => 'P',
+            'agama' => 'Islam',
+            'status' => 'keluar',
+            'tahun_masuk' => 2024,
+        ]);
+
+        $this->actingAs($user)->put(route('admin.siswa.update', $siswa), [
+            'nama' => 'Siswa Pindah',
+            'jenis_kelamin' => 'P',
+            'agama' => 'Islam',
+            'status' => 'keluar',
+            'tahun_masuk' => 2024,
+            'tanggal_keluar' => '2026-07-05',
+            'sekolah_tujuan' => 'SD Tujuan',
+            'alasan_keluar' => 'Mengikuti orang tua',
+        ])->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('siswas', [
+            'id' => $siswa->id,
+            'status' => 'keluar',
+            'kelas_id' => null,
+            'sekolah_tujuan' => 'SD Tujuan',
+            'alasan_keluar' => 'Mengikuti orang tua',
+        ]);
+    }
+
+    public function test_class_cannot_be_deleted_when_archived_students_still_reference_it(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Integritas Kelas',
+            'email' => 'integritas-kelas@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        $kelas = Kelas::create(['tingkat' => 'Kelas Arsip']);
+        $siswa = Siswa::create([
+            'nama' => 'Siswa Kelas Arsip',
+            'jenis_kelamin' => 'L',
+            'agama' => 'Islam',
+            'kelas' => $kelas->tingkat,
+            'kelas_id' => $kelas->id,
+            'status' => 'aktif',
+            'tahun_masuk' => 2026,
+        ]);
+        $siswa->delete();
+
+        $this->actingAs($user)
+            ->delete(route('admin.kelas.destroy', $kelas))
+            ->assertSessionHasErrors('kelas');
+
+        $this->assertDatabaseHas('kelas', ['id' => $kelas->id]);
+    }
+
+    public function test_academic_year_must_be_consecutive(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Tahun Ajaran',
+            'email' => 'tahun-ajaran@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)->post(route('admin.kelas.store'), [
+            'tingkat' => 'Kelas Tahun Salah',
+            'tahun_ajaran' => '2026/2029',
+        ])->assertSessionHasErrors('tahun_ajaran');
     }
 }

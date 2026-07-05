@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Prestasi;
 use App\Models\ActivityLog;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -19,8 +20,9 @@ class PrestasiController extends Controller
     public function create()
     {
         $kategoriPrestasi = Prestasi::KATEGORI;
+        $siswas = Siswa::orderBy('nama')->get();
 
-        return view('admin.prestasi.create', compact('kategoriPrestasi'));
+        return view('admin.prestasi.create', compact('kategoriPrestasi', 'siswas'));
     }
 
     public function store(Request $request)
@@ -28,7 +30,7 @@ class PrestasiController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'kategori' => ['required', Rule::in(array_keys(Prestasi::KATEGORI))],
-            'nama_siswa' => 'required|string|max:255',
+            'siswa_id' => ['required', Rule::exists('siswas', 'id')],
             'prestasi_medali' => 'required|string|max:255',
             'penyelenggara' => 'required|string|max:255',
             'deskripsi' => 'required|string',
@@ -39,12 +41,13 @@ class PrestasiController extends Controller
         $data = $request->only([
             'judul',
             'kategori',
-            'nama_siswa',
+            'siswa_id',
             'prestasi_medali',
             'penyelenggara',
             'deskripsi',
             'tanggal',
         ]);
+        $data['nama_siswa'] = Siswa::findOrFail($data['siswa_id'])->nama;
 
         if ($request->hasFile('gambar')) {
             $data['gambar'] = $request->file('gambar')->store('prestasi', 'public');
@@ -65,8 +68,9 @@ class PrestasiController extends Controller
     public function edit(Prestasi $prestasi)
     {
         $kategoriPrestasi = Prestasi::KATEGORI;
+        $siswas = Siswa::orderBy('nama')->get();
 
-        return view('admin.prestasi.edit', compact('prestasi', 'kategoriPrestasi'));
+        return view('admin.prestasi.edit', compact('prestasi', 'kategoriPrestasi', 'siswas'));
     }
 
     public function update(Request $request, Prestasi $prestasi)
@@ -74,7 +78,7 @@ class PrestasiController extends Controller
         $request->validate([
             'judul' => 'required|string|max:255',
             'kategori' => ['required', Rule::in(array_keys(Prestasi::KATEGORI))],
-            'nama_siswa' => 'required|string|max:255',
+            'siswa_id' => ['required', Rule::exists('siswas', 'id')],
             'prestasi_medali' => 'required|string|max:255',
             'penyelenggara' => 'required|string|max:255',
             'deskripsi' => 'required|string',
@@ -85,12 +89,13 @@ class PrestasiController extends Controller
         $data = $request->only([
             'judul',
             'kategori',
-            'nama_siswa',
+            'siswa_id',
             'prestasi_medali',
             'penyelenggara',
             'deskripsi',
             'tanggal',
         ]);
+        $data['nama_siswa'] = Siswa::findOrFail($data['siswa_id'])->nama;
 
         if ($request->hasFile('gambar')) {
             if ($prestasi->gambar && Storage::disk('public')->exists($prestasi->gambar)) {

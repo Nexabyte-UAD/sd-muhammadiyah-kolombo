@@ -10,6 +10,33 @@
 </div>
 
 <div class="form-group">
+    <label for="urutan">Urutan Kelas</label>
+    <input type="number" name="urutan" id="urutan" min="1" max="999"
+           class="form-control @error('urutan') is-invalid @enderror"
+           value="{{ old('urutan', $kelas->urutan ?? '') }}"
+           placeholder="Contoh: 1">
+    @error('urutan')<span class="invalid-feedback">{{ $message }}</span>@enderror
+</div>
+
+<div class="form-group">
+    <label for="tahun_ajaran">Tahun Ajaran</label>
+    <input type="text" name="tahun_ajaran" id="tahun_ajaran"
+           class="form-control @error('tahun_ajaran') is-invalid @enderror"
+           value="{{ old('tahun_ajaran', $kelas->tahun_ajaran ?? '') }}"
+           placeholder="Contoh: 2026/2027">
+    @error('tahun_ajaran')<span class="invalid-feedback">{{ $message }}</span>@enderror
+</div>
+
+<div class="form-group">
+    <label for="kapasitas">Kapasitas Siswa</label>
+    <input type="number" name="kapasitas" id="kapasitas" min="1" max="999"
+           class="form-control @error('kapasitas') is-invalid @enderror"
+           value="{{ old('kapasitas', $kelas->kapasitas ?? '') }}"
+           placeholder="Kosongkan jika tidak dibatasi">
+    @error('kapasitas')<span class="invalid-feedback">{{ $message }}</span>@enderror
+</div>
+
+<div class="form-group">
     <label for="jurusan">Jurusan (Opsional)</label>
     <input type="text" name="jurusan" id="jurusan"
            class="form-control @error('jurusan') is-invalid @enderror"

@@ -69,12 +69,16 @@
                                             data-bs-target="#detailSiswaModal" 
                                             data-nama="{{ $item->nama }}"
                                             data-nis="{{ $item->nis ?? '-' }}"
-                                            data-nisn="{{ $item->nisn ?? '-' }}"
-                                            data-kelas="{{ $item->kelas }}"
+                                            data-agama="{{ $item->agama ?? '-' }}"
+                                            data-prestasi="{{ $item->prestasis->map(fn ($prestasi) => [
+                                                "judul" => $prestasi->judul,
+                                                "hasil" => $prestasi->prestasi_medali,
+                                            ])->toJson() }}"
+                                            data-ekstrakurikuler="{{ $item->ekstrakurikulers->pluck('nama')->toJson() }}"
                                             data-jk="{{ $item->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}"
                                             data-ttl="{{ $item->tempat_lahir ?? '-' }}, {{ $item->tanggal_lahir ? $item->tanggal_lahir->translatedFormat('d F Y') : '-' }}"
                                             data-alamat="{{ $item->alamat ?? '-' }}"
-                                            data-foto="{{ $item->foto ? asset('storage/' . $item->foto) : '' }}"
+                                            data-foto="{{ $item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto) ? asset('storage/' . $item->foto) : '' }}"
                                             data-huruf="{{ substr($item->nama, 0, 1) }}">
                                         <i class="bi bi-eye-fill me-1"></i> Detail
                                     </button>
@@ -113,15 +117,14 @@
                 </div>
 
                 <h4 id="modal-nama" class="fw-bold text-dark mb-1">Nama Siswa</h4>
-                <p id="modal-kelas-badge" class="badge bg-primary bg-opacity-10 text-primary px-3 py-1.5 rounded-pill fw-bold mb-4"></p>
 
                 <div class="text-start border-top pt-3">
                     <div class="row g-2 small">
                         <div class="col-4 text-secondary">NIS</div>
                         <div class="col-8 text-dark fw-medium" id="modal-nis">-</div>
                         
-                        <div class="col-4 text-secondary">NISN</div>
-                        <div class="col-8 text-dark fw-medium" id="modal-nisn">-</div>
+                        <div class="col-4 text-secondary">Agama</div>
+                        <div class="col-8 text-dark fw-medium" id="modal-agama">-</div>
 
                         <div class="col-4 text-secondary">Jenis Kelamin</div>
                         <div class="col-8 text-dark fw-medium" id="modal-jk">-</div>
@@ -132,6 +135,12 @@
                         <div class="col-4 text-secondary">Alamat</div>
                         <div class="col-8 text-dark fw-medium" id="modal-alamat">-</div>
                     </div>
+                </div>
+                <div class="text-start border-top mt-3 pt-3">
+                    <div class="text-secondary small mb-2">Ekstrakurikuler</div>
+                    <div id="modal-ekstrakurikuler" class="small text-dark mb-3">Belum mengikuti ekstrakurikuler.</div>
+                    <div class="text-secondary small mb-2">Prestasi</div>
+                    <div id="modal-prestasi" class="small text-dark">Belum ada prestasi.</div>
                 </div>
             </div>
             <div class="modal-footer border-0 p-3 bg-light rounded-bottom-4 justify-content-center">
@@ -218,19 +227,21 @@
         const modalFoto = document.getElementById("modal-foto");
         const modalAvatar = document.getElementById("modal-avatar");
         const modalNama = document.getElementById("modal-nama");
-        const modalKelasBadge = document.getElementById("modal-kelas-badge");
         const modalNis = document.getElementById("modal-nis");
-        const modalNisn = document.getElementById("modal-nisn");
+        const modalAgama = document.getElementById("modal-agama");
         const modalJk = document.getElementById("modal-jk");
         const modalTtl = document.getElementById("modal-ttl");
         const modalAlamat = document.getElementById("modal-alamat");
+        const modalPrestasi = document.getElementById("modal-prestasi");
+        const modalEkstrakurikuler = document.getElementById("modal-ekstrakurikuler");
 
         detailButtons.forEach(button => {
             button.addEventListener("click", function() {
                 const nama = this.getAttribute("data-nama");
                 const nis = this.getAttribute("data-nis");
-                const nisn = this.getAttribute("data-nisn");
-                const kelas = this.getAttribute("data-kelas");
+                const agama = this.getAttribute("data-agama");
+                const prestasi = JSON.parse(this.getAttribute("data-prestasi") || "[]");
+                const ekstrakurikuler = JSON.parse(this.getAttribute("data-ekstrakurikuler") || "[]");
                 const jk = this.getAttribute("data-jk");
                 const ttl = this.getAttribute("data-ttl");
                 const alamat = this.getAttribute("data-alamat");
@@ -238,12 +249,27 @@
                 const huruf = this.getAttribute("data-huruf");
 
                 modalNama.textContent = nama;
-                modalKelasBadge.textContent = kelas;
                 modalNis.textContent = nis;
-                modalNisn.textContent = nisn;
+                modalAgama.textContent = agama;
                 modalJk.textContent = jk;
                 modalTtl.textContent = ttl;
                 modalAlamat.textContent = alamat;
+                modalEkstrakurikuler.textContent = ekstrakurikuler.length
+                    ? ekstrakurikuler.join(", ")
+                    : "Belum mengikuti ekstrakurikuler.";
+                modalPrestasi.replaceChildren();
+                if (prestasi.length === 0) {
+                    modalPrestasi.textContent = "Belum ada prestasi.";
+                } else {
+                    const list = document.createElement("ul");
+                    list.className = "mb-0 ps-3";
+                    prestasi.forEach(item => {
+                        const entry = document.createElement("li");
+                        entry.textContent = `${item.judul} — ${item.hasil || "-"}`;
+                        list.appendChild(entry);
+                    });
+                    modalPrestasi.appendChild(list);
+                }
 
                 if (foto) {
                     modalFoto.src = foto;

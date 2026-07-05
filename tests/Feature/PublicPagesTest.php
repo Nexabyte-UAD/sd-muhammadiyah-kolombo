@@ -131,6 +131,25 @@ class PublicPagesTest extends TestCase
             ->assertSee(route('siswa'), false);
     }
 
+    public function test_student_text_is_capitalized_when_saved(): void
+    {
+        $siswa = Siswa::create([
+            'nama' => '  ahmad   fauzan  ',
+            'nis' => '001234',
+            'jenis_kelamin' => 'L',
+            'agama' => 'Islam',
+            'tempat_lahir' => 'sleman',
+            'alamat' => 'jalan melati nomor 10',
+            'status' => 'aktif',
+            'tahun_masuk' => 2026,
+        ]);
+
+        $this->assertSame('Ahmad Fauzan', $siswa->nama);
+        $this->assertSame('Sleman', $siswa->tempat_lahir);
+        $this->assertSame('Jalan Melati Nomor 10', $siswa->alamat);
+        $this->assertSame('001234', $siswa->nis);
+    }
+
     public function test_homepage_activities_use_extracurricular_data(): void
     {
         Ekstrakurikuler::create([

@@ -10,4 +10,9 @@ class Ekstrakurikuler extends Model
     use HasFactory;
 
     protected $fillable = ['nama', 'deskripsi', 'pembina', 'jadwal', 'foto'];
+
+    public function siswas()
+    {
+        return $this->belongsToMany(Siswa::class);
+    }
 }

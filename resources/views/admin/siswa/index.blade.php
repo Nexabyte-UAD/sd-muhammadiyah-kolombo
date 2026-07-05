@@ -31,6 +31,8 @@
                         <select name="status" class="form-control" onchange="this.form.submit()">
                             <option value="aktif" {{ $status === 'aktif' ? 'selected' : '' }}>Siswa Aktif</option>
                             <option value="alumni" {{ $status === 'alumni' ? 'selected' : '' }}>Alumni</option>
+                            <option value="keluar" {{ $status === 'keluar' ? 'selected' : '' }}>Pindah / Keluar</option>
+                            <option value="arsip" {{ $status === 'arsip' ? 'selected' : '' }}>Arsip</option>
                         </select>
                     </div>
 
@@ -53,7 +55,7 @@
                     <div class="col-md-5 mb-2 mb-md-0">
                         <label class="small text-muted font-weight-bold">Pencarian</label>
                         <div class="input-group">
-                            <input type="text" name="search" class="form-control" placeholder="Cari nama, NIS, atau NISN..." value="{{ $search }}">
+                            <input type="text" name="search" class="form-control" placeholder="Cari nama atau NIS..." value="{{ $search }}">
                             <div class="input-group-append">
                                 <button class="btn btn-default" type="submit">
                                     <i class="fas fa-search"></i>
@@ -79,6 +81,12 @@
             </div>
         @endif
 
+        <div class="mb-3 text-right">
+            <a href="{{ route('admin.siswa.export', ['status' => $status]) }}" class="btn btn-success">
+                <i class="fas fa-file-csv mr-1"></i> Ekspor CSV
+            </a>
+        </div>
+
         <!-- Data Card -->
         <div class="card card-primary card-outline">
             <div class="card-body table-responsive p-0">
@@ -87,10 +95,10 @@
                         <tr>
                             <th style="width: 70px;">Foto</th>
                             <th>Nama Lengkap</th>
-                            <th>NIS / NISN</th>
+                            <th>NIS</th>
                             <th>L/P</th>
                             <th>TTL</th>
-                            <th>{{ $status === 'aktif' ? 'Kelas' : 'Tahun Lulus' }}</th>
+                            <th>{{ $status === 'aktif' ? 'Kelas' : ($status === 'alumni' ? 'Tahun Lulus' : 'Status') }}</th>
                             <th>Tahun Masuk</th>
                             <th class="text-right">Aksi</th>
                         </tr>
@@ -99,7 +107,7 @@
                         @forelse ($siswas as $item)
                         <tr>
                             <td class="align-middle">
-                                @if($item->foto)
+                                @if($item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto))
                                     <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" class="img-circle" style="width: 45px; height: 45px; object-fit: cover;">
                                 @else
                                     <div class="bg-primary text-white img-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; font-weight: bold; display: inline-flex !important;">
@@ -111,8 +119,7 @@
                                 <span class="font-weight-bold">{{ $item->nama }}</span>
                             </td>
                             <td class="align-middle">
-                                <div>NIS: {{ $item->nis ?? '-' }}</div>
-                                <div class="text-muted small">NISN: {{ $item->nisn ?? '-' }}</div>
+                                {{ $item->nis ?? '-' }}
                             </td>
                             <td class="align-middle">
                                 <span class="badge {{ $item->jenis_kelamin === 'L' ? 'badge-primary' : 'badge-danger' }} px-2 py-1">
@@ -128,23 +135,40 @@
                             </td>
                             <td class="align-middle">
                                 @if($status === 'aktif')
-                                    <span class="badge badge-info px-2 py-1">Kelas {{ $item->kelas }}</span>
-                                @else
+                                    <span class="badge badge-info px-2 py-1">{{ $item->kelasData?->tingkat ?? $item->kelas ?? '-' }}</span>
+                                @elseif($status === 'alumni')
                                     <span class="badge badge-success px-2 py-1">Lulus {{ $item->tahun_lulus }}</span>
+                                @elseif($status === 'keluar')
+                                    <span class="badge badge-secondary px-2 py-1">Pindah / Keluar</span>
+                                    @if($item->sekolah_tujuan)
+                                        <div class="small text-muted mt-1">{{ $item->sekolah_tujuan }}</div>
+                                    @endif
+                                @else
+                                    <span class="badge badge-dark px-2 py-1">Diarsipkan</span>
                                 @endif
                             </td>
                             <td class="align-middle">{{ $item->tahun_masuk }}</td>
                             <td class="align-middle text-right">
-                                <a href="{{ route('admin.siswa.edit', $item->id) }}" class="btn btn-sm btn-info" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('admin.siswa.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data siswa ini?');" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                @if($status === 'arsip')
+                                    <form action="{{ route('admin.siswa.restore', $item->id) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm btn-success" title="Pulihkan">
+                                            <i class="fas fa-undo"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('admin.siswa.edit', $item->id) }}" class="btn btn-sm btn-info" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('admin.siswa.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Arsipkan data siswa ini?');" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Arsipkan">
+                                            <i class="fas fa-archive"></i>
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                         @empty

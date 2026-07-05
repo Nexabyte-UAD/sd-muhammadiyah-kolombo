@@ -26,6 +26,9 @@
                 @csrf
                 @method('PUT')
                 <div class="card-body">
+                    @if($errors->any())
+                        <div class="alert alert-danger">{{ $errors->first() }}</div>
+                    @endif
                     <div class="row">
                         <!-- Nama Lengkap -->
                         <div class="col-md-6">
@@ -64,12 +67,17 @@
                             </div>
                         </div>
 
-                        <!-- NISN -->
+                        <!-- Agama -->
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="nisn">NISN (Nomor Induk Siswa Nasional)</label>
-                                <input type="text" name="nisn" id="nisn" class="form-control @error('nisn') is-invalid @enderror" value="{{ old('nisn', $siswa->nisn) }}" placeholder="Masukkan NISN (Opsional, Harus unik)">
-                                @error('nisn')
+                                <label for="agama">Agama <span class="text-danger">*</span></label>
+                                <select name="agama" id="agama" class="form-control @error('agama') is-invalid @enderror" required>
+                                    <option value="">-- Pilih Agama --</option>
+                                    @foreach(['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu'] as $agama)
+                                        <option value="{{ $agama }}" @selected(old('agama', $siswa->agama) === $agama)>{{ $agama }}</option>
+                                    @endforeach
+                                </select>
+                                @error('agama')
                                     <span class="error invalid-feedback">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -109,6 +117,27 @@
                         </div>
 
                         <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="ekstrakurikuler_ids">Ekstrakurikuler</label>
+                                <select name="ekstrakurikuler_ids[]" id="ekstrakurikuler_ids"
+                                        class="form-control @error('ekstrakurikuler_ids') is-invalid @enderror"
+                                        multiple size="{{ min(max($daftarEkstrakurikuler->count(), 3), 6) }}">
+                                    @php($ekstrakurikulerTerpilih = old('ekstrakurikuler_ids', $siswa->ekstrakurikulers->pluck('id')->all()))
+                                    @foreach($daftarEkstrakurikuler as $ekstrakurikuler)
+                                        <option value="{{ $ekstrakurikuler->id }}"
+                                            @selected(in_array((string) $ekstrakurikuler->id, array_map('strval', $ekstrakurikulerTerpilih), true))>
+                                            {{ $ekstrakurikuler->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="form-text text-muted">Tahan Ctrl untuk memilih lebih dari satu.</small>
+                                @error('ekstrakurikuler_ids.*')
+                                    <span class="text-danger small">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
                             <hr class="my-4">
                             <h5>Status Akademik</h5>
                         </div>
@@ -120,6 +149,7 @@
                                 <select name="status" id="status" class="form-control @error('status') is-invalid @enderror" required>
                                     <option value="aktif" {{ old('status', $siswa->status) == 'aktif' ? 'selected' : '' }}>Siswa Aktif</option>
                                     <option value="alumni" {{ old('status', $siswa->status) == 'alumni' ? 'selected' : '' }}>Alumni / Lulus</option>
+                                    <option value="keluar" {{ old('status', $siswa->status) == 'keluar' ? 'selected' : '' }}>Pindah / Keluar</option>
                                 </select>
                                 @error('status')
                                     <span class="error invalid-feedback">{{ $message }}</span>
@@ -166,6 +196,52 @@
                                 @enderror
                             </div>
                         </div>
+
+                        <div class="col-md-12" id="div-profil-alumni" style="display: none;">
+                            <hr class="my-4">
+                            <h5>Data Lanjutan Alumni</h5>
+                            <p class="text-muted small">Isi sesuai kondisi alumni. Semua kolom bersifat opsional.</p>
+                            @include('admin.siswa._riwayat_alumni')
+                            <div class="row d-none">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="melanjutkan_sekolah_di">Melanjutkan Sekolah Di</label>
+                                        <input disabled type="text" name="pendidikan_lama[0][institusi]" id="melanjutkan_sekolah_di"
+                                               class="form-control" value="{{ old('pendidikan.0.institusi', $siswa->riwayatPendidikan->first()?->institusi) }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="jenjang">Jenjang</label>
+                                        <input disabled type="text" name="pendidikan_lama[0][jenjang]" id="jenjang"
+                                               class="form-control" value="{{ old('pendidikan.0.jenjang', $siswa->riwayatPendidikan->first()?->jenjang) }}" placeholder="Contoh: SMP / MTs / SMA">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="program_studi">Program Studi</label>
+                                        <input disabled type="text" name="pendidikan_lama[0][jurusan]" id="program_studi"
+                                               class="form-control" value="{{ old('pendidikan.0.jurusan', $siswa->riwayatPendidikan->first()?->jurusan) }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="pekerjaan">Pekerjaan</label>
+                                        <input disabled type="text" name="pekerjaan_lama[0][pekerjaan]" id="pekerjaan"
+                                               class="form-control" value="{{ old('pekerjaan_alumni.0.pekerjaan', $siswa->riwayatPekerjaan->first()?->pekerjaan) }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="bekerja_di_perusahaan">Bekerja di Perusahaan</label>
+                                        <input disabled type="text" name="pekerjaan_lama[0][perusahaan]" id="bekerja_di_perusahaan"
+                                               class="form-control" value="{{ old('pekerjaan_alumni.0.perusahaan', $siswa->riwayatPekerjaan->first()?->perusahaan) }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @include('admin.siswa._data_keluar')
 
                         <div class="col-md-12">
                             <hr class="my-4">
@@ -225,12 +301,20 @@
                 $('#div-kelas').show();
                 $('#kelas').attr('required', true);
                 $('#div-tahun-lulus').hide();
+                $('#div-profil-alumni').hide();
                 $('#tahun_lulus').attr('required', false);
-            } else {
+                $('#div-data-keluar').hide();
+            } else if (status === 'alumni') {
                 $('#div-kelas').hide();
                 $('#kelas').attr('required', false);
                 $('#div-tahun-lulus').show();
+                $('#div-profil-alumni').show();
                 $('#tahun_lulus').attr('required', true);
+                $('#div-data-keluar').hide();
+            } else {
+                $('#div-kelas, #div-tahun-lulus, #div-profil-alumni').hide();
+                $('#kelas, #tahun_lulus').attr('required', false);
+                $('#div-data-keluar').show();
             }
         }
 

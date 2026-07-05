@@ -35,7 +35,7 @@ Route::get('/dashboard', function () {
     return view('dashboard', compact('countGuru', 'countBerita', 'countPrestasi', 'countPesan', 'countUser', 'countSiswa', 'countAlumni', 'latestBerita', 'latestPesan', 'recentActivities'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('admin/berita', \App\Http\Controllers\BeritaController::class)
         ->except('show')
         ->names('admin.berita')
@@ -59,6 +59,8 @@ Route::middleware('auth')->group(function () {
     
     Route::get('admin/siswa-kenaikan-kelas', [\App\Http\Controllers\SiswaController::class, 'promotePage'])->name('admin.siswa.promote.page');
     Route::post('admin/siswa-kenaikan-kelas', [\App\Http\Controllers\SiswaController::class, 'promote'])->name('admin.siswa.promote');
+    Route::patch('admin/siswa/{id}/pulihkan', [\App\Http\Controllers\SiswaController::class, 'restore'])->name('admin.siswa.restore');
+    Route::get('admin/siswa-ekspor', [\App\Http\Controllers\SiswaController::class, 'export'])->name('admin.siswa.export');
     Route::resource('admin/kelas', \App\Http\Controllers\KelasController::class)
         ->except('show')
         ->names('admin.kelas')

@@ -116,7 +116,10 @@ class HomeController extends Controller
         $kelas = $request->query('kelas');
         $search = $request->query('search');
 
-        $query = Siswa::aktif();
+        $query = Siswa::aktif()->with([
+            'prestasis' => fn ($query) => $query->orderBy('tanggal', 'desc'),
+            'ekstrakurikulers' => fn ($query) => $query->orderBy('nama'),
+        ]);
 
         if ($kelas && Kelas::where('tingkat', $kelas)->exists()) {
             $query->kelas($kelas);
@@ -125,7 +128,6 @@ class HomeController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
-                    ->orWhere('nisn', 'like', "%{$search}%")
                     ->orWhere('nis', 'like', "%{$search}%");
             });
         }
@@ -138,6 +140,8 @@ class HomeController extends Controller
     public function kelas()
     {
         $classes = Kelas::with('waliKelas')
+            ->orderByRaw('urutan IS NULL')
+            ->orderBy('urutan')
             ->orderBy('tingkat')
             ->get()
             ->map(fn (Kelas $kelas, int $index) => [
@@ -161,7 +165,12 @@ class HomeController extends Controller
             ->orderBy('tahun_lulus', 'desc')
             ->pluck('tahun_lulus');
 
-        $query = Siswa::alumni();
+        $query = Siswa::alumni()->with([
+            'riwayatPendidikan',
+            'riwayatPekerjaan',
+            'prestasis' => fn ($query) => $query->orderBy('tanggal', 'desc'),
+            'ekstrakurikulers' => fn ($query) => $query->orderBy('nama'),
+        ]);
         if ($tahun) {
             $query->where('tahun_lulus', $tahun);
         }

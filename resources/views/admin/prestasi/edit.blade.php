@@ -45,9 +45,16 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="nama_siswa">Nama Siswa <span class="text-danger">*</span></label>
-                        <input type="text" name="nama_siswa" id="nama_siswa" class="form-control @error('nama_siswa') is-invalid @enderror" value="{{ old('nama_siswa', $prestasi->nama_siswa) }}" required>
-                        @error('nama_siswa')
+                        <label for="siswa_id">Nama Siswa <span class="text-danger">*</span></label>
+                        <select name="siswa_id" id="siswa_id" class="form-control @error('siswa_id') is-invalid @enderror" required>
+                            <option value="">-- Pilih Siswa --</option>
+                            @foreach($siswas as $siswa)
+                                <option value="{{ $siswa->id }}" @selected((string) old('siswa_id', $prestasi->siswa_id) === (string) $siswa->id)>
+                                    {{ $siswa->nama }}{{ $siswa->kelas ? ' — '.$siswa->kelas : ' — Alumni' }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('siswa_id')
                             <span class="error invalid-feedback">{{ $message }}</span>
                         @enderror
                     </div>

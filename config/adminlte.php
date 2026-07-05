@@ -327,7 +327,7 @@ return [
                     'active' => ['admin/siswa*'],
                 ],
                 [
-                    'text' => 'Kenaikan Kelas & Kelulusan',
+                    'text' => 'Status Akhir Tahun',
                     'url'  => 'admin/siswa-kenaikan-kelas',
                     'active' => ['admin/siswa-kenaikan-kelas'],
                 ],

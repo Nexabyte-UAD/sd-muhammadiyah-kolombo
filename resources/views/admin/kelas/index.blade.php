@@ -17,6 +17,9 @@
         @if(session('success'))
             <div class="alert alert-success m-3">{{ session('success') }}</div>
         @endif
+        @if($errors->any())
+            <div class="alert alert-danger m-3">{{ $errors->first() }}</div>
+        @endif
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
@@ -24,6 +27,7 @@
                     <th>Kelas</th>
                     <th>Jurusan</th>
                     <th>Wali Kelas</th>
+                    <th>Kapasitas</th>
                     <th class="text-right">Aksi</th>
                 </tr>
             </thead>
@@ -34,6 +38,9 @@
                         <td class="align-middle font-weight-bold">{{ $item->tingkat }}</td>
                         <td class="align-middle">{{ $item->jurusan ?: '-' }}</td>
                         <td class="align-middle">{{ $item->waliKelas?->nama ?? '-' }}</td>
+                        <td class="align-middle">
+                            {{ $item->siswas_count }} / {{ $item->kapasitas ?: '∞' }}
+                        </td>
                         <td class="align-middle text-right">
                             <a href="{{ route('admin.kelas.edit', $item) }}" class="btn btn-sm btn-info" title="Edit">
                                 <i class="fas fa-edit"></i>
@@ -50,7 +57,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="text-center text-muted py-5">
+                        <td colspan="6" class="text-center text-muted py-5">
                             Belum ada data kelas. Klik “Tambah Kelas” untuk mulai mengisi.
                         </td>
                     </tr>
