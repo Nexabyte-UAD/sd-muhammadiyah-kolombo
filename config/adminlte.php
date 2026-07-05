@@ -331,6 +331,11 @@ return [
                     'url'  => 'admin/siswa-kenaikan-kelas',
                     'active' => ['admin/siswa-kenaikan-kelas'],
                 ],
+                [
+                    'text' => 'Atur Wali Kelas',
+                    'url'  => 'admin/kelas',
+                    'active' => ['admin/kelas'],
+                ],
             ]
         ],
         [

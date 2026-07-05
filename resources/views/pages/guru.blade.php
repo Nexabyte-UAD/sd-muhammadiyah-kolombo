@@ -5,30 +5,39 @@
 
 <section class="py-5 bg-white">
     <div class="container">
-        <div class="row justify-content-center mb-5">
-            <div class="col-lg-8 text-center">
-                <h2 class="fw-bold text-dark mb-3">Struktural: {{ ucfirst($tipe) }}</h2>
-                <p class="text-secondary" style="font-size: 1.05rem;">
-                    Daftar tenaga pendidik dan kependidikan di lingkungan SD Muhammadiyah Komplek Kolombo.
-                </p>
-            </div>
+        <div class="mb-4 pb-3 border-bottom">
+            <h2 class="fw-bold text-dark mb-2" style="font-size: 1.75rem;">
+                {{ $tipe === 'guru' ? 'Guru' : 'Staf' }}
+            </h2>
+            <p class="text-secondary mb-0">
+                {{ $tipe === 'guru'
+                    ? 'Daftar tenaga pendidik SD Muhammadiyah Komplek Kolombo.'
+                    : 'Daftar tenaga kependidikan SD Muhammadiyah Komplek Kolombo.' }}
+            </p>
         </div>
         <div class="row g-4 justify-content-center">
             @forelse($gurus as $guru)
             <div class="col-sm-6 col-md-4 col-lg-3">
-                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white text-center">
-                    @if($guru->foto)
-                        <img src="{{ asset('storage/' . $guru->foto) }}" class="card-img-top w-100 border-bottom" style="height: 250px; object-fit: cover;" alt="{{ $guru->nama }}">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden bg-white text-center"
+                     role="button" tabindex="0" data-biodata-trigger data-bs-toggle="modal"
+                     data-bs-target="#biodataTenaga-{{ $guru->id }}"
+                     aria-label="Lihat biodata {{ $guru->nama }}">
+                    @if($guru->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($guru->foto))
+                        <img src="{{ asset('storage/' . $guru->foto) }}"
+                             class="card-img-top w-100 border-bottom structural-photo"
+                             alt="{{ $guru->nama }}">
                     @else
-                        <div class="bg-light d-flex align-items-center justify-content-center text-secondary w-100 border-bottom" style="height: 250px;">
+                        <div class="bg-light d-flex align-items-center justify-content-center text-secondary w-100 border-bottom structural-photo">
                             <i class="bi bi-person opacity-25" style="font-size: 5rem;"></i>
                         </div>
                     @endif
                     <div class="card-body p-4">
                         <h5 class="card-title fw-bold text-dark mb-1" style="line-height: 1.4;">{{ $guru->nama }}</h5>
                         <div class="text-success fw-bold mb-3 small">{{ $guru->jabatan }}</div>
-                        <p class="text-secondary small mb-1">NIP: {{ $guru->nip ?? '-' }}</p>
-                        <p class="text-dark small mb-0 fw-medium">Mapel: {{ $guru->mapel ?? 'Semua' }}</p>
+                        <p class="text-secondary small mb-1">NIP: {{ $guru->nip ?: '-' }}</p>
+                        @if($guru->bidang_tugas)
+                            <p class="text-dark small mb-0 fw-medium">Bidang Tugas: {{ $guru->bidang_tugas }}</p>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -38,6 +47,22 @@
             </div>
             @endforelse
         </div>
+
+        @foreach($gurus as $guru)
+            <x-guru-staff-modal :tenaga="$guru" />
+        @endforeach
     </div>
 </section>
 @endsection
+
+@push('styles')
+<style>
+    .structural-photo {
+        aspect-ratio: 2 / 3;
+        height: auto;
+        object-fit: cover;
+        object-position: center top;
+        background-color: #f8fafc;
+    }
+</style>
+@endpush

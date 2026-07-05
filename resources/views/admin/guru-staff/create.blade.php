@@ -37,9 +37,37 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
+                                <label for="jenis_kelamin">Jenis Kelamin <span class="text-danger">*</span></label>
+                                <select name="jenis_kelamin" id="jenis_kelamin" class="form-control @error('jenis_kelamin') is-invalid @enderror" required>
+                                    <option value="">Pilih jenis kelamin</option>
+                                    @foreach($jenisKelamin as $value => $label)
+                                        <option value="{{ $value }}" @selected(old('jenis_kelamin') === $value)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                @error('jenis_kelamin')
+                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
                                 <label for="nip">NIP</label>
                                 <input type="text" name="nip" id="nip" class="form-control @error('nip') is-invalid @enderror" value="{{ old('nip') }}" placeholder="Nomor Induk Pegawai (Opsional)">
                                 @error('nip')
+                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="status_kepegawaian">Status Kepegawaian <span class="text-danger">*</span></label>
+                                <select name="status_kepegawaian" id="status_kepegawaian" class="form-control @error('status_kepegawaian') is-invalid @enderror" required>
+                                    <option value="">Pilih status kepegawaian</option>
+                                    @foreach($statusKepegawaian as $value => $label)
+                                        <option value="{{ $value }}" @selected(old('status_kepegawaian') === $value)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                @error('status_kepegawaian')
                                     <span class="error invalid-feedback">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -56,10 +84,38 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="mapel">Pendidikan Pokok / Mapel (Opsional)</label>
-                                <input type="text" name="mapel" id="mapel" class="form-control @error('mapel') is-invalid @enderror" value="{{ old('mapel') }}" placeholder="Contoh: Matematika, Bahasa Indonesia">
-                                <small class="form-text text-muted">Dapat dikosongkan jika staf administrasi atau tidak punya mapel spesifik.</small>
-                                @error('mapel')
+                                <label for="bidang_tugas">Bidang Tugas (Opsional)</label>
+                                <input type="text" name="bidang_tugas" id="bidang_tugas" class="form-control @error('bidang_tugas') is-invalid @enderror" value="{{ old('bidang_tugas') }}" placeholder="Contoh: Guru Kelas, Matematika, Tata Usaha">
+                                <small class="form-text text-muted">Dapat dikosongkan jika tidak memiliki bidang khusus.</small>
+                                @error('bidang_tugas')
+                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="pendidikan_terakhir">Pendidikan Terakhir <span class="text-danger">*</span></label>
+                                <select name="pendidikan_terakhir" id="pendidikan_terakhir" class="form-control @error('pendidikan_terakhir') is-invalid @enderror" required>
+                                    <option value="">Pilih pendidikan terakhir</option>
+                                    @foreach($pendidikanTerakhir as $value => $label)
+                                        <option value="{{ $value }}" @selected(old('pendidikan_terakhir') === $value)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                @error('pendidikan_terakhir')
+                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="agama">Agama <span class="text-danger">*</span></label>
+                                <select name="agama" id="agama" class="form-control @error('agama') is-invalid @enderror" required>
+                                    <option value="">Pilih agama</option>
+                                    @foreach($daftarAgama as $value => $label)
+                                        <option value="{{ $value }}" @selected(old('agama') === $value)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                                @error('agama')
                                     <span class="error invalid-feedback">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -68,7 +124,7 @@
                             <div class="form-group">
                                 <label for="foto">Upload Foto Profil Terbaru</label>
                                 <div class="custom-file">
-                                    <input type="file" name="foto" class="custom-file-input @error('foto') is-invalid @enderror" id="foto" accept="image/jpeg,image/png,image/jpg">
+                                    <input type="file" name="foto" class="custom-file-input @error('foto') is-invalid @enderror" id="foto" accept="image/jpeg,image/png,image/gif">
                                     <label class="custom-file-label" for="foto">Pilih file</label>
                                 </div>
                                 <small class="form-text text-muted">Format: JPG, PNG. Maksimal ukuran: 2MB.</small>

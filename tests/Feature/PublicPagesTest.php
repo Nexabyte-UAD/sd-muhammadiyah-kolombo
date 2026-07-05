@@ -2,8 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Models\GuruStaff;
 use App\Models\Ekstrakurikuler;
+use App\Models\GuruStaff;
+use App\Models\Kelas;
 use App\Models\Prestasi;
 use App\Models\Siswa;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -51,7 +52,11 @@ class PublicPagesTest extends TestCase
         GuruStaff::create([
             'tipe' => 'guru',
             'nama' => 'Guru Beranda',
+            'jenis_kelamin' => 'perempuan',
             'jabatan' => 'Wali Kelas',
+            'status_kepegawaian' => 'PPPK',
+            'pendidikan_terakhir' => 'S2',
+            'agama' => 'Islam',
         ]);
         GuruStaff::create([
             'tipe' => 'staf',
@@ -64,7 +69,43 @@ class PublicPagesTest extends TestCase
             ->assertSee('Guru Beranda')
             ->assertSee('Staf Beranda')
             ->assertSee('Wali Kelas')
-            ->assertSee('Tata Usaha');
+            ->assertSee('Tata Usaha')
+            ->assertSee('Biodata Guru')
+            ->assertSee('Perempuan')
+            ->assertSee('PPPK')
+            ->assertSee('S2')
+            ->assertSee('Islam')
+            ->assertSee('data-bs-target="#biodataTenaga-', false);
+
+    }
+
+    public function test_homepage_places_staf_between_balanced_groups_of_guru(): void
+    {
+        foreach (['Guru A', 'Guru B', 'Guru C', 'Guru D'] as $nama) {
+            GuruStaff::create([
+                'tipe' => 'guru',
+                'nama' => $nama,
+                'jabatan' => 'Guru',
+            ]);
+        }
+        GuruStaff::create([
+            'tipe' => 'staf',
+            'nama' => 'Staf Tengah',
+            'jabatan' => 'Tata Usaha',
+        ]);
+
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $this->assertTrue(
+            strpos($content, 'Guru A') <
+            strpos($content, 'Guru B') &&
+            strpos($content, 'Guru B') <
+            strpos($content, 'Staf Tengah') &&
+            strpos($content, 'Staf Tengah') <
+            strpos($content, 'Guru C') &&
+            strpos($content, 'Guru C') <
+            strpos($content, 'Guru D')
+        );
     }
 
     public function test_homepage_participant_count_uses_active_student_data(): void
@@ -127,5 +168,27 @@ class PublicPagesTest extends TestCase
             ->assertSee('Tingkat Kabupaten')
             ->assertSee('No Image')
             ->assertSee('kategori-keagamaan');
+    }
+
+    public function test_class_page_uses_the_teacher_selected_from_guru_data(): void
+    {
+        $guru = GuruStaff::create([
+            'tipe' => 'guru',
+            'nama' => 'Wali Kelas Tiga',
+            'jabatan' => 'Guru Kelas',
+        ]);
+        Kelas::where('tingkat', '3')->update(['wali_kelas_id' => $guru->id]);
+        Siswa::create([
+            'nama' => 'Siswa Kelas Tiga',
+            'jenis_kelamin' => 'L',
+            'kelas' => '3',
+            'status' => 'aktif',
+            'tahun_masuk' => 2024,
+        ]);
+
+        $this->get('/kelas')
+            ->assertOk()
+            ->assertSee('Kelas 3')
+            ->assertSee('Wali Kelas Tiga');
     }
 }

@@ -33,7 +33,7 @@
                         @forelse ($gurus as $item)
                         <tr>
                             <td class="align-middle">
-                                @if($item->foto)
+                                @if($item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto))
                                     <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" class="img-circle" style="width: 50px; height: 50px; object-fit: cover;">
                                 @else
                                     <div class="bg-primary text-white img-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-weight: bold; display: inline-flex !important;">
@@ -44,15 +44,15 @@
                             <td class="align-middle">
                                 <strong>{{ $item->nama }}</strong>
                                 <div class="text-muted small mt-1">
-                                    NIP: {{ $item->nip ?? '-' }}
+                                    NIP: {{ $item->nip ?: '-' }}
                                 </div>
                             </td>
                             <td class="align-middle">
                                 <span class="badge badge-info px-2 py-1 mb-1">
                                     {{ $item->jabatan }}
                                 </span>
-                                @if($item->mapel)
-                                <div class="small text-muted">Mapel: {{ $item->mapel }}</div>
+                                @if($item->bidang_tugas)
+                                <div class="small text-muted">Bidang Tugas: {{ $item->bidang_tugas }}</div>
                                 @endif
                             </td>
                             <td class="align-middle text-right">

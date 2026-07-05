@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\GuruStaff;
+use App\Models\Kelas;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -43,5 +44,94 @@ class AdminRoutesTest extends TestCase
         $route = app('router')->getRoutes()->getByName('admin.berita.edit');
 
         $this->assertSame(['berita'], $route->parameterNames());
+    }
+
+    public function test_guru_staff_form_persists_bidang_tugas_and_preserves_nip_as_text(): void
+    {
+        $user = User::create([
+            'name' => 'Admin',
+            'email' => 'pegawai@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)->post(route('admin.guru-staff.store'), [
+            'tipe' => 'guru',
+            'nama' => 'Guru Matematika',
+            'jenis_kelamin' => 'laki_laki',
+            'jabatan' => 'Guru Kelas',
+            'bidang_tugas' => 'Matematika',
+            'nip' => '001234567890123456',
+            'status_kepegawaian' => 'PNS',
+            'pendidikan_terakhir' => 'S1',
+            'agama' => 'Islam',
+        ])->assertRedirect(route('admin.guru-staff.index', ['tipe' => 'guru']));
+
+        $this->assertDatabaseHas('guru_staffs', [
+            'tipe' => 'guru',
+            'nama' => 'Guru Matematika',
+            'bidang_tugas' => 'Matematika',
+            'nip' => '001234567890123456',
+            'jenis_kelamin' => 'laki_laki',
+            'status_kepegawaian' => 'PNS',
+            'pendidikan_terakhir' => 'S1',
+            'agama' => 'Islam',
+        ]);
+    }
+
+    public function test_class_teacher_can_be_selected_from_guru_data(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Kelas',
+            'email' => 'kelas@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        $guru = GuruStaff::create([
+            'tipe' => 'guru',
+            'nama' => 'Wali Kelas Pilihan',
+            'jabatan' => 'Guru Kelas',
+        ]);
+
+        $this->actingAs($user)
+            ->put(route('admin.kelas.update'), [
+                'wali_kelas' => ['3' => $guru->id],
+            ])
+            ->assertRedirect(route('admin.kelas.edit'));
+
+        $this->assertSame(
+            $guru->id,
+            Kelas::where('tingkat', '3')->value('wali_kelas_id')
+        );
+    }
+
+    public function test_guru_staff_rejects_values_outside_the_allowed_biodata_enums(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Validasi',
+            'email' => 'validasi@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)
+            ->from(route('admin.guru-staff.create', ['tipe' => 'guru']))
+            ->post(route('admin.guru-staff.store'), [
+                'tipe' => 'guru',
+                'nama' => 'Data Tidak Valid',
+                'jenis_kelamin' => 'invalid',
+                'jabatan' => 'Guru',
+                'status_kepegawaian' => 'Tetap',
+                'pendidikan_terakhir' => 'D4',
+                'agama' => 'Lainnya',
+            ])
+            ->assertSessionHasErrors([
+                'jenis_kelamin',
+                'status_kepegawaian',
+                'pendidikan_terakhir',
+                'agama',
+            ]);
+
+        $this->assertDatabaseMissing('guru_staffs', ['nama' => 'Data Tidak Valid']);
     }
 }

@@ -487,15 +487,18 @@
                 <div class="seamless-grid-item seamless-grid-span-3">
                     <div class="swiper guruSwiper h-100 w-100 bg-light">
                         <div class="swiper-wrapper">
-                            @forelse($tenagaPendidik as $index => $tenaga)
+                            @forelse($tenagaPendidik as $tenaga)
                                 <div class="swiper-slide">
-                                    <div class="guru-slide-card">
-                                        <div class="guru-slide-img {{ $index % 2 == 0 ? 'bg-red-custom' : 'bg-blue-custom' }}">
-                                            @if($tenaga->foto)
+                                    <div class="guru-slide-card" role="button" tabindex="0"
+                                         data-biodata-trigger
+                                         data-bs-toggle="modal" data-bs-target="#biodataTenaga-{{ $tenaga->id }}"
+                                         aria-label="Lihat biodata {{ $tenaga->nama }}">
+                                        <div class="guru-slide-img {{ $tenaga->tipe === 'guru' ? 'bg-blue-custom' : 'bg-red-custom' }}">
+                                            @if($tenaga->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($tenaga->foto))
                                                 <img src="{{ asset('storage/' . $tenaga->foto) }}" alt="{{ $tenaga->nama }}">
                                             @else
                                                 <div
-                                                    class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute bg-dark bg-opacity-25">
+                                                    class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute">
                                                     <i class="bi bi-person text-white opacity-50 display-1"></i>
                                                 </div>
                                             @endif
@@ -511,10 +514,7 @@
                                                 </span>
                                             </div>
                                             <h6 class="text-dark fw-bold mb-0 lh-sm" style="font-size: 0.95rem;">
-                                                <a href="{{ route('guru', ['tipe' => $tenaga->tipe]) }}"
-                                                   class="text-dark text-decoration-none">
-                                                    {{ $tenaga->nama }}
-                                                </a>
+                                                {{ $tenaga->nama }}
                                             </h6>
                                         </div>
                                     </div>
@@ -524,7 +524,7 @@
                                 @for($i = 1; $i <= 4; $i++)
                                     <div class="swiper-slide">
                                         <div class="guru-slide-card">
-                                            <div class="guru-slide-img {{ $i % 2 == 0 ? 'bg-red-custom' : 'bg-blue-custom' }}">
+                                            <div class="guru-slide-img bg-blue-custom">
                                                 <div
                                                     class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute">
                                                     <i class="bi bi-person text-white opacity-50 display-1"></i>
@@ -546,6 +546,10 @@
             </div>
         </div>
     </section>
+
+    @foreach($tenagaPendidik as $tenaga)
+        <x-guru-staff-modal :tenaga="$tenaga" />
+    @endforeach
 
     <!-- Agenda, Berita & Artikel Kombinasi -->
     <section class="py-5 bg-white">
