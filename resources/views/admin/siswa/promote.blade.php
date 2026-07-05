@@ -32,12 +32,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for($i = 1; $i <= 6; $i++)
+                        @forelse($daftarKelas as $itemKelas)
                         <tr>
-                            <td><strong>Kelas {{ $i }}</strong></td>
-                            <td class="text-right"><span class="badge badge-info px-2 py-1">{{ $rekapSiswa[$i] }} siswa</span></td>
+                            <td><strong>{{ $itemKelas->tingkat }}</strong></td>
+                            <td class="text-right"><span class="badge badge-info px-2 py-1">{{ $rekapSiswa[$itemKelas->tingkat] }} siswa</span></td>
                         </tr>
-                        @endfor
+                        @empty
+                        <tr>
+                            <td colspan="2" class="text-center text-muted">Belum ada kelas yang dibuat.</td>
+                        </tr>
+                        @endforelse
                         <tr class="bg-light">
                             <td><strong>Alumni (Telah Lulus)</strong></td>
                             <td class="text-right"><span class="badge badge-success px-2 py-1">{{ $rekapSiswa['alumni'] }} alumni</span></td>
@@ -67,13 +71,10 @@
                 <div class="alert alert-warning">
                     <h5><i class="icon fas fa-info-circle"></i> Cara Kerja Kenaikan Kelas Massal:</h5>
                     <ul class="mb-0 pl-4">
-                        <li>Siswa <strong>Kelas 6</strong> akan otomatis dinyatakan <strong>LULUS (Alumni)</strong>, kolom kelas dikosongkan (`null`), dan tahun kelulusan disetel ke tahun ini (<strong>{{ date('Y') }}</strong>).</li>
-                        <li>Siswa di <strong>Kelas 5</strong> akan naik ke <strong>Kelas 6</strong>.</li>
-                        <li>Siswa di <strong>Kelas 4</strong> akan naik ke <strong>Kelas 5</strong>.</li>
-                        <li>Siswa di <strong>Kelas 3</strong> akan naik ke <strong>Kelas 4</strong>.</li>
-                        <li>Siswa di <strong>Kelas 2</strong> akan naik ke <strong>Kelas 3</strong>.</li>
-                        <li>Siswa di <strong>Kelas 1</strong> akan naik ke <strong>Kelas 2</strong>.</li>
-                        <li>Data siswa baru untuk <strong>Kelas 1</strong> yang baru masuk harus diinput manual setelah proses kenaikan kelas ini selesai.</li>
+                        <li>Kenaikan mengikuti urutan nama kelas pada Data Kelas.</li>
+                        <li>Siswa pada kelas terakhir, <strong>{{ $daftarKelas->last()?->tingkat ?? '-' }}</strong>, akan menjadi alumni dengan tahun lulus <strong>{{ date('Y') }}</strong>.</li>
+                        <li>Siswa pada setiap kelas lainnya akan dipindahkan ke kelas berikutnya.</li>
+                        <li>Siswa baru pada kelas pertama diinput manual setelah proses selesai.</li>
                     </ul>
                 </div>
 
@@ -83,7 +84,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                @if(array_sum(array_slice($rekapSiswa, 0, 6)) > 0)
+                @if(collect($rekapSiswa)->except('alumni')->sum() > 0)
                     <form action="{{ route('admin.siswa.promote') }}" method="POST" onsubmit="return confirmPromo(event)">
                         @csrf
                         <button type="submit" class="btn btn-danger btn-block btn-lg py-3 font-weight-bold" id="btn-submit-promote">

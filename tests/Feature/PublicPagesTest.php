@@ -177,18 +177,24 @@ class PublicPagesTest extends TestCase
             'nama' => 'Wali Kelas Tiga',
             'jabatan' => 'Guru Kelas',
         ]);
-        Kelas::where('tingkat', '3')->update(['wali_kelas_id' => $guru->id]);
+        Kelas::create([
+            'tingkat' => 'Kelas 3A',
+            'jurusan' => 'Tahfiz',
+            'wali_kelas_id' => $guru->id,
+        ]);
         Siswa::create([
             'nama' => 'Siswa Kelas Tiga',
             'jenis_kelamin' => 'L',
-            'kelas' => '3',
+            'kelas' => 'Kelas 3A',
             'status' => 'aktif',
             'tahun_masuk' => 2024,
         ]);
 
         $this->get('/kelas')
             ->assertOk()
-            ->assertSee('Kelas 3')
+            ->assertSee('Kelas 3A')
+            ->assertDontSee('Kelas 6')
+            ->assertSee('Tahfiz')
             ->assertSee('Wali Kelas Tiga');
     }
 }

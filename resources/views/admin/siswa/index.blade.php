@@ -40,8 +40,10 @@
                         <label class="small text-muted font-weight-bold">Kelas</label>
                         <select name="kelas" class="form-control" onchange="this.form.submit()">
                             <option value="">Semua Kelas</option>
-                            @foreach(['1', '2', '3', '4', '5', '6'] as $k)
-                                <option value="{{ $k }}" {{ $kelas === $k ? 'selected' : '' }}>Kelas {{ $k }}</option>
+                            @foreach($daftarKelas as $itemKelas)
+                                <option value="{{ $itemKelas->tingkat }}" @selected($kelas === $itemKelas->tingkat)>
+                                    {{ $itemKelas->tingkat }}
+                                </option>
                             @endforeach
                         </select>
                     </div>

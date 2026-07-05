@@ -133,8 +133,10 @@
                                 <label for="kelas">Kelas <span class="text-danger">*</span></label>
                                 <select name="kelas" id="kelas" class="form-control @error('kelas') is-invalid @enderror">
                                     <option value="" disabled>-- Pilih Kelas --</option>
-                                    @foreach(['1', '2', '3', '4', '5', '6'] as $k)
-                                        <option value="{{ $k }}" {{ old('kelas', $siswa->kelas) == $k ? 'selected' : '' }}>Kelas {{ $k }}</option>
+                                    @foreach($daftarKelas as $itemKelas)
+                                        <option value="{{ $itemKelas->tingkat }}" @selected(old('kelas', $siswa->kelas) === $itemKelas->tingkat)>
+                                            {{ $itemKelas->tingkat }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('kelas')

@@ -332,7 +332,7 @@ return [
                     'active' => ['admin/siswa-kenaikan-kelas'],
                 ],
                 [
-                    'text' => 'Atur Wali Kelas',
+                    'text' => 'Data Kelas',
                     'url'  => 'admin/kelas',
                     'active' => ['admin/kelas'],
                 ],

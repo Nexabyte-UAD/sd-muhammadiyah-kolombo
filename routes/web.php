@@ -59,8 +59,10 @@ Route::middleware('auth')->group(function () {
     
     Route::get('admin/siswa-kenaikan-kelas', [\App\Http\Controllers\SiswaController::class, 'promotePage'])->name('admin.siswa.promote.page');
     Route::post('admin/siswa-kenaikan-kelas', [\App\Http\Controllers\SiswaController::class, 'promote'])->name('admin.siswa.promote');
-    Route::get('admin/kelas', [\App\Http\Controllers\KelasController::class, 'edit'])->name('admin.kelas.edit');
-    Route::put('admin/kelas', [\App\Http\Controllers\KelasController::class, 'update'])->name('admin.kelas.update');
+    Route::resource('admin/kelas', \App\Http\Controllers\KelasController::class)
+        ->except('show')
+        ->names('admin.kelas')
+        ->parameters(['kelas' => 'kelas']);
     Route::resource('admin/siswa', \App\Http\Controllers\SiswaController::class)->except('show')->names('admin.siswa');
 });
 

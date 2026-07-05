@@ -94,15 +94,72 @@ class AdminRoutesTest extends TestCase
         ]);
 
         $this->actingAs($user)
-            ->put(route('admin.kelas.update'), [
-                'wali_kelas' => ['3' => $guru->id],
+            ->post(route('admin.kelas.store'), [
+                'tingkat' => 'Kelas 3A',
+                'jurusan' => 'Tahfiz',
+                'wali_kelas_id' => $guru->id,
             ])
-            ->assertRedirect(route('admin.kelas.edit'));
+            ->assertRedirect(route('admin.kelas.index'));
 
         $this->assertSame(
             $guru->id,
-            Kelas::where('tingkat', '3')->value('wali_kelas_id')
+            Kelas::where('tingkat', 'Kelas 3A')->value('wali_kelas_id')
         );
+        $this->assertSame('Tahfiz', Kelas::where('tingkat', 'Kelas 3A')->value('jurusan'));
+    }
+
+    public function test_class_can_be_created_without_an_automatic_major(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Kelas Kosong',
+            'email' => 'kelas-kosong@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('admin.kelas.store'), [
+                'tingkat' => 'Kelas Percobaan',
+                'jurusan' => '',
+                'wali_kelas_id' => '',
+            ])
+            ->assertRedirect(route('admin.kelas.index'));
+
+        $this->assertDatabaseHas('kelas', [
+            'tingkat' => 'Kelas Percobaan',
+            'jurusan' => null,
+        ]);
+    }
+
+    public function test_student_form_uses_classes_created_by_admin(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Siswa',
+            'email' => 'siswa-dinamis@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        Kelas::create(['tingkat' => 'Kelas Bintang']);
+
+        $this->actingAs($user)
+            ->get(route('admin.siswa.create'))
+            ->assertOk()
+            ->assertSee('Kelas Bintang');
+
+        $this->actingAs($user)
+            ->post(route('admin.siswa.store'), [
+                'nama' => 'Siswa Dinamis',
+                'jenis_kelamin' => 'L',
+                'kelas' => 'Kelas Bintang',
+                'status' => 'aktif',
+                'tahun_masuk' => 2026,
+            ])
+            ->assertRedirect(route('admin.siswa.index', ['status' => 'aktif']));
+
+        $this->assertDatabaseHas('siswas', [
+            'nama' => 'Siswa Dinamis',
+            'kelas' => 'Kelas Bintang',
+        ]);
     }
 
     public function test_guru_staff_rejects_values_outside_the_allowed_biodata_enums(): void

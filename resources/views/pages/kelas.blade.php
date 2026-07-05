@@ -41,7 +41,7 @@
 
                 <!-- Simple Table -->
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle text-center" id="table-kelas" style="width:100%">
+                    <table class="table table-bordered table-striped align-middle text-center" id="table-kelas" style="width:100%; font-size: 1rem;">
                         <thead class="table-light">
                             <tr>
                                 <th class="py-2.5" style="width: 80px;">No</th>
@@ -54,11 +54,7 @@
                             @forelse($classes as $item)
                             <tr>
                                 <td class="py-2.5 td-no">{{ $item['no'] }}</td>
-                                <td class="py-2.5">
-                                    <a href="{{ route('siswa', ['kelas' => $item['no']]) }}" class="text-decoration-none fw-semibold text-primary">
-                                        {{ $item['kelas'] }}
-                                    </a>
-                                </td>
+                                <td class="py-2.5 text-dark">{{ $item['kelas'] }}</td>
                                 <td class="py-2.5 text-secondary">{{ $item['jurusan'] }}</td>
                                 <td class="py-2.5 text-dark">{{ $item['wali_kelas'] }}</td>
                             </tr>

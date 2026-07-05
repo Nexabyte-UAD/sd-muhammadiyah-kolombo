@@ -118,7 +118,7 @@ class HomeController extends Controller
 
         $query = Siswa::aktif();
 
-        if ($kelas && in_array($kelas, ['1', '2', '3', '4', '5', '6'])) {
+        if ($kelas && Kelas::where('tingkat', $kelas)->exists()) {
             $query->kelas($kelas);
         }
 
@@ -137,20 +137,16 @@ class HomeController extends Controller
 
     public function kelas()
     {
-        $pengaturanKelas = Kelas::with('waliKelas')->get()->keyBy('tingkat');
-        $classes = [];
-        for ($i = 1; $i <= 6; $i++) {
-            if (Siswa::aktif()->kelas($i)->exists()) {
-                $wali = optional($pengaturanKelas->get((string) $i))->waliKelas;
-
-                $classes[] = [
-                    'no' => $i,
-                    'kelas' => "Kelas {$i}",
-                    'jurusan' => 'Umum',
-                    'wali_kelas' => $wali ? $wali->nama : '-',
-                ];
-            }
-        }
+        $classes = Kelas::with('waliKelas')
+            ->orderBy('tingkat')
+            ->get()
+            ->map(fn (Kelas $kelas, int $index) => [
+                'no' => $index + 1,
+                'filter' => $kelas->tingkat,
+                'kelas' => $kelas->tingkat,
+                'jurusan' => $kelas->jurusan ?: '-',
+                'wali_kelas' => $kelas->waliKelas?->nama ?? '-',
+            ]);
 
         return view('pages.kelas', compact('classes'));
     }

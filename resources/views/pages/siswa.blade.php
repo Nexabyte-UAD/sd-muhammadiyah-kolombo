@@ -9,11 +9,11 @@
         <div class="row justify-content-center mb-4">
             <div class="col-lg-10">
                 <h2 class="fw-bold text-dark mb-0">
-                    Daftar Siswa @if($kelas) Kelas {{ $kelas }} @endif
+                    Daftar Siswa @if($kelas) {{ $kelas }} @endif
                 </h2>
                 @if($kelas)
                     <p class="text-secondary small mt-1">
-                        Menampilkan data siswa aktif untuk Kelas {{ $kelas }}. <a href="{{ route('siswa') }}" class="text-primary text-decoration-none fw-semibold">Lihat semua kelas</a>.
+                        Menampilkan data siswa aktif untuk {{ $kelas }}. <a href="{{ route('siswa') }}" class="text-primary text-decoration-none fw-semibold">Lihat semua kelas</a>.
                     </p>
                 @endif
             </div>
@@ -62,7 +62,7 @@
                             <tr>
                                 <td class="py-2.5 td-no">{{ $index + 1 }}</td>
                                 <td class="py-2.5 text-start fw-semibold text-dark ps-4">{{ $item->nama }}</td>
-                                <td class="py-2.5 text-secondary">Kelas {{ $item->kelas }}</td>
+                                <td class="py-2.5 text-secondary">{{ $item->kelas }}</td>
                                 <td class="py-2.5">
                                     <button class="btn btn-sm btn-outline-primary rounded-3 px-3 py-1 btn-detail" 
                                             data-bs-toggle="modal" 
@@ -70,7 +70,7 @@
                                             data-nama="{{ $item->nama }}"
                                             data-nis="{{ $item->nis ?? '-' }}"
                                             data-nisn="{{ $item->nisn ?? '-' }}"
-                                            data-kelas="Kelas {{ $item->kelas }}"
+                                            data-kelas="{{ $item->kelas }}"
                                             data-jk="{{ $item->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}"
                                             data-ttl="{{ $item->tempat_lahir ?? '-' }}, {{ $item->tanggal_lahir ? $item->tanggal_lahir->translatedFormat('d F Y') : '-' }}"
                                             data-alamat="{{ $item->alamat ?? '-' }}"
@@ -113,7 +113,7 @@
                 </div>
 
                 <h4 id="modal-nama" class="fw-bold text-dark mb-1">Nama Siswa</h4>
-                <p id="modal-kelas-badge" class="badge bg-primary bg-opacity-10 text-primary px-3 py-1.5 rounded-pill fw-bold mb-4">Kelas 1</p>
+                <p id="modal-kelas-badge" class="badge bg-primary bg-opacity-10 text-primary px-3 py-1.5 rounded-pill fw-bold mb-4"></p>
 
                 <div class="text-start border-top pt-3">
                     <div class="row g-2 small">

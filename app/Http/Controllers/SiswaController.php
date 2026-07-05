@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Siswa;
 use App\Models\ActivityLog;
+use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class SiswaController extends Controller
 {
@@ -28,7 +29,7 @@ class SiswaController extends Controller
             $query->aktif();
         }
 
-        if ($kelas && in_array($kelas, ['1', '2', '3', '4', '5', '6'])) {
+        if ($kelas && Kelas::where('tingkat', $kelas)->exists()) {
             $query->kelas($kelas);
         }
 
@@ -42,7 +43,9 @@ class SiswaController extends Controller
 
         $siswas = $query->orderBy('nama', 'asc')->paginate(10)->withQueryString();
 
-        return view('admin.siswa.index', compact('siswas', 'status', 'kelas', 'search'));
+        $daftarKelas = $this->daftarKelas();
+
+        return view('admin.siswa.index', compact('siswas', 'status', 'kelas', 'search', 'daftarKelas'));
     }
 
     /**
@@ -50,7 +53,9 @@ class SiswaController extends Controller
      */
     public function create()
     {
-        return view('admin.siswa.create');
+        return view('admin.siswa.create', [
+            'daftarKelas' => $this->daftarKelas(),
+        ]);
     }
 
     /**
@@ -66,7 +71,11 @@ class SiswaController extends Controller
             'tempat_lahir' => 'nullable|string|max:255',
             'tanggal_lahir' => 'nullable|date',
             'alamat' => 'nullable|string',
-            'kelas' => 'nullable|in:1,2,3,4,5,6',
+            'kelas' => [
+                'nullable',
+                'required_if:status,aktif',
+                Rule::exists('kelas', 'tingkat'),
+            ],
             'status' => 'required|in:aktif,alumni',
             'tahun_masuk' => 'required|integer|min:2000|max:' . (date('Y') + 1),
             'tahun_lulus' => 'nullable|required_if:status,alumni|integer|min:2000|max:' . (date('Y') + 5),
@@ -101,7 +110,10 @@ class SiswaController extends Controller
      */
     public function edit(Siswa $siswa)
     {
-        return view('admin.siswa.edit', compact('siswa'));
+        return view('admin.siswa.edit', [
+            'siswa' => $siswa,
+            'daftarKelas' => $this->daftarKelas(),
+        ]);
     }
 
     /**
@@ -117,7 +129,11 @@ class SiswaController extends Controller
             'tempat_lahir' => 'nullable|string|max:255',
             'tanggal_lahir' => 'nullable|date',
             'alamat' => 'nullable|string',
-            'kelas' => 'nullable|in:1,2,3,4,5,6',
+            'kelas' => [
+                'nullable',
+                'required_if:status,aktif',
+                Rule::exists('kelas', 'tingkat'),
+            ],
             'status' => 'required|in:aktif,alumni',
             'tahun_masuk' => 'required|integer|min:2000|max:' . (date('Y') + 1),
             'tahun_lulus' => 'nullable|required_if:status,alumni|integer|min:2000|max:' . (date('Y') + 5),
@@ -180,13 +196,14 @@ class SiswaController extends Controller
      */
     public function promotePage()
     {
+        $daftarKelas = $this->daftarKelas();
         $rekapSiswa = [];
-        for ($i = 1; $i <= 6; $i++) {
-            $rekapSiswa[$i] = Siswa::aktif()->kelas($i)->count();
+        foreach ($daftarKelas as $kelas) {
+            $rekapSiswa[$kelas->tingkat] = Siswa::aktif()->kelas($kelas->tingkat)->count();
         }
         $rekapSiswa['alumni'] = Siswa::alumni()->count();
 
-        return view('admin.siswa.promote', compact('rekapSiswa'));
+        return view('admin.siswa.promote', compact('rekapSiswa', 'daftarKelas'));
     }
 
     /**
@@ -196,22 +213,23 @@ class SiswaController extends Controller
     {
         DB::transaction(function () {
             $currentYear = date('Y');
+            $daftarKelas = $this->daftarKelas()->pluck('tingkat')->values();
 
-            // 1. Graduate Class 6 to Alumni
-            Siswa::aktif()
-                ->kelas('6')
-                ->update([
+            if ($daftarKelas->isEmpty()) {
+                return;
+            }
+
+            Siswa::aktif()->kelas($daftarKelas->last())->update([
                     'status' => 'alumni',
                     'kelas' => null,
                     'tahun_lulus' => $currentYear
                 ]);
 
-            // 2. Promote classes in descending order (5->6, 4->5, 3->4, 2->3, 1->2)
-            for ($kelas = 5; $kelas >= 1; $kelas--) {
+            for ($index = $daftarKelas->count() - 2; $index >= 0; $index--) {
                 Siswa::aktif()
-                    ->kelas((string)$kelas)
+                    ->kelas($daftarKelas[$index])
                     ->update([
-                        'kelas' => (string)($kelas + 1)
+                        'kelas' => $daftarKelas[$index + 1]
                     ]);
             }
         });
@@ -224,5 +242,10 @@ class SiswaController extends Controller
         ]);
 
         return redirect()->route('admin.siswa.promote.page')->with('success', 'Kenaikan kelas massal dan kelulusan berhasil diproses!');
+    }
+
+    private function daftarKelas()
+    {
+        return Kelas::orderBy('tingkat')->get();
     }
 }
