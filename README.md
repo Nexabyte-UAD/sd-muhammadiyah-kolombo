@@ -1,495 +1,316 @@
-<div align="center">
-  <img src="assets/banner.png" alt="KolomboEdu Banner" width="100%">
-  <br><br>
-  <h1>KolomboEdu</h1>
-  <p><strong>Sistem Informasi Terpadu SD Muhammadiyah Komplek Kolombo Yogyakarta</strong></p>
-  <p>A modern, responsive, and dynamic web platform designed to streamline school management and digital presence.</p>
-</div>
+# KolomboEdu
 
----
+Sistem informasi dan website resmi untuk SD Muhammadiyah Komplek Kolombo Yogyakarta.
 
-## 📖 Deskripsi Project
+KolomboEdu menyediakan portal publik untuk informasi sekolah dan dashboard admin untuk mengelola konten secara dinamis. Proyek ini berbasis Laravel, Blade, Bootstrap/AdminLTE, dan MySQL.
 
-Aplikasi ini adalah sistem informasi sekolah terpadu berbasis web yang dirancang khusus untuk **SD Muhammadiyah Kolombo**. Website ini memiliki dua antarmuka utama:
-1. **Public Portal**: Menampilkan informasi seputar sekolah, profil, tenaga pendidik, berita, hingga pencapaian dan kegiatan ekstrakurikuler kepada masyarakat umum.
-2. **Admin Dashboard**: Sistem Manajemen Konten (CMS) komprehensif bagi pihak internal sekolah untuk mengelola informasi, postingan, foto, dan konfigurasi website secara dinamis.
+## Ringkasan
 
-Proyek ini dibangun dengan memprioritaskan antarmuka yang modern, kecepatan akses, serta kemudahan dalam pengelolaan (User-Friendly).
+Aplikasi ini memiliki dua area utama:
 
----
+1. Portal publik untuk pengunjung, orang tua, siswa, alumni, dan masyarakat umum.
+2. Dashboard admin untuk mengelola berita, profil sekolah, guru/staf, prestasi, ekstrakurikuler, kelas, siswa, pesan pengunjung, pengguna, dan pengaturan website.
 
-## 👨‍💻 Tim Pengembang
+Konten yang diinput dari admin menjadi sumber data untuk halaman publik. Beberapa input teks juga dinormalisasi melalui `IndonesianTextFormatter` agar penulisan konten sekolah lebih konsisten.
 
-Proyek ini dikembangkan oleh:
+## Tim Pengembang
 
-| Peran (Role) | Nama Lengkap | NIM | Kontribusi |
+| Peran | Nama Lengkap | NIM | Kontribusi |
 | :--- | :--- | :--- | :--- |
-| Project Manager | Dzaky Ridhwan Rosyada | 2300018398 | Project Planning & Coordination |
-| UI/UX Designer | Fauziyah Tahta Dirgantari | 2300018252 | Wireframe & Design System |
-| Frontend Developer | M Ilham Nurdin | 2300018406 | Frontend Development |
-| Backend Developer | Aditya Bintang Rianda Syahputra | 2300018399 | Backend, Database & Docker |
-| Quality Assurance (Tester) | Trizana Wafi Reswara | 2300018258 | Testing & Quality Assurance |
+| Project Manager | Dzaky Ridhwan Rosyada | 2300018398 | Project planning dan koordinasi |
+| UI/UX Designer | Fauziyah Tahta Dirgantari | 2300018252 | Wireframe dan design system |
+| Frontend Developer | M Ilham Nurdin | 2300018406 | Pengembangan tampilan publik |
+| Backend Developer | Aditya Bintang Rianda Syahputra | 2300018399 | Backend, database, dan Docker |
+| Quality Assurance | Trizana Wafi Reswara | 2300018258 | Testing dan quality assurance |
 
----
+## Fitur Utama
 
-## ✨ Features
+### Portal Publik
 
-- **Dynamic Public Portal**: 
-  - Beranda (Hero section, statistik, sambutan)
-  - Profil Singkat & Visi Misi
-  - Daftar Guru & Tenaga Kependidikan
-  - Direktori Berita & Artikel
-  - Galeri Prestasi & Ekstrakurikuler
-  - Formulir Kontak / Pesan
-- **Admin Dashboard (AdminLTE 3)**:
-  - Manajemen Pengguna (Role: Admin)
-  - Pengelolaan Berita (CRUD)
-  - Pengelolaan Guru & Staff (CRUD)
-  - Pengelolaan Prestasi (CRUD)
-  - Pengelolaan Ekstrakurikuler (CRUD)
-  - Inbox Pesan dari Pengunjung
-  - Pengaturan Website (Logo, Kontak, Teks Hero)
-- **Modern UI/UX**: Tema profesional (Navy Blue), responsif di semua perangkat (Mobile, Tablet, Desktop).
-- **Environment**: Terkonfigurasi untuk lokal dan *containerized development* dengan Docker.
+- Beranda dengan hero, statistik, sambutan, berita terbaru, dan penghargaan.
+- Halaman profil sekolah: sambutan, tentang, visi misi, dan akreditasi.
+- Halaman guru dan staf dengan biodata.
+- Halaman prestasi berbasis kategori.
+- Halaman ekstrakurikuler.
+- Halaman kelas, siswa, dan alumni.
+- Direktori berita dan detail berita.
+- Form kontak/pesan pengunjung.
 
----
+### Dashboard Admin
 
-## 🛠 Tech Stack
+- Login admin dengan proteksi middleware.
+- Manajemen akun admin.
+- CRUD berita.
+- CRUD guru dan staf.
+- CRUD prestasi.
+- CRUD ekstrakurikuler.
+- CRUD kelas dan siswa.
+- Kenaikan kelas siswa.
+- Inbox pesan pengunjung.
+- Pengelolaan profil sekolah.
+- Pengaturan website seperti logo, kontak, hero, dan sambutan.
+- Activity log untuk aktivitas sistem.
 
-- **Backend / Framework**: [Laravel 11.x](https://laravel.com)
-- **Frontend (Public)**: Vanilla CSS / TailwindCSS, Blade Templating
-- **Frontend (Admin)**: [AdminLTE 3](https://adminlte.io), Bootstrap 4, jQuery
-- **Database**: MySQL 8.x
-- **Development Environment**: Docker & Laravel Sail (atau Laragon/XAMPP)
+## Tech Stack
 
----
+| Bagian | Teknologi |
+| :--- | :--- |
+| Framework | Laravel 13 |
+| Bahasa | PHP 8.3+ |
+| Template | Blade |
+| Dashboard Admin | AdminLTE 3, Bootstrap 4, jQuery |
+| Database | MySQL atau MariaDB |
+| Testing Laravel | PHPUnit |
+| Testing Browser | Python, Pytest, Playwright |
+| Local process runner | npm script dengan `concurrently` |
+| Container | Docker / Laravel Sail |
 
-## 🚀 Installation
+Catatan: proyek ini tidak bergantung pada Vite/Tailwind untuk tampilan aktif. `npm run dev` dipakai sebagai process runner lokal untuk menjalankan server, queue listener, dan log watcher.
 
-Website ini dapat dijalankan menggunakan **Docker** (direkomendasikan) atau **Non-Docker** (Laragon/XAMPP). 
+## Instalasi
 
-### Opsi 1: Menggunakan Docker (Rekomendasi)
-*Syarat: Docker Desktop harus terinstal dan berjalan.*
+### Opsi 1: Docker
 
-1. **Clone repository**
-   ```bash
-   git clone https://github.com/Nexabyte-UAD/sd-muhammadiyah-kolombo.git
-   cd sd-muhammadiyah-kolombo
-   ```
-2. **Persiapkan Environment**
-   ```bash
-   cp .env.example .env
-   ```
-3. **Install Dependensi Awal (Composer)**
-   Karena konfigurasi Docker dari Laravel Sail berada di dalam folder `vendor` yang disembunyikan dari GitHub, Anda harus menginstal dependensinya dulu via container composer sementara:
-   ```bash
-   docker run --rm -v "%cd%:/var/www/html" -w /var/www/html laravelsail/php82-composer:latest composer install --ignore-platform-reqs
-   ```
-   *(Catatan: Jika memakai Mac/Linux/WSL, ganti `"%cd%"` menjadi `"$(pwd)"`)*
+Syarat:
 
-4. **Nyalakan Container & Build**
-   ```bash
-   docker-compose up -d --build
-   ```
-5. **Konfigurasi & Migrasi Database**
-   ```bash
-   docker-compose exec laravel.test php artisan key:generate
-   docker-compose exec laravel.test php artisan migrate:fresh --seed
-   ```
-6. **Akses Website**
-   Buka `http://localhost` di browser Anda.
+- Docker Desktop sudah terpasang dan berjalan.
 
-### Opsi 2: Non-Docker (Laragon / XAMPP)
-*Syarat: PHP 8.2+, Composer, dan MySQL/MariaDB.*
+Langkah:
 
-1. **Clone dan persiapkan repo** (sama seperti langkah 1 & 2 di atas).
-2. **Install Dependensi**
-   ```bash
-   composer install
-   ```
-3. **Konfigurasi Database**
-   - **Penting:** Buat database kosong terlebih dahulu di phpMyAdmin / HeidiSQL Anda (misalnya dengan nama `muhammadiahkolombo`).
-   - Buka file `.env`, lalu sesuaikan koneksinya:
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=muhammadiahkolombo
-   DB_USERNAME=root
-   DB_PASSWORD=
-   ```
-4. **Generate Key & Migrasi**
-   ```bash
-   copy .env.example .env
-   php artisan key:generate
-   php artisan migrate:fresh --seed
-   ```
-5. **Jalankan Server Lokal**
-   ```bash
-   php artisan serve
-   ```
-   Akses di `http://127.0.0.1:8000`.
+```bash
+git clone https://github.com/Nexabyte-UAD/sd-muhammadiyah-kolombo.git
+cd sd-muhammadiyah-kolombo
+cp .env.example .env
+```
 
----
+Install dependency Composer melalui container sementara:
 
-## 🌐 Deployment
+```bash
+docker run --rm -v "%cd%:/var/www/html" -w /var/www/html laravelsail/php83-composer:latest composer install --ignore-platform-reqs
+```
 
-Untuk melakukan deployment ke server production (VPS / Shared Hosting):
-1. Pastikan server memiliki dukungan minimal PHP 8.2 dan ekstensi yang dibutuhkan.
-2. Atur konfigurasi `.env`, khususnya:
-   - `APP_ENV=production`
-   - `APP_DEBUG=false`
-   - `APP_URL=https://domainsekolah.com`
-3. Optimalkan framework:
-   ```bash
-   composer install --optimize-autoloader --no-dev
-   php artisan config:cache
-   php artisan route:cache
-   php artisan view:cache
-   ```
-4. Arahkan *Document Root* dari web server (Nginx/Apache) ke folder `public/`.
+Untuk Mac, Linux, atau WSL, ganti `"%cd%"` menjadi `"$(pwd)"`.
 
----
+Jalankan container:
 
-## 🏛 System Architecture
+```bash
+docker compose up -d --build
+```
 
-Arsitektur sistem mengikuti pola standar MVC (Model-View-Controller) bawaan Laravel:
-- **Models**: Merepresentasikan tabel database dan relasi antar data (Eloquent ORM).
-- **Views**: Blade template untuk merender antarmuka pengguna, dipisahkan antara `layouts/public` dan `layouts/admin`.
-- **Controllers**: Mengendalikan *business logic* dan penghubung antara Model dan View.
-- **Routing**: Dikelola secara terpisah untuk rute *public* (`web.php`) dan rute otentikasi/admin (`auth.php`).
+Generate key, migrasi, dan seed database:
 
----
+```bash
+docker compose exec laravel.test php artisan key:generate
+docker compose exec laravel.test php artisan migrate:fresh --seed
+```
 
-## 🗄 Database / Modules
-
-Aplikasi ini menggunakan modul-modul berikut untuk mengelola data:
-
-1. **Users**: Manajemen akun administrator.
-2. **ProfilSekolah**: Pengaturan data Visi & Misi dan profil panjang.
-3. **GuruStaff**: Manajemen data tenaga pendidik dan staff administrasi.
-4. **Berita**: Modul pengelolaan artikel, pengumuman, dan berita sekolah.
-5. **Prestasi**: Katalog pencapaian siswa dan sekolah.
-6. **Ekstrakurikuler**: Katalog kegiatan luar jam pelajaran.
-7. **Pesan**: Menyimpan pesan/masukan dari pengunjung via formulir kontak.
-8. **Setting**: Konfigurasi dinamis web (seperti Hero Image, Sambutan Kepala Sekolah, Kontak).
-9. **ActivityLog**: Catatan log sistem/aktivitas.
-
----
-
-## 📂 Folder Structure
-
-Berikut adalah struktur folder utama dari aplikasi ini:
+Buka website:
 
 ```text
-/
-├── app/
-│   ├── Http/Controllers/     # Logika aplikasi (Admin & Public)
-│   ├── Models/               # Representasi data (Berita, Guru, dll)
-├── database/
-│   ├── migrations/           # Skema tabel database
-│   ├── seeders/              # Data awal untuk database (Admin)
-├── public/                   # Aset publik (CSS, JS, Images, Uploads)
-├── resources/
-│   ├── views/
-│   │   ├── admin/            # Tampilan dashboard AdminLTE
-│   │   ├── layouts/          # Template induk (Public & Admin)
-│   │   ├── pages/            # Tampilan public (Beranda, Berita, dll)
-│   │   └── auth/             # Tampilan login
-├── routes/
-│   ├── web.php               # Routing untuk public portal
-│   └── auth.php              # Routing untuk area otentikasi
-├── compose.yaml              # Konfigurasi Docker (Laravel Sail)
-└── .env                      # Variabel lingkungan dan koneksi DB
+http://localhost
 ```
 
-### Penjelasan Detail
+### Opsi 2: Non-Docker
 
-| Folder / File | Fungsi & Penjelasan Detail |
-| :--- | :--- |
-| `app/Http/Controllers/` | **Otak Aplikasi**: Berisi logika yang menghubungkan tampilan (View) dengan database (Model). Contoh: `HomeController` untuk public, `BeritaController` untuk admin. |
-| `app/Models/` | **Representasi Database**: Mengatur interaksi langsung dengan tabel database seperti `Berita`, `GuruStaff`, dll menggunakan Eloquent ORM. |
-| `database/migrations/` | **Skema Database**: *Blueprint* otomatis untuk membuat struktur tabel (kolom, tipe data) di MySQL. |
-| `database/seeders/` | **Data Awal**: Berisi skrip untuk memasukkan data *dummy* atau data bawaan (seperti akun Admin `admin@sekolah.com`). |
-| `public/` | **Aset Publik**: Folder yang dapat diakses langsung oleh internet. Berisi CSS, JS, font, serta file gambar yang di-upload. |
-| `resources/views/admin/` | **Tampilan Admin**: Kode HTML/Blade khusus untuk Dashboard AdminLTE (manajemen data). |
-| `resources/views/layouts/` | **Template Induk**: Kerangka utama website (seperti header & footer yang diulang-ulang). Terdapat layout `public` dan `admin`. |
-| `resources/views/pages/` | **Tampilan Publik**: Kode HTML/Blade untuk halaman depan yang dilihat masyarakat umum (Beranda, Berita, dll). |
-| `routes/web.php` | **Navigasi Utama**: Mengatur URL website. Mengarahkan pengunjung ke *Controller* yang tepat. |
-| `routes/auth.php` | **Navigasi Login**: Rute khusus untuk sistem otentikasi (login, logout, lupa password). |
-| `.env` | **Konfigurasi Rahasia**: File untuk menyimpan *password* database, koneksi server, dan kunci API. (Aman dan tidak diunggah ke GitHub). |
-| `compose.yaml` | **Resep Docker**: Konfigurasi otomatis untuk menyalakan server PHP, MySQL, Redis, dan Cloudflare Tunnel secara bersamaan. |
-| `composer.json` | **Daftar Dependensi**: Mencatat pustaka pihak ketiga (seperti framework Laravel, AdminLTE, dll) yang dibutuhkan aplikasi. |
-| `test/user` | **Testing**:  Berisi file automation testing untuk fitur user/public website seperti navigation, dropdown, dan contact form. |
+Syarat:
 
----
-# 🏫 SD Muhammadiyah Kolombo - Automation Testing
+- PHP 8.3+
+- Composer
+- MySQL atau MariaDB
+- Node.js dan npm jika ingin memakai `npm run dev`
 
-Project automation testing untuk website sekolah menggunakan:
-
-* Python
-* Playwright
-* Pytest
-
-Testing difokuskan pada fitur user/public website seperti:
-
-* Navigation menu
-* Dropdown menu
-* Contact form
-
----
-
-# 🐍 Setup Python Virtual Environment
-
-## 2. Membuat Virtual Environment
-
-HEAD
-```bash
-python -m venv venv
-```
-
-### Opsi 1: Menggunakan Docker (Rekomendasi)
-*Syarat: Docker Desktop harus terinstal dan berjalan.*
-
-1. **Clone repository**
-   ```bash
-   git clone <repo-url>
-   cd MuhammadiahKolombo
-   ```
-2. **Persiapkan Environment**
-   ```bash
-   cp .env.example .env
-   ```
-3. **Nyalakan Container & Build**
-   ```bash
-   docker-compose up -d --build
-   ```
-4. **Install Dependensi & Konfigurasi**
-   ```bash
-   docker-compose exec laravel.test composer install
-   docker-compose exec laravel.test php artisan key:generate
-   ```
-5. **Migrasi Database & Seeding**
-   ```bash
-   docker-compose exec laravel.test php artisan migrate:fresh --seed
-   ```
-6. **Akses Website**
-   Buka `http://localhost` di browser Anda.
-
-### Opsi 2: Non-Docker (Laragon / XAMPP)
-*Syarat: PHP 8.2+, Composer, dan MySQL/MariaDB.*
-
-1. **Clone dan persiapkan repo** (sama seperti langkah 1 & 2 di atas).
-2. **Install Dependensi**
-   ```bash
-   composer install
-   ```
-3. **Konfigurasi Database**
-   Buka file `.env`, sesuaikan nama database, username, dan password:
-   ```env
-   DB_CONNECTION=mysql
-   DB_HOST=127.0.0.1
-   DB_PORT=3306
-   DB_DATABASE=muhammadiahkolombo
-   DB_USERNAME=root
-   DB_PASSWORD=
-   ```
-4. **Environment & Generate Key & Migrasi **
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   php artisan migrate:fresh --seed
-   ```
-5. **Jalankan Server Lokal**
-   ```bash
-   php artisan serve
-   ```
-   Akses di `http://127.0.0.1:8000`.
-41f3f76 (Menambahkan automation testing Playwright untuk user)
-
----
-
-## 3. Aktivasi Virtual Environment
-
-### Windows PowerShell
-
-```powershell
-.\venv\Scripts\Activate.ps1
-```
-
-### Windows CMD
-
-```cmd
-venv\Scripts\activate
-```
-
----
-
-# 📚 Install Dependency
-
-## 4. Install Playwright dan Pytest
+Langkah:
 
 ```bash
-pip install playwright pytest
+git clone https://github.com/Nexabyte-UAD/sd-muhammadiyah-kolombo.git
+cd sd-muhammadiyah-kolombo
+copy .env.example .env
+composer install
+php artisan key:generate
 ```
 
----
+Buat database kosong, lalu sesuaikan `.env`:
 
-## 5. Install Browser Playwright
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=muhammadiahkolombo
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Jalankan migrasi dan seeder:
 
 ```bash
-playwright install
+php artisan migrate:fresh --seed
 ```
 
----
-
-# 🚀 Menjalankan Laravel
-
-Pastikan server Laravel berjalan.
+Jalankan server lokal:
 
 ```bash
 php artisan serve
 ```
 
-Default:
+Buka:
 
-```txt
+```text
 http://127.0.0.1:8000
 ```
 
----
-
-# 📁 Struktur Folder Testing
-
-```txt
-test/
-│
-├── user/
-│   ├── test_navigation.py
-│   ├── test_profile.py
-│   ├── test_structural.py
-│   └── test_contact.py
-```
-
----
-
-# 🧪 Automation Testing
-
-## 1. Navigation Testing
-
-File:
-
-```txt
-test/user/test_navigation.py
-```
-
-Fitur yang dites:
-
-* Homepage
-* Prestasi
-* Berita
-* Ekstrakurikuler
-* Kontak
-
-Menjalankan test:
+Alternatif untuk development:
 
 ```bash
-pytest test/user/test_navigation.py
+npm install
+npm run dev
 ```
 
----
+Di Windows PowerShell, gunakan `npm.cmd run dev` jika eksekusi `npm.ps1` diblokir oleh execution policy.
 
-## 2. Profile Dropdown Testing
+## Akun Admin
 
-File:
+Akun admin dibuat melalui seeder. Periksa `database/seeders/DatabaseSeeder.php` untuk kredensial bawaan yang sedang aktif.
 
-```txt
-test/user/test_profile.py
+## Struktur Folder
+
+```text
+app/
+  Http/Controllers/       Controller public dan admin
+  Http/Middleware/        Middleware auth, admin, security, dan timeout
+  Models/                 Model Eloquent
+  Services/               Service aplikasi, termasuk IndonesianTextFormatter
+config/                   Konfigurasi Laravel dan aplikasi
+database/
+  migrations/             Skema database
+  seeders/                Data awal
+public/
+  css/                    CSS publik/admin
+  js/                     JavaScript admin
+  images/                 Aset gambar publik
+  vendor/                 Aset vendor AdminLTE/Bootstrap/jQuery
+resources/views/
+  admin/                  Halaman dashboard admin
+  auth/                   Halaman login dan reset password
+  components/             Komponen Blade
+  layouts/                Layout public, admin, dan auth
+  pages/                  Halaman publik
+routes/
+  web.php                 Route publik dan admin
+  auth.php                Route autentikasi
+test/user/                Test browser Playwright
+tests/                    Test PHPUnit Laravel
 ```
 
-Fitur yang dites:
+## Modul Data
 
-* Kata Sambutan
-* Tentang
-* Visi & Misi
-* Akreditasi
+- `User`: akun administrator.
+- `Setting`: konfigurasi website.
+- `ProfilSekolah`: konten profil sekolah.
+- `GuruStaff`: data guru dan tenaga kependidikan.
+- `Berita`: artikel, pengumuman, dan berita sekolah.
+- `Prestasi`: prestasi siswa/sekolah per kategori.
+- `Ekstrakurikuler`: kegiatan ekstrakurikuler.
+- `Kelas`: data kelas dinamis dan wali kelas.
+- `Siswa`: data siswa aktif, mutasi, alumni, dan riwayat akademik.
+- `Pesan`: pesan dari formulir kontak.
+- `ActivityLog`: catatan aktivitas sistem.
 
-Menjalankan test:
+## Testing
+
+### Test Laravel
+
+Jalankan seluruh test PHPUnit:
 
 ```bash
-pytest test/user/test_profile.py
+php artisan test
 ```
 
----
-
-## 3. Structural Dropdown Testing
-
-File:
-
-```txt
-test/user/test_structural.py
-```
-
-Fitur yang dites:
-
-* Guru
-* Staf
-
-Menjalankan test:
+Atau melalui Composer:
 
 ```bash
-pytest test/user/test_structural.py
+composer test
 ```
 
----
+Test Laravel mencakup halaman publik, route admin, dan formatter teks Indonesia.
 
-## 4. Contact Form Testing
+### Test Browser Playwright
 
-File:
-
-```txt
-test/user/test_contact.py
-```
-
-Fitur yang dites:
-
-* Input nama
-* Input email
-* Input pesan
-* Submit form
-
-Menjalankan test:
+Buat virtual environment Python:
 
 ```bash
-pytest test/user/test_contact.py
+python -m venv venv
 ```
 
----
+Aktivasi di Windows PowerShell:
 
-# ▶️ Menjalankan Semua Testing
+```powershell
+.\venv\Scripts\Activate.ps1
+```
+
+Aktivasi di Windows CMD:
+
+```cmd
+venv\Scripts\activate
+```
+
+Install dependency:
+
+```bash
+pip install playwright pytest
+playwright install
+```
+
+Pastikan Laravel berjalan:
+
+```bash
+php artisan serve
+```
+
+Jalankan semua test browser:
 
 ```bash
 pytest test/user
 ```
 
----
+Jalankan test tertentu:
 
-# ✅ Hasil Testing
-
-Jika berhasil:
-
-```txt
-4 passed
+```bash
+pytest test/user/test_navigation.py
+pytest test/user/test_profile.py
+pytest test/user/test_structural.py
+pytest test/user/test_contact.py
 ```
 
-atau sesuai jumlah test yang dijalankan.
+## Catatan Pengembangan
 
----
+- Gunakan `app/Services/IndonesianTextFormatter.php` sebagai pusat normalisasi teks.
+- Jangan menduplikasi aturan kapitalisasi di controller atau view.
+- Modul prestasi memakai kategori sebagai sumber yang sama untuk admin dan halaman publik.
+- Modul guru/staf memakai model `GuruStaff` dengan pembeda `tipe`.
+- Modul kelas dan siswa dibuat dinamis, bukan daftar kelas statis.
+- Setelah mengubah route, controller, migration, atau formatter, jalankan test yang relevan.
 
-# 👨‍💻 Developer
+## Deployment
 
-Automation testing dibuat untuk kebutuhan project website sekolah SD Muhammadiyah Kolombo.
+Checklist dasar production:
 
-## 📄 License
+```bash
+composer install --optimize-autoloader --no-dev
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
 
-Proyek ini dilisensikan di bawah **MIT License**. Lihat file [LICENSE](LICENSE) untuk informasi lebih lanjut.
+Pastikan `.env` production sudah disesuaikan:
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://domain-sekolah.example
+```
+
+Arahkan document root web server ke folder `public/`.
+
+## Lisensi
+
+Proyek ini menggunakan lisensi MIT. Lihat [LICENSE](LICENSE) untuk detailnya.
