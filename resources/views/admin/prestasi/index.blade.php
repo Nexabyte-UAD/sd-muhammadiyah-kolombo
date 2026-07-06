@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Manajemen Prestasi')
 
@@ -39,10 +39,9 @@
                                 @if($item->gambar)
                                     <img src="{{ asset('storage/' . $item->gambar) }}" alt="Foto" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
                                 @else
-                                    <div class="bg-light d-flex flex-column align-items-center justify-content-center text-muted border rounded"
+                                    <div class="bg-light d-flex align-items-center justify-content-center text-muted border rounded"
                                          style="width: 60px; height: 60px;">
-                                        <i class="far fa-image"></i>
-                                        <small style="font-size: 8px;">No Image</small>
+                                        <i class="fas fa-trophy" title="Tanpa gambar"></i>
                                     </div>
                                 @endif
                             </td>

@@ -9,5 +9,12 @@ class ProfilSekolah extends Model
 {
     use HasFactory;
 
+    public const TYPES = [
+        'tentang',
+        'sambutan',
+        'visi_misi',
+        'akreditasi',
+    ];
+
     protected $fillable = ['type', 'judul', 'konten', 'gambar'];
 }

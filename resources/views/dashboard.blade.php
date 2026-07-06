@@ -1,239 +1,203 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Dashboard')
+@section('page_kicker', 'Ringkasan hari ini')
+@section('page_title', 'Dashboard')
+@section('page_description', 'Pantau data sekolah dan kelola konten website dari satu tempat.')
 
-@section('content_header')
-    <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Dashboard</h1>
-        </div>
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Dashboard</li>
-            </ol>
-        </div>
-    </div>
-@stop
+@section('page_actions')
+    <a href="{{ route('admin.berita.create') }}" class="btn-admin">
+        <x-admin-icon name="plus" size="18"/>
+        Tambah Berita
+    </a>
+@endsection
 
 @section('content')
-    <div class="row">
-        <!-- Total Siswa Aktif -->
-        <div class="col-lg-2 col-6">
-            <div class="small-box bg-indigo">
-                <div class="inner">
-                    <h3>{{ $countSiswa }}</h3>
-                    <p>Siswa Aktif</p>
+    <section class="stats-grid" aria-label="Statistik sekolah">
+        <article class="stat-card">
+            <div class="stat-card-top">
+                <div>
+                    <div class="stat-label">Siswa Aktif</div>
+                    <div class="stat-value">{{ number_format($countSiswa) }}</div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-user-graduate"></i>
-                </div>
-                <a href="{{ route('admin.siswa.index', ['status' => 'aktif']) }}" class="small-box-footer">
-                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
-                </a>
+                <span class="stat-icon"><x-admin-icon name="students" size="21"/></span>
             </div>
-        </div>
+            <a href="{{ route('admin.siswa.index', ['status' => 'aktif']) }}" class="stat-link">
+                Kelola data <x-admin-icon name="arrow-right" size="14"/>
+            </a>
+        </article>
 
-        <!-- Total Alumni -->
-        <div class="col-lg-2 col-6">
-            <div class="small-box bg-teal">
-                <div class="inner">
-                    <h3>{{ $countAlumni }}</h3>
-                    <p>Total Alumni</p>
+        <article class="stat-card">
+            <div class="stat-card-top">
+                <div>
+                    <div class="stat-label">Guru &amp; Staf</div>
+                    <div class="stat-value">{{ number_format($countGuru) }}</div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-graduation-cap"></i>
-                </div>
-                <a href="{{ route('admin.siswa.index', ['status' => 'alumni']) }}" class="small-box-footer">
-                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
-                </a>
+                <span class="stat-icon green"><x-admin-icon name="users" size="21"/></span>
             </div>
-        </div>
+            <a href="{{ route('admin.guru-staff.index') }}" class="stat-link">
+                Kelola data <x-admin-icon name="arrow-right" size="14"/>
+            </a>
+        </article>
 
-        <!-- Total Guru -->
-        <div class="col-lg-2 col-6">
-            <div class="small-box bg-info">
-                <div class="inner">
-                    <h3>{{ $countGuru }}</h3>
-                    <p>Total Guru & Staf</p>
+        <article class="stat-card">
+            <div class="stat-card-top">
+                <div>
+                    <div class="stat-label">Berita Terbit</div>
+                    <div class="stat-value">{{ number_format($countBerita) }}</div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-users"></i>
-                </div>
-                <a href="{{ route('admin.guru-staff.index') }}" class="small-box-footer">
-                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
-                </a>
+                <span class="stat-icon yellow"><x-admin-icon name="news" size="21"/></span>
             </div>
-        </div>
+            <a href="{{ route('admin.berita.index') }}" class="stat-link">
+                Lihat berita <x-admin-icon name="arrow-right" size="14"/>
+            </a>
+        </article>
 
-        <!-- Total Berita -->
-        <div class="col-lg-2 col-6">
-            <div class="small-box bg-success">
-                <div class="inner">
-                    <h3>{{ $countBerita }}</h3>
-                    <p>Total Berita</p>
+        <article class="stat-card">
+            <div class="stat-card-top">
+                <div>
+                    <div class="stat-label">Pesan Masuk</div>
+                    <div class="stat-value">{{ number_format($countPesan) }}</div>
                 </div>
-                <div class="icon">
-                    <i class="fas fa-newspaper"></i>
-                </div>
-                <a href="{{ route('admin.berita.index') }}" class="small-box-footer">
-                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
-                </a>
+                <span class="stat-icon red"><x-admin-icon name="message" size="21"/></span>
             </div>
-        </div>
+            <a href="{{ route('admin.pesan.index') }}" class="stat-link">
+                Buka pesan <x-admin-icon name="arrow-right" size="14"/>
+            </a>
+        </article>
+    </section>
 
-        <!-- Total Prestasi -->
-        <div class="col-lg-2 col-6">
-            <div class="small-box bg-warning">
-                <div class="inner">
-                    <h3>{{ $countPrestasi }}</h3>
-                    <p>Total Prestasi</p>
+    <div class="dashboard-grid">
+        <div>
+            <section class="admin-card">
+                <header class="admin-card-header">
+                    <h2 class="admin-card-title">Berita Terbaru</h2>
+                    <a href="{{ route('admin.berita.index') }}" class="admin-card-link">Lihat semua</a>
+                </header>
+                <div class="admin-card-body flush">
+                    @if($latestBerita->isNotEmpty())
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Berita</th>
+                                        <th>Tanggal Terbit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($latestBerita as $berita)
+                                        <tr>
+                                            <td>
+                                                <div class="content-cell">
+                                                    <div class="content-thumb">
+                                                        @if($berita->gambar)
+                                                            <img src="{{ asset('storage/' . $berita->gambar) }}" alt="">
+                                                        @else
+                                                            <x-admin-icon name="news" size="19"/>
+                                                        @endif
+                                                    </div>
+                                                    <div>
+                                                        <div class="content-title">{{ Str::limit($berita->judul, 58) }}</div>
+                                                        <div class="content-meta">Diperbarui {{ $berita->updated_at->diffForHumans() }}</div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>{{ optional($berita->tanggal)->translatedFormat('d M Y') ?? '—' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="empty-state">Belum ada berita yang diterbitkan.</div>
+                    @endif
                 </div>
-                <div class="icon">
-                    <i class="fas fa-trophy"></i>
-                </div>
-                <a href="{{ route('admin.prestasi.index') }}" class="small-box-footer">
-                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
+            </section>
 
-        <!-- Pesan Masuk -->
-        <div class="col-lg-2 col-6">
-            <div class="small-box bg-danger">
-                <div class="inner">
-                    <h3>{{ $countPesan }}</h3>
-                    <p>Pesan Masuk</p>
-                </div>
-                <div class="icon">
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <a href="{{ route('admin.pesan.index') }}" class="small-box-footer">
-                    Selengkapnya <i class="fas fa-arrow-circle-right"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <!-- Left Col -->
-        <div class="col-md-8">
-            <!-- Berita Terbaru -->
-            <div class="card">
-                <div class="card-header border-transparent">
-                    <h3 class="card-title">Berita Terbaru</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table m-0">
-                            <thead>
-                                <tr>
-                                    <th>Gambar</th>
-                                    <th>Judul</th>
-                                    <th>Tanggal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($latestBerita as $berita)
-                                <tr>
-                                    <td>
-                                        @if($berita->gambar)
-                                            <img src="{{ asset('storage/'.$berita->gambar) }}" class="img-circle" style="width: 40px; height: 40px; object-fit: cover;" alt="">
-                                        @else
-                                            <div class="bg-light d-flex align-items-center justify-content-center text-muted border img-circle" style="width: 40px; height: 40px;">
-                                                <i class="fas fa-image"></i>
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td>{{ Str::limit($berita->judul, 50) }}</td>
-                                    <td>{{ $berita->tanggal->translatedFormat('d M Y') }}</td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card-footer clearfix">
-                    <a href="{{ route('admin.berita.index') }}" class="btn btn-sm btn-secondary float-right">Lihat Semua Berita</a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Col -->
-        <div class="col-md-4">
-            <!-- Pesan Terbaru -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Pesan Terbaru</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body p-0">
-                    <ul class="products-list product-list-in-card pl-2 pr-2">
-                        @foreach($latestPesan as $pesan)
-                        <li class="item">
-                            <div class="product-info ml-0">
-                                <a href="javascript:void(0)" class="product-title">{{ $pesan->nama }}
-                                    <span class="badge badge-info float-right"><i class="fas fa-envelope"></i></span>
-                                </a>
-                                <span class="product-description">
-                                    {{ Str::limit($pesan->isi, 40) }}
+            <section class="admin-card">
+                <header class="admin-card-header">
+                    <h2 class="admin-card-title">Pesan Terbaru</h2>
+                    <a href="{{ route('admin.pesan.index') }}" class="admin-card-link">Buka kotak masuk</a>
+                </header>
+                <div class="admin-card-body flush">
+                    @forelse($latestPesan as $pesan)
+                        <div class="activity-item">
+                            <span class="activity-dot"></span>
+                            <div class="activity-copy">
+                                <strong>{{ $pesan->nama }}</strong>
+                                <p>{{ Str::limit($pesan->isi, 90) }}</p>
+                                <span class="activity-time">
+                                    <x-admin-icon name="clock" size="12"/>
+                                    {{ $pesan->created_at->diffForHumans() }}
                                 </span>
                             </div>
-                        </li>
-                        @endforeach
-                    </ul>
+                        </div>
+                    @empty
+                        <div class="empty-state">Belum ada pesan masuk.</div>
+                    @endforelse
                 </div>
-                <div class="card-footer text-center">
-                    <a href="{{ route('admin.pesan.index') }}" class="uppercase">Lihat Semua Pesan</a>
-                </div>
-            </div>
+            </section>
+        </div>
 
-            <!-- Aktivitas Terakhir -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Aktivitas Terakhir</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                            <i class="fas fa-minus"></i>
-                        </button>
+        <aside>
+            <section class="admin-card">
+                <header class="admin-card-header">
+                    <h2 class="admin-card-title">Akses Cepat</h2>
+                </header>
+                <div class="admin-card-body">
+                    <div class="quick-actions">
+                        <a href="{{ route('admin.berita.create') }}" class="quick-action">
+                            <x-admin-icon name="news" size="21"/>
+                            Tambah Berita
+                        </a>
+                        <a href="{{ route('admin.siswa.create') }}" class="quick-action">
+                            <x-admin-icon name="students" size="21"/>
+                            Tambah Siswa
+                        </a>
+                        <a href="{{ route('admin.prestasi.create') }}" class="quick-action">
+                            <x-admin-icon name="award" size="21"/>
+                            Tambah Prestasi
+                        </a>
+                        <a href="{{ route('admin.settings.edit') }}" class="quick-action">
+                            <x-admin-icon name="settings" size="21"/>
+                            Pengaturan
+                        </a>
                     </div>
                 </div>
-                <div class="card-body p-0">
-                    <ul class="products-list product-list-in-card pl-2 pr-2">
+            </section>
+
+            <section class="admin-card">
+                <header class="admin-card-header">
+                    <h2 class="admin-card-title">Aktivitas Terakhir</h2>
+                </header>
+                <div class="admin-card-body flush">
+                    <ul class="activity-list">
                         @forelse($recentActivities as $activity)
-                        <li class="item">
-                            <div class="product-info ml-0">
-                                @php
-                                    $badgeClass = 'badge-primary';
-                                    if ($activity->action_type == 'Tambah') $badgeClass = 'badge-success';
-                                    if ($activity->action_type == 'Update') $badgeClass = 'badge-warning';
-                                    if ($activity->action_type == 'Hapus') $badgeClass = 'badge-danger';
-                                @endphp
-                                <span class="product-title">
-                                    {{ $activity->module }}
-                                    <span class="badge {{ $badgeClass }} float-right">{{ $activity->action_type }}</span>
-                                </span>
-                                <span class="product-description">
-                                    {{ Str::limit($activity->description, 35) }}
-                                </span>
-                                <span class="text-muted text-sm">{{ $activity->created_at->diffForHumans() }}</span>
-                            </div>
-                        </li>
+                            @php
+                                $dotClass = match($activity->action_type) {
+                                    'Tambah' => 'green',
+                                    'Update' => 'yellow',
+                                    'Hapus' => 'red',
+                                    default => '',
+                                };
+                            @endphp
+                            <li class="activity-item">
+                                <span class="activity-dot {{ $dotClass }}"></span>
+                                <div class="activity-copy">
+                                    <strong>{{ $activity->module }} · {{ $activity->action_type }}</strong>
+                                    <p>{{ Str::limit($activity->description, 68) }}</p>
+                                    <span class="activity-time">
+                                        <x-admin-icon name="clock" size="12"/>
+                                        {{ $activity->created_at->diffForHumans() }}
+                                    </span>
+                                </div>
+                            </li>
                         @empty
-                        <li class="item text-center text-muted py-3">Belum ada aktivitas tercatat.</li>
+                            <li class="empty-state">Belum ada aktivitas tercatat.</li>
                         @endforelse
                     </ul>
                 </div>
-            </div>
-        </div>
+            </section>
+        </aside>
     </div>
-@stop
+@endsection

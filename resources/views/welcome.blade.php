@@ -28,11 +28,11 @@
             ];
         }
 
-        // Jika tidak ada gambar kustom yang berhasil dimuat/diunggah, gunakan 1 gambar default saja
+        // Jika tidak ada gambar kustom, gunakan latar brand lokal tanpa ketergantungan internet
         if (empty($heroSlides)) {
             $heroSlides[] = [
-                'url' => 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2000&auto=format&fit=crop',
-                'alt' => 'Fasilitas Sekolah'
+                'url' => null,
+                'alt' => 'Latar sekolah'
             ];
         }
     @endphp
@@ -63,11 +63,16 @@
         @else
             <!-- Tampilan Static Banner jika hanya 1 gambar (tanpa indikator & tanpa slide berpindah) -->
             <div class="h-100 w-100">
-                <img src="{{ $heroSlides[0]['url'] }}" class="d-block w-100 h-100"
-                    style="object-fit: cover; object-position: center;"
-                    alt="{{ $heroSlides[0]['alt'] }}">
+                @if($heroSlides[0]['url'])
+                    <img src="{{ $heroSlides[0]['url'] }}" class="d-block w-100 h-100"
+                        style="object-fit: cover; object-position: center;"
+                        alt="{{ $heroSlides[0]['alt'] }}">
+                @else
+                    <div class="hero-default-bg w-100 h-100" role="img" aria-label="{{ $heroSlides[0]['alt'] }}"></div>
+                @endif
             </div>
         @endif
+
     </div>
 
     <style>
@@ -101,6 +106,87 @@
             height: 600px;
         }
 
+        .hero-default-bg {
+            position: relative;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 15% 25%, rgba(254, 241, 2, .14) 0 2px, transparent 3px),
+                radial-gradient(circle at 85% 75%, rgba(255, 255, 255, .10) 0 2px, transparent 3px),
+                linear-gradient(135deg, #172554 0%, #1e3a8a 58%, #2563eb 100%);
+            background-size: 48px 48px, 64px 64px, 100% 100%;
+        }
+
+        .hero-default-bg::after {
+            content: "";
+            position: absolute;
+            right: -8%;
+            bottom: -45%;
+            width: 55%;
+            aspect-ratio: 1;
+            border: 2px solid rgba(254, 241, 2, .15);
+            border-radius: 50%;
+            box-shadow:
+                0 0 0 70px rgba(255, 255, 255, .035),
+                0 0 0 140px rgba(254, 241, 2, .025);
+        }
+
+        .welcome-poster-section {
+            position: relative;
+            overflow: hidden;
+            padding: 4rem 0;
+            background:
+                linear-gradient(135deg, transparent 0 84%, rgba(30, 58, 138, .035) 84% 91%, transparent 91%),
+                linear-gradient(45deg, rgba(30, 58, 138, .025) 0 8%, transparent 8% 100%),
+                #fff;
+        }
+
+        .welcome-poster {
+            max-width: 1020px;
+            margin: 0 auto;
+        }
+
+        .welcome-poster-title {
+            margin: 0;
+            color: #111827;
+            font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            font-weight: 800;
+            letter-spacing: -.015em;
+            line-height: .95;
+            text-transform: uppercase;
+        }
+
+        .welcome-poster-subtitle {
+            margin: .75rem 0 1.4rem;
+            color: #475569;
+            font-size: clamp(.85rem, 1.8vw, 1.25rem);
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+        }
+
+        .welcome-school-name {
+            width: min(100%, 900px);
+            margin: 0 auto;
+            padding: .85rem 1.75rem;
+            color: #111827;
+            background: #FEF102;
+            border-radius: 999px;
+            font-size: clamp(1rem, 2.4vw, 1.4rem);
+            font-weight: 750;
+            line-height: 1.3;
+            box-shadow: 0 8px 20px rgba(254, 241, 2, .16);
+        }
+
+        .welcome-poster-description {
+            max-width: 760px;
+            margin: 1.25rem auto 0;
+            color: #475569;
+            font-size: clamp(.95rem, 1.8vw, 1.12rem);
+            font-style: italic;
+            line-height: 1.6;
+        }
+
         .sambutan-img-wrapper {
             min-height: 500px;
         }
@@ -130,8 +216,47 @@
                 height: 300px;
             }
 
+            .welcome-poster-section {
+                padding: 3rem 0;
+            }
+
+            .welcome-school-name {
+                padding: .7rem 1rem;
+            }
+
             .sambutan-img-wrapper {
                 min-height: 250px;
+            }
+        }
+
+        .home-news-card {
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .home-news-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 .75rem 1.5rem rgba(15, 23, 42, .12) !important;
+        }
+
+        .home-news-main-image {
+            height: 360px;
+            object-fit: cover;
+        }
+
+        .home-news-side-image {
+            width: 150px;
+            min-height: 145px;
+            object-fit: cover;
+        }
+
+        @media (max-width: 767.98px) {
+            .home-news-main-image {
+                height: 240px;
+            }
+
+            .home-news-side-image {
+                width: 120px;
+                min-height: 130px;
             }
         }
     </style>
@@ -268,35 +393,20 @@
         }
     </style>
 
-    <!-- Section Tentang Sekolah (Sederhana & Proporsional) -->
-    <section class="py-5 bg-white">
+    <!-- Selamat Datang -->
+    <section class="welcome-poster-section">
         <div class="container">
-            
-            <!-- Premium Welcome Header -->
-            <div class="text-center mb-4 position-relative z-2">
-                
-                <!-- Main Title -->
-                <h2 class="fw-bolder mb-3 lh-sm" style="font-size: clamp(1.75rem, 3vw, 2.25rem); letter-spacing: -0.5px; color: #0f172a;">
-                    Selamat Datang di<br>
-                    <span style="background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">
-                        {{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Komplek Kolombo' }}
-                    </span>
-                </h2>
-                
-                <!-- Underline Decoration -->
-                <div class="d-flex justify-content-center align-items-center gap-2 mt-4">
-                    <div style="height: 4px; width: 50px; background: linear-gradient(90deg, transparent, #1e3a8a); border-radius: 2px;"></div>
-                    <div style="height: 8px; width: 8px; background-color: #FEF102; border-radius: 50%; box-shadow: 0 0 10px rgba(254, 241, 2, 0.5);"></div>
-                    <div style="height: 4px; width: 50px; background: linear-gradient(270deg, transparent, #1e3a8a); border-radius: 2px;"></div>
+            <div class="welcome-poster text-center">
+                <h2 class="welcome-poster-title">Selamat Datang</h2>
+                <p class="welcome-poster-subtitle">di Website Resmi</p>
+                <div class="welcome-school-name">
+                    {{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Komplek Kolombo' }}
                 </div>
-                
-                <!-- Subtext -->
-                <p class="text-secondary mt-4 mx-auto" style="max-width: 650px; font-size: 1rem; line-height: 1.7;">
+                <p class="welcome-poster-description">
                     Bersama membentuk generasi yang cerdas secara intelektual, unggul dalam berprestasi, dan berakhlak mulia berlandaskan nilai-nilai Islami.
                 </p>
             </div>
-
-                    </div>
+        </div>
     </section>
 
     <!-- Statistik Sekolah (Modern Geometric Cards) -->
@@ -304,16 +414,16 @@
         <div class="container position-relative z-2">
             <div class="row g-4 justify-content-center">
                 <!-- Stat 1 -->
-                <div class="col-6 col-md-3">
-                    <div class="p-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(0,135,78,0.15) !important;">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(0,135,78,0.15) !important;">
                         <div class="position-absolute top-0 end-0 p-2 opacity-10 transform-icon">
-                            <i class="bi bi-person-badge-fill text-success" style="font-size: 6rem; transform: rotate(15deg);"></i>
+                            <i class="bi bi-person-badge-fill text-success" style="transform: rotate(15deg);"></i>
                         </div>
                         <div class="position-relative z-1">
                             <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-2 bg-success bg-opacity-10 text-success" style="width: 40px; height: 40px;">
                                 <i class="bi bi-person-badge-fill" style="font-size: 1.25rem;"></i>
                             </div>
-                            <h2 class="fw-bolder text-dark mb-1" style="font-size: 2.2rem; letter-spacing: -1px;">
+                            <h2 class="fw-bolder text-dark mb-1 stat-value">
                                 {{ $countTenagaPendidik }}<span class="text-warning" style="font-size: 1.2rem; vertical-align: middle;">+</span>
                             </h2>
                             <p class="text-secondary fw-bold text-uppercase mb-0 tracking-wider" style="font-size: 0.7rem;">Tenaga Pendidik</p>
@@ -321,57 +431,55 @@
                     </div>
                 </div>
                 <!-- Stat 2 -->
-                <div class="col-6 col-md-3">
-                    <div class="p-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(254,241,2,0.3) !important;">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(254,241,2,0.3) !important;">
                         <div class="position-absolute top-0 end-0 p-2 opacity-10 transform-icon">
-                            <i class="bi bi-mortarboard-fill text-warning" style="font-size: 6rem; transform: rotate(-10deg);"></i>
+                            <i class="bi bi-mortarboard-fill text-warning" style="transform: rotate(-10deg);"></i>
                         </div>
                         <div class="position-relative z-1">
                             <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-2 bg-warning bg-opacity-10 text-warning" style="width: 40px; height: 40px;">
                                 <i class="bi bi-mortarboard-fill" style="font-size: 1.25rem;"></i>
                             </div>
-                            <h2 class="fw-bolder text-dark mb-1" style="font-size: 2.2rem; letter-spacing: -1px;">
+                            <h2 class="fw-bolder text-dark mb-1 stat-value">
                                 {{ $countPesertaDidik }}<span class="text-success" style="font-size: 1.2rem; vertical-align: middle;">+</span>
                             </h2>
-                            <a href="{{ route('siswa') }}"
-                               class="text-secondary fw-bold text-uppercase mb-0 tracking-wider text-decoration-none stretched-link"
-                               style="font-size: 0.7rem;">Peserta Didik</a>
+                            <p class="text-secondary fw-bold text-uppercase mb-0 tracking-wider"
+                               style="font-size: 0.7rem;">Peserta Didik</p>
                         </div>
                     </div>
                 </div>
                 <!-- Stat 3 -->
-                <div class="col-6 col-md-3">
-                    <div class="p-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(13,110,253,0.15) !important;">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(124,58,237,0.18) !important;">
                         <div class="position-absolute top-0 end-0 p-2 opacity-10 transform-icon">
-                            <i class="bi bi-palette-fill text-primary" style="font-size: 6rem; transform: rotate(15deg);"></i>
+                            <i class="bi bi-stars" style="color: #7c3aed; transform: rotate(15deg);"></i>
                         </div>
                         <div class="position-relative z-1">
-                            <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-2 bg-primary bg-opacity-10 text-primary" style="width: 40px; height: 40px;">
-                                <i class="bi bi-palette-fill" style="font-size: 1.25rem;"></i>
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-2" style="width: 40px; height: 40px; color: #7c3aed; background-color: rgba(124,58,237,0.10);">
+                                <i class="bi bi-stars" style="font-size: 1.25rem;"></i>
                             </div>
-                            <h2 class="fw-bolder text-dark mb-1" style="font-size: 2.2rem; letter-spacing: -1px;">
+                            <h2 class="fw-bolder text-dark mb-1 stat-value">
                                 {{ $countEkstra }}
                             </h2>
-                            <a href="{{ route('ekstrakurikuler') }}"
-                               class="text-secondary fw-bold text-uppercase mb-0 tracking-wider text-decoration-none stretched-link"
-                               style="font-size: 0.7rem;">Kegiatan Ekstra</a>
+                            <p class="text-secondary fw-bold text-uppercase mb-0 tracking-wider"
+                               style="font-size: 0.7rem;">Kegiatan Ekstra</p>
                         </div>
                     </div>
                 </div>
                 <!-- Stat 4 -->
-                <div class="col-6 col-md-3">
-                    <div class="p-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(220,53,69,0.15) !important;">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(220,53,69,0.15) !important;">
                         <div class="position-absolute top-0 end-0 p-2 opacity-10 transform-icon">
-                            <i class="bi bi-award-fill text-danger" style="font-size: 6rem; transform: rotate(-15deg);"></i>
+                            <i class="bi bi-award-fill text-danger" style="transform: rotate(-15deg);"></i>
                         </div>
                         <div class="position-relative z-1">
                             <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-2 bg-danger bg-opacity-10 text-danger" style="width: 40px; height: 40px;">
                                 <i class="bi bi-award-fill" style="font-size: 1.25rem;"></i>
                             </div>
-                            <h2 class="fw-bolder text-dark mb-1" style="font-size: 2.2rem; letter-spacing: -1px;">
+                            <h2 class="fw-bolder text-dark mb-1 stat-value">
                                 {{ $countPrestasi }}<span class="text-warning" style="font-size: 1.2rem; vertical-align: middle;">+</span>
                             </h2>
-                            <a href="{{ route('prestasi') }}" class="text-secondary fw-bold text-uppercase mb-0 tracking-wider text-decoration-none stretched-link" style="font-size: 0.7rem;">Penghargaan</a>
+                            <p class="text-secondary fw-bold text-uppercase mb-0 tracking-wider" style="font-size: 0.7rem;">Penghargaan</p>
                         </div>
                     </div>
                 </div>
@@ -386,6 +494,15 @@
         .stat-geometric-card {
             background-color: #ffffff;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .stat-value {
+            font-size: 2.2rem;
+            letter-spacing: -1px;
+        }
+
+        .transform-icon i {
+            font-size: 6rem;
         }
         
         .stat-geometric-card:hover {
@@ -402,6 +519,20 @@
             transform: scale(1.1) rotate(0deg) !important;
             opacity: 0.7;
         }
+
+        @media (max-width: 575.98px) {
+            .stat-geometric-card {
+                min-height: 145px;
+            }
+
+            .stat-value {
+                font-size: 1.9rem;
+            }
+
+            .transform-icon i {
+                font-size: 4.5rem;
+            }
+        }
     </style>
 
     <section class="py-5 bg-white">
@@ -409,8 +540,8 @@
             <div class="profil-grid-container">
                 <!-- Foto Tunggal (Kiri) -->
                 <div class="profil-grid-item">
-                    @if(isset($profilSingkat) && $profilSingkat->gambar && file_exists(public_path('storage/' . $profilSingkat->gambar)))
-                        <img src="{{ asset('storage/' . $profilSingkat->gambar) }}" class="w-100 h-100" alt="Foto Profil Sekolah" style="object-fit: cover;">
+                    @if(isset($tentang) && $tentang->gambar && file_exists(public_path('storage/' . $tentang->gambar)))
+                        <img src="{{ asset('storage/' . $tentang->gambar) }}" class="w-100 h-100" alt="Foto Tentang Sekolah" style="object-fit: cover;">
                     @else
                         <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800&auto=format&fit=crop"
                             class="w-100 h-100" alt="Foto Fasilitas Sekolah" style="object-fit: cover;">
@@ -420,12 +551,12 @@
                 <div class="profil-grid-item p-4 p-xl-5 d-flex flex-column justify-content-center"
                     style="background-color: #f8fafc; border: 1px solid rgba(0,0,0,0.05);">
                     <h6 class="text-uppercase fw-bold text-primary mb-2" style="font-size: 0.9rem; letter-spacing: 1px;">
-                        Profil Singkat</h6>
+                        Tentang Sekolah</h6>
                     <h3 class="fw-bold text-dark mb-3 lh-sm" style="font-size: 1.6rem;">Membentuk Generasi <span
-                            class="text-primary">{{ optional($profilSingkat)->judul ?? 'Islami & Berprestasi' }}</span>
+                            class="text-primary">{{ optional($tentang)->judul ?? 'Islami & Berprestasi' }}</span>
                     </h3>
                     <p class="text-secondary mb-4" style="line-height: 1.7; font-size: 1rem;">
-                        {{ Str::limit(strip_tags(optional($profilSingkat)->konten ?? 'SD Muhammadiyah Komplek Kolombo hadir sebagai lembaga pendidikan dasar Islam yang mengintegrasikan kurikulum ilmu pengetahuan umum dengan penanaman nilai-nilai adab dan akhlak Islam secara menyeluruh (holistik). Kami senantiasa berkomitmen untuk memberikan pembelajaran terbaik guna mendukung tumbuh kembang rohani, jasmani, dan intelektual putra-putri bangsa agar siap menghadapi tantangan zaman.'), 220) }}
+                        {{ Str::limit(strip_tags(optional($tentang)->konten ?? 'SD Muhammadiyah Komplek Kolombo hadir sebagai lembaga pendidikan dasar Islam yang mengintegrasikan kurikulum ilmu pengetahuan umum dengan penanaman nilai-nilai adab dan akhlak Islam secara menyeluruh (holistik). Kami senantiasa berkomitmen untuk memberikan pembelajaran terbaik guna mendukung tumbuh kembang rohani, jasmani, dan intelektual putra-putri bangsa agar siap menghadapi tantangan zaman.'), 220) }}
                     </p>
                     <div>
                         <a href="{{ route('tentang') }}"
@@ -489,10 +620,7 @@
                         <div class="swiper-wrapper">
                             @forelse($tenagaPendidik as $tenaga)
                                 <div class="swiper-slide">
-                                    <div class="guru-slide-card" role="button" tabindex="0"
-                                         data-biodata-trigger
-                                         data-bs-toggle="modal" data-bs-target="#biodataTenaga-{{ $tenaga->id }}"
-                                         aria-label="Lihat biodata {{ $tenaga->nama }}">
+                                    <div class="guru-slide-card">
                                         <div class="guru-slide-img {{ $tenaga->tipe === 'guru' ? 'bg-blue-custom' : 'bg-red-custom' }}">
                                             @if($tenaga->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($tenaga->foto))
                                                 <img src="{{ asset('storage/' . $tenaga->foto) }}" alt="{{ $tenaga->nama }}">
@@ -547,89 +675,131 @@
         </div>
     </section>
 
-    @foreach($tenagaPendidik as $tenaga)
-        <x-guru-staff-modal :tenaga="$tenaga" />
-    @endforeach
-
-    <!-- Agenda, Berita & Artikel Kombinasi -->
+    <!-- Program Ekstrakurikuler -->
     <section class="py-5 bg-white">
         <div class="container">
-            <div class="row g-5">
-
-                <!-- Kolom Ekstrakurikuler -->
-                <div class="col-lg-8">
-                    <div class="d-flex justify-content-between align-items-end mb-4">
-                        <h3 class="section-title fw-bold mb-0" style="font-size: 1.5rem;">Ekstrakurikuler</h3>
-                        <a href="{{ route('ekstrakurikuler') }}" class="btn btn-outline-primary rounded-1 btn-sm fw-bold">Lihat Semua</a>
-                    </div>
-                    <div class="row g-4">
-                        @forelse($ekstrakurikulers as $ekstra)
-                            <div class="col-md-6">
-                                <div class="card h-100 border-0 rounded-3 shadow-sm overflow-hidden group-hover">
-                                    <div class="position-relative" style="height: 200px;">
-                                        @if($ekstra->foto)
-                                            <img src="{{ asset('storage/' . $ekstra->foto) }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ $ekstra->nama }}">
-                                        @else
-                                            <div class="w-100 h-100 bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center">
-                                                <i class="bi bi-activity text-secondary fs-1 opacity-50"></i>
-                                            </div>
-                                        @endif
-                                        <div class="position-absolute top-0 start-0 m-3">
-                                            <span class="badge bg-primary p-2 fs-7 rounded-1 shadow-sm"><i class="bi bi-star-fill text-warning me-1"></i> Program Unggulan</span>
-                                        </div>
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <h3 class="section-title fw-bold mb-0" style="font-size: 1.5rem;">Ekstrakurikuler</h3>
+                <a href="{{ route('ekstrakurikuler') }}" class="btn btn-outline-primary rounded-1 btn-sm fw-bold">Lihat Semua</a>
+            </div>
+            <div class="row g-4">
+                @forelse($ekstrakurikulers as $ekstra)
+                    <div class="col-md-6 col-xl-3">
+                        <div class="card h-100 border-0 rounded-3 shadow-sm overflow-hidden group-hover">
+                            <div class="position-relative" style="height: 200px;">
+                                @if($ekstra->foto)
+                                    <img src="{{ asset('storage/' . $ekstra->foto) }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ $ekstra->nama }}">
+                                @else
+                                    <div class="w-100 h-100 bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-activity text-secondary fs-1 opacity-50"></i>
                                     </div>
-                                    <div class="card-body p-4">
-                                        <h4 class="card-title fw-bold mb-3 lh-base" style="font-size: 1.15rem;">
-                                            <a href="{{ route('ekstrakurikuler') }}" class="text-dark text-decoration-none hover-primary">{{ Str::limit($ekstra->nama, 60) }}</a>
-                                        </h4>
-                                        <p class="card-text text-secondary mb-0" style="font-size: 0.95rem;">
-                                            {{ Str::limit(strip_tags($ekstra->deskripsi), 80) }}
-                                        </p>
-                                    </div>
+                                @endif
+                                <div class="position-absolute top-0 start-0 m-3">
+                                    <span class="badge bg-primary p-2 fs-7 rounded-1 shadow-sm"><i class="bi bi-star-fill text-warning me-1"></i> Program Unggulan</span>
                                 </div>
                             </div>
-                        @empty
-                            <div class="col-12 py-5 text-center text-muted">Belum ada program ekstrakurikuler.</div>
-                        @endforelse
-                    </div>
-                </div>
-
-                <!-- Kolom Berita Terkini -->
-                <div class="col-lg-4">
-                    <h3 class="section-title fw-bold mb-4" style="font-size: 1.5rem;">Berita Terkini</h3>
-                    <div class="card border-0 shadow-sm rounded-3">
-                        <div class="card-body p-0">
-                            @forelse($beritas as $berita)
-                                <div class="d-flex align-items-center p-4 border-bottom position-relative hover-agenda transition-all">
-                                    <!-- Tanggal Badge Boxy -->
-                                    <div class="bg-primary text-white text-center rounded-2 me-3 shadow-sm flex-shrink-0" style="min-width: 65px; overflow: hidden;">
-                                        <div class="bg-dark fw-bold small py-1" style="font-size: 0.70rem;">
-                                            {{ strtoupper(\Carbon\Carbon::parse($berita->tanggal)->translatedFormat('M')) }}
-                                        </div>
-                                        <div class="fw-bold py-2 lh-1" style="font-size: 1.4rem;">
-                                            {{ \Carbon\Carbon::parse($berita->tanggal)->format('d') }}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h6 class="fw-bold text-dark mb-1 lh-sm" style="font-size: 0.95rem;">
-                                            <a href="{{ route('berita.detail', $berita->id) }}" class="text-dark text-decoration-none hover-primary">
-                                                {{ Str::limit($berita->judul, 50) }}
-                                            </a>
-                                        </h6>
-                                        <p class="text-secondary small mb-0"><i class="bi bi-clock me-1"></i> {{ \Carbon\Carbon::parse($berita->created_at)->diffForHumans() }}</p>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="p-5 text-center text-muted">Belum ada berita terbaru.</div>
-                            @endforelse
-                        </div>
-                        <div class="card-footer bg-white border-0 text-center p-3">
-                            <a href="{{ route('berita') }}" class="text-decoration-none fw-bold text-primary">Lihat Papan Berita <i class="bi bi-arrow-right"></i></a>
+                            <div class="card-body p-4">
+                                <h4 class="card-title fw-bold mb-3 lh-base" style="font-size: 1.15rem;">
+                                    <a href="{{ route('ekstrakurikuler') }}" class="text-dark text-decoration-none hover-primary">{{ Str::limit($ekstra->nama, 60) }}</a>
+                                </h4>
+                                <p class="card-text text-secondary mb-0" style="font-size: 0.95rem;">
+                                    {{ Str::limit(strip_tags($ekstra->deskripsi), 80) }}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-
+                @empty
+                    <div class="col-12 py-5 text-center text-muted">Belum ada program ekstrakurikuler.</div>
+                @endforelse
             </div>
+        </div>
+    </section>
+
+    <!-- Berita Terkini -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <div>
+                    <h3 class="section-title fw-bold mb-2" style="font-size: 1.5rem;">Berita Terkini</h3>
+                    <p class="text-secondary mb-0">Informasi dan kegiatan terbaru dari sekolah</p>
+                </div>
+                <a href="{{ route('berita') }}" class="btn btn-outline-primary rounded-1 btn-sm fw-bold d-none d-sm-inline-flex align-items-center">
+                    Lihat Semua Berita <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            </div>
+
+            @php
+                $beritaUtama = $beritas->first();
+                $beritaPendamping = $beritas->skip(1);
+            @endphp
+
+            @if($beritaUtama)
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <article class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden home-news-card">
+                            @if($beritaUtama->gambar)
+                                <img src="{{ asset('storage/' . $beritaUtama->gambar) }}"
+                                     class="card-img-top home-news-main-image"
+                                     alt="{{ $beritaUtama->judul }}">
+                            @else
+                                <div class="home-news-main-image bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-newspaper text-secondary opacity-50" style="font-size: 5rem;"></i>
+                                </div>
+                            @endif
+                            <div class="card-body p-4 p-lg-5 position-relative">
+                                <div class="d-flex flex-wrap align-items-center gap-3 text-secondary small mb-3">
+                                    <span class="badge bg-primary rounded-pill px-3 py-2">Berita Utama</span>
+                                    <span><i class="bi bi-calendar3 me-1"></i>{{ \Carbon\Carbon::parse($beritaUtama->tanggal)->translatedFormat('d F Y') }}</span>
+                                </div>
+                                <h4 class="fw-bold text-dark lh-sm mb-3">{{ Str::limit($beritaUtama->judul, 90) }}</h4>
+                                <p class="text-secondary mb-4">{{ Str::limit(strip_tags($beritaUtama->isi), 170) }}</p>
+                                <a href="{{ route('berita.detail', $beritaUtama->id) }}" class="text-primary fw-bold text-decoration-none stretched-link">
+                                    Baca Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="d-flex flex-column gap-3 h-100">
+                            @foreach($beritaPendamping as $berita)
+                                <article class="card border-0 shadow-sm rounded-4 overflow-hidden home-news-card flex-grow-1">
+                                    <div class="d-flex h-100 position-relative">
+                                        @if($berita->gambar)
+                                            <img src="{{ asset('storage/' . $berita->gambar) }}"
+                                                 class="home-news-side-image flex-shrink-0"
+                                                 alt="{{ $berita->judul }}">
+                                        @else
+                                            <div class="home-news-side-image flex-shrink-0 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-newspaper text-secondary opacity-50 fs-1"></i>
+                                            </div>
+                                        @endif
+                                        <div class="card-body p-3 p-md-4 d-flex flex-column justify-content-center">
+                                            <p class="text-secondary small mb-2">
+                                                <i class="bi bi-calendar3 me-1"></i>{{ \Carbon\Carbon::parse($berita->tanggal)->translatedFormat('d M Y') }}
+                                            </p>
+                                            <h5 class="fw-bold lh-sm mb-2" style="font-size: 1rem;">
+                                                <a href="{{ route('berita.detail', $berita->id) }}" class="text-dark text-decoration-none stretched-link">
+                                                    {{ Str::limit($berita->judul, 70) }}
+                                                </a>
+                                            </h5>
+                                            <p class="text-secondary small mb-0 d-none d-md-block">{{ Str::limit(strip_tags($berita->isi), 75) }}</p>
+                                        </div>
+                                    </div>
+                                </article>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-4 d-sm-none">
+                    <a href="{{ route('berita') }}" class="btn btn-outline-primary fw-bold">Lihat Semua Berita</a>
+                </div>
+            @else
+                <div class="bg-white rounded-4 shadow-sm p-5 text-center text-muted">
+                    <i class="bi bi-newspaper d-block fs-1 opacity-50 mb-3"></i>
+                    Belum ada berita terbaru.
+                </div>
+            @endif
         </div>
     </section>
 
@@ -652,9 +822,8 @@
                                     <img src="{{ asset('storage/' . $prestasi->gambar) }}" class="w-100 h-100"
                                         style="object-fit: cover;" alt="{{ $prestasi->judul }}">
                                 @else
-                                    <div class="w-100 h-100 bg-light d-flex flex-column align-items-center justify-content-center text-secondary">
-                                        <i class="bi bi-image fs-1 opacity-25 mb-2"></i>
-                                        <span class="small fw-semibold opacity-50">No Image</span>
+                                    <div class="w-100 h-100 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-trophy text-secondary opacity-50" style="font-size: 3.5rem;"></i>
                                     </div>
                                 @endif
                                 <div

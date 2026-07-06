@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AdminAccountController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -19,23 +21,14 @@ Route::get('/berita/{berita}', [HomeController::class, 'detailBerita'])->name('b
 Route::post('/pesan', [HomeController::class, 'storePesan'])->name('pesan.store');
 
 
-Route::get('/dashboard', function () {
-    $countGuru = \App\Models\GuruStaff::count();
-    $countBerita = \App\Models\Berita::count();
-    $countPrestasi = \App\Models\Prestasi::count();
-    $countPesan = \App\Models\Pesan::count();
-    $countUser = \App\Models\User::count();
-    $countSiswa = \App\Models\Siswa::aktif()->count();
-    $countAlumni = \App\Models\Siswa::alumni()->count();
-    
-    $latestBerita = \App\Models\Berita::orderBy('created_at', 'desc')->take(4)->get();
-    $latestPesan = \App\Models\Pesan::orderBy('created_at', 'desc')->take(3)->get();
-    $recentActivities = \App\Models\ActivityLog::orderBy('created_at', 'desc')->take(5)->get();
-    
-    return view('dashboard', compact('countGuru', 'countBerita', 'countPrestasi', 'countPesan', 'countUser', 'countSiswa', 'countAlumni', 'latestBerita', 'latestPesan', 'recentActivities'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'admin'])
+    ->name('dashboard');
 
 Route::middleware(['auth', 'admin'])->group(function () {
+    Route::get('admin/akun', [AdminAccountController::class, 'edit'])->name('admin.account.edit');
+    Route::put('admin/akun', [AdminAccountController::class, 'update'])->name('admin.account.update');
+
     Route::resource('admin/berita', \App\Http\Controllers\BeritaController::class)
         ->except('show')
         ->names('admin.berita')

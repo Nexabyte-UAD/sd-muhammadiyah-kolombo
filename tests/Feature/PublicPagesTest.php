@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Ekstrakurikuler;
 use App\Models\GuruStaff;
+use App\Models\ProfilSekolah;
 use App\Models\Kelas;
 use App\Models\Prestasi;
 use App\Models\Siswa;
@@ -13,6 +14,26 @@ use Tests\TestCase;
 class PublicPagesTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_about_content_is_the_single_source_for_homepage_and_about_page(): void
+    {
+        ProfilSekolah::updateOrCreate(
+            ['type' => 'tentang'],
+            [
+                'judul' => 'Islami dan Berprestasi',
+                'konten' => 'Konten tentang sekolah terhubung.',
+            ],
+        );
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('Tentang Sekolah')
+            ->assertSee('Konten tentang sekolah terhubung.');
+
+        $this->get('/tentang')
+            ->assertOk()
+            ->assertSee('Konten tentang sekolah terhubung.');
+    }
 
     public function test_public_pages_are_available(): void
     {
@@ -70,12 +91,8 @@ class PublicPagesTest extends TestCase
             ->assertSee('Staf Beranda')
             ->assertSee('Wali Kelas')
             ->assertSee('Tata Usaha')
-            ->assertSee('Biodata Guru')
-            ->assertSee('Perempuan')
-            ->assertSee('PPPK')
-            ->assertSee('S2')
-            ->assertSee('Islam')
-            ->assertSee('data-bs-target="#biodataTenaga-', false);
+            ->assertDontSee('data-biodata-trigger', false)
+            ->assertDontSee('data-bs-target="#biodataTenaga-', false);
 
     }
 
@@ -185,7 +202,8 @@ class PublicPagesTest extends TestCase
             ->assertSee('Juara 1')
             ->assertSee('PCM Test')
             ->assertSee('Tingkat Kabupaten')
-            ->assertSee('No Image')
+            ->assertSee('bi-trophy')
+            ->assertDontSee('No Image')
             ->assertSee('kategori-keagamaan');
     }
 

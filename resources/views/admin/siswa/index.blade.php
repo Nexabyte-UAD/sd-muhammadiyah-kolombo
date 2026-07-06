@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Manajemen Siswa')
 
@@ -71,15 +71,6 @@
                 </form>
             </div>
         </div>
-
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="icon fas fa-check mr-2"></i> {{ session('success') }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
 
         <div class="mb-3 text-right">
             <a href="{{ route('admin.siswa.export', ['status' => $status]) }}" class="btn btn-success">

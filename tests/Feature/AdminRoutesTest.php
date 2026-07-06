@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Berita;
 use App\Models\GuruStaff;
 use App\Models\Kelas;
 use App\Models\Ekstrakurikuler;
@@ -15,11 +16,131 @@ class AdminRoutesTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_login_page_uses_the_custom_admin_design(): void
+    {
+        $this->get(route('login'))
+            ->assertOk()
+            ->assertSee('Panel Administrasi')
+            ->assertSee('Masuk ke Panel Admin')
+            ->assertDontSee('adminlte', false);
+    }
+
+    public function test_admin_dashboard_uses_the_custom_panel_layout(): void
+    {
+        $user = User::create([
+            'name' => 'Admin',
+            'email' => 'admin@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('Admin Sekolah')
+            ->assertSee('Ringkasan hari ini')
+            ->assertSee('Akses Cepat')
+            ->assertSee(asset('css/admin-panel.css'), false);
+    }
+
+    public function test_admin_can_update_own_account_without_changing_role(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Lama',
+            'email' => 'admin-lama@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('admin.account.edit'))
+            ->assertOk()
+            ->assertSee('Akun Admin')
+            ->assertDontSee('name="role"', false);
+
+        $this->put(route('admin.account.update'), [
+            'name' => 'Admin Baru',
+            'email' => 'admin-baru@example.test',
+            'password' => '',
+            'password_confirmation' => '',
+        ])->assertRedirect(route('admin.account.edit'));
+
+        $user->refresh();
+
+        $this->assertSame('Admin Baru', $user->name);
+        $this->assertSame('admin-baru@example.test', $user->email);
+        $this->assertSame('Admin', $user->role);
+    }
+
     public function test_guaranteed_admin_resource_routes_do_not_include_unimplemented_show_actions(): void
     {
         foreach (['berita', 'guru-staff', 'prestasi', 'ekstrakurikuler', 'users', 'siswa'] as $resource) {
             $this->assertFalse(app('router')->getRoutes()->hasNamedRoute("admin.{$resource}.show"));
         }
+    }
+
+    public function test_berita_admin_pages_use_the_custom_panel_layout(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Berita',
+            'email' => 'admin-berita@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        $berita = Berita::create([
+            'judul' => 'Berita Uji',
+            'isi' => 'Isi berita untuk pengujian.',
+            'tanggal' => now()->toDateString(),
+            'status' => 'published',
+            'user_id' => $user->id,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('admin.berita.index'))
+            ->assertOk()
+            ->assertSee('Daftar Berita')
+            ->assertSee('Berita Uji');
+
+        $this->get(route('admin.berita.create'))
+            ->assertOk()
+            ->assertSee('Informasi Berita');
+
+        $this->get(route('admin.berita.edit', $berita))
+            ->assertOk()
+            ->assertSee('Berita Uji');
+    }
+
+    public function test_migrated_admin_pages_keep_their_header_actions(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Navigasi',
+            'email' => 'admin-navigasi@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('admin.guru-staff.index', ['tipe' => 'guru']))
+            ->assertOk()
+            ->assertSee('Admin Sekolah')
+            ->assertSee('Tambah Guru')
+            ->assertSee(asset('css/admin-panel.css'), false);
+    }
+
+    public function test_obsolete_short_profile_admin_page_cannot_be_recreated(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Profil',
+            'email' => 'admin-profil@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('admin.profil-sekolah.editType', 'profil_singkat'))
+            ->assertNotFound();
+
+        $this->assertDatabaseMissing('profil_sekolahs', ['type' => 'profil_singkat']);
     }
 
     public function test_guru_staff_edit_route_binds_the_model(): void

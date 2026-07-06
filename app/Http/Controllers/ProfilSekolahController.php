@@ -11,6 +11,8 @@ class ProfilSekolahController extends Controller
 {
     public function editByType($type)
     {
+        abort_unless(in_array($type, ProfilSekolah::TYPES, true), 404);
+
         $judulDefault = ucfirst(str_replace('_', ' ', $type));
         $profil = ProfilSekolah::firstOrCreate(['type' => $type], [
             'judul' => $judulDefault,
@@ -25,6 +27,8 @@ class ProfilSekolahController extends Controller
 
     public function updateByType(Request $request, $type, IndonesianTextFormatter $formatter)
     {
+        abort_unless(in_array($type, ProfilSekolah::TYPES, true), 404);
+
         $rules = [
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];

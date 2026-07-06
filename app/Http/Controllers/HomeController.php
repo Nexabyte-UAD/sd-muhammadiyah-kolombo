@@ -18,7 +18,7 @@ class HomeController extends Controller
     public function index()
     {
         $beritas = Berita::where('status', 'published')->orderBy('tanggal', 'desc')->take(4)->get();
-        $profilSingkat = ProfilSekolah::where('type', 'profil_singkat')->first();
+        $tentang = ProfilSekolah::where('type', 'tentang')->first();
         $sambutan = ProfilSekolah::where('type', 'sambutan')->first();
         $guru = GuruStaff::where('tipe', 'guru')->orderBy('nama')->get();
         $staf = GuruStaff::where('tipe', 'staf')->orderBy('nama')->get();
@@ -31,7 +31,7 @@ class HomeController extends Controller
         $countEkstra = Ekstrakurikuler::count();
         $countPrestasi = Prestasi::count();
 
-        return view('welcome', compact('beritas', 'profilSingkat', 'sambutan', 'tenagaPendidik', 'prestasis', 'ekstrakurikulers', 'countTenagaPendidik', 'countPesertaDidik', 'countEkstra', 'countPrestasi'));
+        return view('welcome', compact('beritas', 'tentang', 'sambutan', 'tenagaPendidik', 'prestasis', 'ekstrakurikulers', 'countTenagaPendidik', 'countPesertaDidik', 'countEkstra', 'countPrestasi'));
     }
 
     /**
@@ -80,9 +80,8 @@ class HomeController extends Controller
     public function tentang()
     {
         $profil = ProfilSekolah::where('type', 'tentang')->first();
-        $profilSingkat = ProfilSekolah::where('type', 'profil_singkat')->first();
 
-        return view('pages.tentang', compact('profil', 'profilSingkat'));
+        return view('pages.tentang', compact('profil'));
     }
 
     public function visiMisi()

@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Data Kelas')
 
@@ -14,9 +14,6 @@
 @section('content')
 <div class="card card-primary card-outline">
     <div class="card-body p-0 table-responsive">
-        @if(session('success'))
-            <div class="alert alert-success m-3">{{ session('success') }}</div>
-        @endif
         @if($errors->any())
             <div class="alert alert-danger m-3">{{ $errors->first() }}</div>
         @endif

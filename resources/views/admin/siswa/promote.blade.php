@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Status Akhir Tahun')
 
@@ -15,12 +15,6 @@
 @stop
 
 @section('content')
-    @if(session('success'))
-        <div class="alert alert-success">
-            <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
-        </div>
-    @endif
-
     <div class="card card-primary card-outline">
         <div class="card-header">
             <h3 class="card-title">1. Pilih Periode dan Kelas Asal</h3>

@@ -1,95 +1,105 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
-@section('title', 'Manajemen Berita')
+@section('title', 'Berita')
+@section('page_kicker', 'Konten website')
+@section('page_title', 'Berita')
+@section('page_description', 'Kelola informasi dan publikasi yang tampil pada website sekolah.')
 
-@section('content_header')
-    <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Data Publikasi & Berita</h1>
-        </div>
-        <div class="col-sm-6 text-right">
-            <a href="{{ route('admin.berita.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus mr-1"></i> Tulis Berita
-            </a>
-        </div>
-    </div>
-@stop
+@section('page_actions')
+    <a href="{{ route('admin.berita.create') }}" class="btn-admin">
+        <x-admin-icon name="plus" size="18"/>
+        Tulis Berita
+    </a>
+@endsection
 
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="card card-primary card-outline">
-            <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
-                    <thead>
-                        <tr>
-                            <th>Gambar</th>
-                            <th>Judul Berita</th>
-                            <th>Tanggal Rilis</th>
-                            <th>Status</th>
-                            <th class="text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($beritas as $item)
-                        <tr>
-                            <td class="align-middle">
-                                @if($item->gambar)
-                                    <img src="{{ asset('storage/' . $item->gambar) }}" alt="gambar" class="img-thumbnail" style="width: 60px; height: 60px; object-fit: cover;">
-                                @else
-                                    <div class="bg-light d-flex align-items-center justify-content-center text-muted border" style="width: 60px; height: 60px;">
-                                        <i class="fas fa-image"></i>
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="align-middle" style="white-space: normal; min-width: 250px;">
-                                <strong>{{ $item->judul }}</strong>
-                                <div class="text-muted small mt-1">
-                                    {{ Str::limit(strip_tags($item->isi), 80) }}
-                                </div>
-                            </td>
-                            <td class="align-middle">
-                                <span class="badge badge-info px-2 py-1">
-                                    {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d F Y') }}
-                                </span>
-                            </td>
-                            <td class="align-middle">
-                                @if($item->status === 'published')
-                                    <span class="badge badge-success px-2 py-1">Published</span>
-                                @else
-                                    <span class="badge badge-secondary px-2 py-1">Draft</span>
-                                @endif
-                            </td>
-                            <td class="align-middle text-right">
-                                <a href="{{ route('admin.berita.edit', $item->id) }}" class="btn btn-sm btn-info" title="Edit">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <form action="{{ route('admin.berita.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="text-center py-5 text-muted">
-                                <i class="fas fa-folder-open fa-3x d-block mb-3"></i>
-                                Belum ada data berita.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+    <section class="admin-card">
+        <header class="admin-card-header">
+            <div>
+                <h2 class="admin-card-title">Daftar Berita</h2>
+                <div class="admin-card-subtitle">{{ $beritas->total() }} berita tersimpan</div>
             </div>
-            @if($beritas instanceof \Illuminate\Pagination\LengthAwarePaginator && $beritas->hasPages())
-            <div class="card-footer clearfix">
-                {{ $beritas->links('pagination::bootstrap-4') }}
-            </div>
+        </header>
+
+        <div class="admin-card-body flush">
+            @if($beritas->isNotEmpty())
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Berita</th>
+                                <th>Tanggal Rilis</th>
+                                <th>Status</th>
+                                <th class="table-actions-heading">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($beritas as $item)
+                                <tr>
+                                    <td>
+                                        <div class="content-cell">
+                                            <div class="content-thumb content-thumb-lg">
+                                                @if($item->gambar)
+                                                    <img src="{{ asset('storage/' . $item->gambar) }}" alt="">
+                                                @else
+                                                    <x-admin-icon name="news" size="21"/>
+                                                @endif
+                                            </div>
+                                            <div>
+                                                <div class="content-title">{{ $item->judul }}</div>
+                                                <div class="content-meta">{{ Str::limit(strip_tags($item->isi), 78) }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
+                                    <td>
+                                        <span class="status-badge {{ $item->status === 'published' ? 'status-success' : 'status-muted' }}">
+                                            {{ $item->status === 'published' ? 'Terbit' : 'Draft' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="table-actions">
+                                            <a href="{{ route('admin.berita.edit', $item) }}" class="action-button" title="Edit berita">
+                                                Edit
+                                            </a>
+                                            <form action="{{ route('admin.berita.destroy', $item) }}" method="POST"
+                                                  onsubmit="return confirm('Hapus berita ini? Tindakan ini tidak dapat dibatalkan.')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="action-button action-danger">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="empty-state">
+                    <strong>Belum ada berita</strong>
+                    <p>Mulai dengan menambahkan publikasi pertama sekolah.</p>
+                    <a href="{{ route('admin.berita.create') }}" class="btn-admin">Tulis Berita</a>
+                </div>
             @endif
         </div>
-    </div>
-</div>
-@stop
+
+        @if($beritas->hasPages())
+            <footer class="admin-card-footer">
+                <span>Halaman {{ $beritas->currentPage() }} dari {{ $beritas->lastPage() }}</span>
+                <div class="pager">
+                    @if($beritas->onFirstPage())
+                        <span class="pager-link disabled">Sebelumnya</span>
+                    @else
+                        <a href="{{ $beritas->previousPageUrl() }}" class="pager-link">Sebelumnya</a>
+                    @endif
+                    @if($beritas->hasMorePages())
+                        <a href="{{ $beritas->nextPageUrl() }}" class="pager-link">Berikutnya</a>
+                    @else
+                        <span class="pager-link disabled">Berikutnya</span>
+                    @endif
+                </div>
+            </footer>
+        @endif
+    </section>
+@endsection

@@ -59,10 +59,9 @@
                                                      style="height: 230px; object-fit: cover;"
                                                      alt="{{ $prestasi->judul }}">
                                             @else
-                                                <div class="d-flex flex-column align-items-center justify-content-center border-bottom text-secondary"
-                                                     style="height: 230px; background: #f8fafc;">
-                                                    <i class="bi bi-image fs-1 opacity-25 mb-2"></i>
-                                                    <span class="small fw-semibold opacity-50">No Image</span>
+                                                <div class="d-flex align-items-center justify-content-center border-bottom bg-secondary bg-opacity-10"
+                                                     style="height: 230px;">
+                                                    <i class="bi bi-trophy text-secondary opacity-50" style="font-size: 3.5rem;"></i>
                                                 </div>
                                             @endif
 
