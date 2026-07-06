@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ekstrakurikuler;
 use App\Models\ActivityLog;
+use App\Models\Ekstrakurikuler;
+use App\Services\IndonesianTextFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,6 +13,7 @@ class EkstrakurikulerController extends Controller
     public function index()
     {
         $ekstrakurikulers = Ekstrakurikuler::paginate(10);
+
         return view('admin.ekstrakurikuler.index', compact('ekstrakurikulers'));
     }
 
@@ -20,17 +22,23 @@ class EkstrakurikulerController extends Controller
         return view('admin.ekstrakurikuler.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, IndonesianTextFormatter $formatter)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'pembina' => 'nullable|string|max:255',
             'jadwal' => 'required|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->only(['nama', 'deskripsi', 'pembina', 'jadwal']);
+        $data = $formatter->fields($data, [
+            'nama' => 'title',
+            'deskripsi' => 'sentence',
+            'pembina' => 'name',
+            'jadwal' => 'sentence',
+        ]);
 
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('ekstrakurikuler', 'public');
@@ -42,7 +50,7 @@ class EkstrakurikulerController extends Controller
             'user_id' => auth()->id(),
             'action_type' => 'Tambah',
             'module' => 'Ekstrakurikuler',
-            'description' => 'Menambahkan ekstrakurikuler: ' . $data['nama'],
+            'description' => 'Menambahkan ekstrakurikuler: '.$data['nama'],
         ]);
 
         return redirect()->route('admin.ekstrakurikuler.index')->with('success', 'Data Ekstrakurikuler berhasil ditambahkan');
@@ -53,17 +61,23 @@ class EkstrakurikulerController extends Controller
         return view('admin.ekstrakurikuler.edit', compact('ekstrakurikuler'));
     }
 
-    public function update(Request $request, Ekstrakurikuler $ekstrakurikuler)
+    public function update(Request $request, Ekstrakurikuler $ekstrakurikuler, IndonesianTextFormatter $formatter)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'pembina' => 'nullable|string|max:255',
             'jadwal' => 'required|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->only(['nama', 'deskripsi', 'pembina', 'jadwal']);
+        $data = $formatter->fields($data, [
+            'nama' => 'title',
+            'deskripsi' => 'sentence',
+            'pembina' => 'name',
+            'jadwal' => 'sentence',
+        ]);
 
         if ($request->hasFile('foto')) {
             if ($ekstrakurikuler->foto && Storage::disk('public')->exists($ekstrakurikuler->foto)) {
@@ -78,7 +92,7 @@ class EkstrakurikulerController extends Controller
             'user_id' => auth()->id(),
             'action_type' => 'Update',
             'module' => 'Ekstrakurikuler',
-            'description' => 'Memperbarui ekstrakurikuler: ' . $data['nama'],
+            'description' => 'Memperbarui ekstrakurikuler: '.$data['nama'],
         ]);
 
         return redirect()->route('admin.ekstrakurikuler.index')->with('success', 'Data Ekstrakurikuler berhasil diupdate');
@@ -89,7 +103,7 @@ class EkstrakurikulerController extends Controller
         if ($ekstrakurikuler->foto && Storage::disk('public')->exists($ekstrakurikuler->foto)) {
             Storage::disk('public')->delete($ekstrakurikuler->foto);
         }
-        
+
         $nama = $ekstrakurikuler->nama;
         $ekstrakurikuler->delete();
 
@@ -97,7 +111,7 @@ class EkstrakurikulerController extends Controller
             'user_id' => auth()->id(),
             'action_type' => 'Hapus',
             'module' => 'Ekstrakurikuler',
-            'description' => 'Menghapus ekstrakurikuler: ' . $nama,
+            'description' => 'Menghapus ekstrakurikuler: '.$nama,
         ]);
 
         return redirect()->route('admin.ekstrakurikuler.index')->with('success', 'Data Ekstrakurikuler berhasil dihapus');

@@ -24,6 +24,7 @@
             </div>
             <form action="{{ route('admin.berita.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                <x-auto-format-notice />
                 <div class="card-body">
                     <div class="form-group">
                         <label for="judul">Judul Berita <span class="text-danger">*</span></label>

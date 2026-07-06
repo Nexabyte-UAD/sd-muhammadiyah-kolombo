@@ -24,6 +24,7 @@
             </div>
             <form action="{{ route('admin.siswa.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                <x-auto-format-notice />
                 <div class="card-body">
                     @if($errors->any())
                         <div class="alert alert-danger">{{ $errors->first() }}</div>

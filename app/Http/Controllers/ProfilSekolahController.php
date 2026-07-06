@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ProfilSekolah;
+use App\Services\IndonesianTextFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -14,17 +15,18 @@ class ProfilSekolahController extends Controller
         $profil = ProfilSekolah::firstOrCreate(['type' => $type], [
             'judul' => $judulDefault,
             'konten' => '',
-            'gambar' => null
+            'gambar' => null,
         ]);
-        
+
         $judul = $profil->judul ?: $judulDefault;
+
         return view('admin.profil-sekolah.edit', compact('profil', 'type', 'judul'));
     }
 
-    public function updateByType(Request $request, $type)
+    public function updateByType(Request $request, $type, IndonesianTextFormatter $formatter)
     {
         $rules = [
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
 
         if ($type !== 'akreditasi') {
@@ -38,7 +40,7 @@ class ProfilSekolahController extends Controller
         $request->validate($rules);
 
         $profil = ProfilSekolah::where('type', $type)->firstOrFail();
-        
+
         $data = [];
         if ($type !== 'akreditasi') {
             $data['judul'] = $request->judul;
@@ -47,6 +49,7 @@ class ProfilSekolahController extends Controller
             $data['judul'] = $request->judul ?? $profil->judul ?: 'Sertifikat Akreditasi';
             $data['konten'] = $request->konten ?? $profil->konten ?: '';
         }
+        $data = $formatter->fields($data, ['judul' => 'title', 'konten' => 'html']);
 
         if ($request->hasFile('gambar')) {
             if ($profil->gambar && Storage::disk('public')->exists($profil->gambar)) {

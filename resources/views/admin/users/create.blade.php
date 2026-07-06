@@ -24,6 +24,7 @@
             </div>
             <form action="{{ route('admin.users.store') }}" method="POST">
                 @csrf
+                <x-auto-format-notice />
                 <div class="card-body">
                     <div class="form-group">
                         <label for="name">Nama Lengkap <span class="text-danger">*</span></label>

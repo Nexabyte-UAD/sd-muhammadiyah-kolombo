@@ -25,6 +25,7 @@
             <form action="{{ route('admin.siswa.update', $siswa->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+                <x-auto-format-notice />
                 <div class="card-body">
                     @if($errors->any())
                         <div class="alert alert-danger">{{ $errors->first() }}</div>

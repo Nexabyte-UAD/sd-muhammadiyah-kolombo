@@ -24,6 +24,7 @@
             </div>
             <form action="{{ route('admin.guru-staff.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                <x-auto-format-notice />
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">

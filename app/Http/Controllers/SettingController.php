@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Setting;
+use App\Services\IndonesianTextFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -11,12 +12,22 @@ class SettingController extends Controller
     public function edit()
     {
         $settings = Setting::all()->pluck('value', 'key')->toArray();
+
         return view('admin.settings.edit', compact('settings'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request, IndonesianTextFormatter $formatter)
     {
         $data = $request->except(['_token', '_method', 'logo', 'hero_image', 'hero_image_2', 'hero_image_3']); // Ambil semua kecuali token dan file
+        $data = $formatter->fields($data, [
+            'nama_sekolah' => 'title',
+            'beranda_profil_judul' => 'title',
+            'kepsek_nama' => 'name',
+            'beranda_profil_teks' => 'sentence',
+            'kepsek_sambutan' => 'sentence',
+            'telepon' => 'phone',
+            'alamat' => 'address',
+        ]);
 
         // Update text/url settings
         foreach ($data as $key => $value) {
@@ -30,7 +41,7 @@ class SettingController extends Controller
             ]);
 
             $path = $request->file('logo')->store('settings', 'public');
-            
+
             // Hapus logo lama jika ada
             $oldSetting = Setting::where('key', 'logo')->first();
             if ($oldSetting && $oldSetting->value) {
@@ -47,7 +58,7 @@ class SettingController extends Controller
             ]);
 
             $path = $request->file('hero_image')->store('settings', 'public');
-            
+
             // Hapus gambar hero lama jika ada
             $oldHero = Setting::where('key', 'hero_image')->first();
             if ($oldHero && $oldHero->value) {
@@ -64,7 +75,7 @@ class SettingController extends Controller
             ]);
 
             $path = $request->file('hero_image_2')->store('settings', 'public');
-            
+
             // Hapus gambar hero lama jika ada
             $oldHero = Setting::where('key', 'hero_image_2')->first();
             if ($oldHero && $oldHero->value) {
@@ -81,7 +92,7 @@ class SettingController extends Controller
             ]);
 
             $path = $request->file('hero_image_3')->store('settings', 'public');
-            
+
             // Hapus gambar hero lama jika ada
             $oldHero = Setting::where('key', 'hero_image_3')->first();
             if ($oldHero && $oldHero->value) {

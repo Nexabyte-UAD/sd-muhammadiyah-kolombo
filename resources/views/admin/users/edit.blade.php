@@ -25,6 +25,7 @@
             <form action="{{ route('admin.users.update', $user->id) }}" method="POST">
                 @csrf
                 @method('PUT')
+                <x-auto-format-notice />
                 <div class="card-body">
                     <div class="form-group">
                         <label for="name">Nama Lengkap <span class="text-danger">*</span></label>

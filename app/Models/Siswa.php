@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Services\IndonesianTextFormatter;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Siswa extends Model
@@ -40,38 +41,21 @@ class Siswa extends Model
     protected function nama(): Attribute
     {
         return Attribute::make(
-            set: fn (?string $value) => $this->capitalizeEachWord($value),
+            set: fn (?string $value) => app(IndonesianTextFormatter::class)->name($value),
         );
     }
 
     protected function tempatLahir(): Attribute
     {
         return Attribute::make(
-            set: fn (?string $value) => $this->capitalizeEachWord($value),
+            set: fn (?string $value) => app(IndonesianTextFormatter::class)->title($value),
         );
     }
 
     protected function alamat(): Attribute
     {
         return Attribute::make(
-            set: fn (?string $value) => $this->capitalizeEachWord($value),
-        );
-    }
-
-    private function capitalizeEachWord(?string $value): ?string
-    {
-        if ($value === null || trim($value) === '') {
-            return null;
-        }
-
-        $value = preg_replace('/\s+/u', ' ', trim($value));
-        $value = mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
-        $akronim = ['sd', 'mi', 'smp', 'mts', 'sma', 'smk', 'ma', 'pt', 'cv', 'd3', 'd4', 's1', 's2', 's3'];
-
-        return preg_replace_callback(
-            '/\b('.implode('|', $akronim).')\b/iu',
-            fn (array $match) => mb_strtoupper($match[0], 'UTF-8'),
-            $value
+            set: fn (?string $value) => app(IndonesianTextFormatter::class)->address($value),
         );
     }
 

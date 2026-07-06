@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Siswa;
 use App\Models\ActivityLog;
-use App\Models\Kelas;
 use App\Models\Ekstrakurikuler;
+use App\Models\Kelas;
 use App\Models\RiwayatAkademik;
+use App\Models\Siswa;
+use App\Services\IndonesianTextFormatter;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -43,9 +44,9 @@ class SiswaController extends Controller
         }
 
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
-                  ->orWhere('nis', 'like', "%{$search}%");
+                    ->orWhere('nis', 'like', "%{$search}%");
             });
         }
 
@@ -70,7 +71,7 @@ class SiswaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, IndonesianTextFormatter $formatter)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -86,8 +87,8 @@ class SiswaController extends Controller
                 Rule::exists('kelas', 'tingkat'),
             ],
             'status' => 'required|in:aktif,alumni,keluar',
-            'tahun_masuk' => 'required|integer|min:2000|max:' . (date('Y') + 1),
-            'tahun_lulus' => 'nullable|required_if:status,alumni|integer|min:2000|max:' . (date('Y') + 5),
+            'tahun_masuk' => 'required|integer|min:2000|max:'.(date('Y') + 1),
+            'tahun_lulus' => 'nullable|required_if:status,alumni|integer|min:2000|max:'.(date('Y') + 5),
             'tanggal_keluar' => 'nullable|required_if:status,keluar|date',
             'sekolah_tujuan' => 'nullable|required_if:status,keluar|string|max:255',
             'alasan_keluar' => 'nullable|string|max:1000',
@@ -109,6 +110,13 @@ class SiswaController extends Controller
 
         $this->validateKronologiRiwayat($request);
         $data = $request->except(['foto', 'ekstrakurikuler_ids', 'pendidikan', 'pekerjaan_alumni']);
+        $data = $formatter->fields($data, [
+            'nama' => 'name',
+            'tempat_lahir' => 'title',
+            'alamat' => 'address',
+            'sekolah_tujuan' => 'title',
+            'alasan_keluar' => 'sentence',
+        ]);
 
         // Clean up kelas if alumni
         if ($data['status'] === 'alumni') {
@@ -132,10 +140,10 @@ class SiswaController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($data, $request) {
+            DB::transaction(function () use ($data, $request, $formatter) {
                 $siswa = Siswa::create($data);
                 $siswa->ekstrakurikulers()->sync($request->input('ekstrakurikuler_ids', []));
-                $this->syncRiwayatAlumni($siswa, $request);
+                $this->syncRiwayatAlumni($siswa, $request, $formatter);
 
                 ActivityLog::create([
                     'user_id' => auth()->id(),
@@ -170,7 +178,7 @@ class SiswaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Siswa $siswa)
+    public function update(Request $request, Siswa $siswa, IndonesianTextFormatter $formatter)
     {
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -191,8 +199,8 @@ class SiswaController extends Controller
                 Rule::exists('kelas', 'tingkat'),
             ],
             'status' => 'required|in:aktif,alumni,keluar',
-            'tahun_masuk' => 'required|integer|min:2000|max:' . (date('Y') + 1),
-            'tahun_lulus' => 'nullable|required_if:status,alumni|integer|min:2000|max:' . (date('Y') + 5),
+            'tahun_masuk' => 'required|integer|min:2000|max:'.(date('Y') + 1),
+            'tahun_lulus' => 'nullable|required_if:status,alumni|integer|min:2000|max:'.(date('Y') + 5),
             'tanggal_keluar' => 'nullable|required_if:status,keluar|date',
             'sekolah_tujuan' => 'nullable|required_if:status,keluar|string|max:255',
             'alasan_keluar' => 'nullable|string|max:1000',
@@ -214,6 +222,13 @@ class SiswaController extends Controller
 
         $this->validateKronologiRiwayat($request);
         $data = $request->except(['foto', 'ekstrakurikuler_ids', 'pendidikan', 'pekerjaan_alumni']);
+        $data = $formatter->fields($data, [
+            'nama' => 'name',
+            'tempat_lahir' => 'title',
+            'alamat' => 'address',
+            'sekolah_tujuan' => 'title',
+            'alasan_keluar' => 'sentence',
+        ]);
 
         // Clean up kelas if alumni
         if ($data['status'] === 'alumni') {
@@ -238,10 +253,10 @@ class SiswaController extends Controller
         }
 
         try {
-            DB::transaction(function () use ($siswa, $data, $request) {
+            DB::transaction(function () use ($siswa, $data, $request, $formatter) {
                 $siswa->update($data);
                 $siswa->ekstrakurikulers()->sync($request->input('ekstrakurikuler_ids', []));
-                $this->syncRiwayatAlumni($siswa, $request);
+                $this->syncRiwayatAlumni($siswa, $request, $formatter);
 
                 ActivityLog::create([
                     'user_id' => auth()->id(),
@@ -277,7 +292,7 @@ class SiswaController extends Controller
             'user_id' => auth()->id(),
             'action_type' => 'Hapus',
             'module' => 'Siswa',
-                'description' => 'Mengarsipkan data siswa: ' . $nama,
+            'description' => 'Mengarsipkan data siswa: '.$nama,
         ]);
 
         return redirect()->route('admin.siswa.index', ['status' => $status])->with('success', 'Data siswa berhasil diarsipkan');
@@ -528,8 +543,11 @@ class SiswaController extends Controller
             : ($tahun - 1)."/{$tahun}";
     }
 
-    private function syncRiwayatAlumni(Siswa $siswa, Request $request): void
-    {
+    private function syncRiwayatAlumni(
+        Siswa $siswa,
+        Request $request,
+        IndonesianTextFormatter $formatter
+    ): void {
         if ($request->input('status') !== 'alumni') {
             return;
         }
@@ -539,9 +557,18 @@ class SiswaController extends Controller
 
         $pendidikan = collect($request->input('pendidikan', []))
             ->filter(fn ($item) => ! empty($item['jenjang']) && ! empty($item['institusi']))
+            ->map(fn ($item) => $formatter->fields($item, [
+                'jenjang' => 'title',
+                'institusi' => 'title',
+                'jurusan' => 'title',
+            ]))
             ->values()->all();
         $pekerjaan = collect($request->input('pekerjaan_alumni', []))
             ->filter(fn ($item) => ! empty($item['pekerjaan']))
+            ->map(fn ($item) => $formatter->fields($item, [
+                'pekerjaan' => 'title',
+                'perusahaan' => 'title',
+            ]))
             ->values()->all();
 
         $siswa->riwayatPendidikan()->createMany($pendidikan);

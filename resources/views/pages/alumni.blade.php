@@ -101,7 +101,6 @@
                                             data-pendidikan="{{ $item->riwayatPendidikan->map(fn ($r) => trim($r->jenjang.' — '.$r->institusi.($r->jurusan ? ' ('.$r->jurusan.')' : '')))->toJson() }}"
                                             data-pekerjaan="{{ $item->riwayatPekerjaan->map(fn ($r) => trim($r->pekerjaan.($r->perusahaan ? ' — '.$r->perusahaan : '')))->toJson() }}"
                                             data-prestasi="{{ $item->prestasis->map(fn ($r) => trim($r->judul.' — '.$r->prestasi_medali))->toJson() }}"
-                                            data-ekstrakurikuler="{{ $item->ekstrakurikulers->pluck('nama')->toJson() }}"
                                             data-foto="{{ $item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto) ? asset('storage/' . $item->foto) : '' }}"
                                             data-huruf="{{ substr($item->nama, 0, 1) }}">
                                         <i class="bi bi-eye-fill me-1"></i> Detail
@@ -177,8 +176,6 @@
                         <div class="col-4 text-secondary">Prestasi</div>
                         <div class="col-8 text-dark fw-medium" id="modal-prestasi">-</div>
 
-                        <div class="col-4 text-secondary">Ekstrakurikuler</div>
-                        <div class="col-8 text-dark fw-medium" id="modal-ekstrakurikuler">-</div>
                     </div>
                 </div>
             </div>
@@ -278,7 +275,6 @@
         const modalPendidikan = document.getElementById("modal-pendidikan");
         const modalPekerjaan = document.getElementById("modal-pekerjaan");
         const modalPrestasi = document.getElementById("modal-prestasi");
-        const modalEkstrakurikuler = document.getElementById("modal-ekstrakurikuler");
 
         detailButtons.forEach(button => {
             button.addEventListener("click", function() {
@@ -293,7 +289,6 @@
                 const pendidikan = JSON.parse(this.getAttribute("data-pendidikan") || "[]");
                 const pekerjaan = JSON.parse(this.getAttribute("data-pekerjaan") || "[]");
                 const prestasi = JSON.parse(this.getAttribute("data-prestasi") || "[]");
-                const ekstrakurikuler = JSON.parse(this.getAttribute("data-ekstrakurikuler") || "[]");
                 const foto = this.getAttribute("data-foto");
                 const huruf = this.getAttribute("data-huruf");
 
@@ -309,7 +304,6 @@
                 modalPendidikan.textContent = pendidikan.length ? pendidikan.join("; ") : "-";
                 modalPekerjaan.textContent = pekerjaan.length ? pekerjaan.join("; ") : "-";
                 modalPrestasi.textContent = prestasi.length ? prestasi.join("; ") : "-";
-                modalEkstrakurikuler.textContent = ekstrakurikuler.length ? ekstrakurikuler.join(", ") : "-";
 
                 if (foto) {
                     modalFoto.src = foto;

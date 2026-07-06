@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Prestasi;
 use App\Models\ActivityLog;
+use App\Models\Prestasi;
 use App\Models\Siswa;
+use App\Services\IndonesianTextFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -14,6 +15,7 @@ class PrestasiController extends Controller
     public function index()
     {
         $prestasis = Prestasi::orderBy('tanggal', 'desc')->paginate(10);
+
         return view('admin.prestasi.index', compact('prestasis'));
     }
 
@@ -25,7 +27,7 @@ class PrestasiController extends Controller
         return view('admin.prestasi.create', compact('kategoriPrestasi', 'siswas'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, IndonesianTextFormatter $formatter)
     {
         $request->validate([
             'judul' => 'required|string|max:255',
@@ -35,7 +37,7 @@ class PrestasiController extends Controller
             'penyelenggara' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'tanggal' => 'required|date',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->only([
@@ -46,6 +48,12 @@ class PrestasiController extends Controller
             'penyelenggara',
             'deskripsi',
             'tanggal',
+        ]);
+        $data = $formatter->fields($data, [
+            'judul' => 'title',
+            'prestasi_medali' => 'title',
+            'penyelenggara' => 'title',
+            'deskripsi' => 'sentence',
         ]);
         $data['nama_siswa'] = Siswa::findOrFail($data['siswa_id'])->nama;
 
@@ -59,7 +67,7 @@ class PrestasiController extends Controller
             'user_id' => auth()->id(),
             'action_type' => 'Tambah',
             'module' => 'Prestasi',
-            'description' => 'Menambahkan prestasi: ' . $data['judul'],
+            'description' => 'Menambahkan prestasi: '.$data['judul'],
         ]);
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Data Prestasi berhasil ditambahkan');
@@ -73,7 +81,7 @@ class PrestasiController extends Controller
         return view('admin.prestasi.edit', compact('prestasi', 'kategoriPrestasi', 'siswas'));
     }
 
-    public function update(Request $request, Prestasi $prestasi)
+    public function update(Request $request, Prestasi $prestasi, IndonesianTextFormatter $formatter)
     {
         $request->validate([
             'judul' => 'required|string|max:255',
@@ -83,7 +91,7 @@ class PrestasiController extends Controller
             'penyelenggara' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'tanggal' => 'required|date',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->only([
@@ -94,6 +102,12 @@ class PrestasiController extends Controller
             'penyelenggara',
             'deskripsi',
             'tanggal',
+        ]);
+        $data = $formatter->fields($data, [
+            'judul' => 'title',
+            'prestasi_medali' => 'title',
+            'penyelenggara' => 'title',
+            'deskripsi' => 'sentence',
         ]);
         $data['nama_siswa'] = Siswa::findOrFail($data['siswa_id'])->nama;
 
@@ -110,7 +124,7 @@ class PrestasiController extends Controller
             'user_id' => auth()->id(),
             'action_type' => 'Update',
             'module' => 'Prestasi',
-            'description' => 'Memperbarui prestasi: ' . $data['judul'],
+            'description' => 'Memperbarui prestasi: '.$data['judul'],
         ]);
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Data Prestasi berhasil diupdate');
@@ -121,7 +135,7 @@ class PrestasiController extends Controller
         if ($prestasi->gambar && Storage::disk('public')->exists($prestasi->gambar)) {
             Storage::disk('public')->delete($prestasi->gambar);
         }
-        
+
         $judul = $prestasi->judul;
         $prestasi->delete();
 
@@ -129,7 +143,7 @@ class PrestasiController extends Controller
             'user_id' => auth()->id(),
             'action_type' => 'Hapus',
             'module' => 'Prestasi',
-            'description' => 'Menghapus prestasi: ' . $judul,
+            'description' => 'Menghapus prestasi: '.$judul,
         ]);
 
         return redirect()->route('admin.prestasi.index')->with('success', 'Data Prestasi berhasil dihapus');

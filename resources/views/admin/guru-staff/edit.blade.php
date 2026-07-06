@@ -25,6 +25,7 @@
             <form action="{{ route('admin.guru-staff.update', $guru->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+                <x-auto-format-notice />
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">

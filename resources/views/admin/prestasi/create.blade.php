@@ -24,6 +24,7 @@
             </div>
             <form action="{{ route('admin.prestasi.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
+                <x-auto-format-notice />
                 <div class="card-body">
                     <div class="form-group">
                         <label for="judul">Nama Lomba <span class="text-danger">*</span></label>

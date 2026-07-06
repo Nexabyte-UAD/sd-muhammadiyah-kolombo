@@ -43,6 +43,7 @@
             <form action="{{ route('admin.profil-sekolah.updateType', $type) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+                <x-auto-format-notice />
                 <div class="card-body">
                     <div class="row">
                         @if($type === 'akreditasi')

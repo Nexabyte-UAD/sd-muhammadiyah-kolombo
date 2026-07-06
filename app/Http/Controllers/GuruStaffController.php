@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ActivityLog;
 use App\Models\GuruStaff;
+use App\Services\IndonesianTextFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -38,7 +39,7 @@ class GuruStaffController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, IndonesianTextFormatter $formatter)
     {
         $request->validate([
             'tipe' => 'required|in:guru,staf',
@@ -63,6 +64,11 @@ class GuruStaffController extends Controller
             'status_kepegawaian',
             'pendidikan_terakhir',
             'agama',
+        ]);
+        $data = $formatter->fields($data, [
+            'nama' => 'name',
+            'jabatan' => 'title',
+            'bidang_tugas' => 'title',
         ]);
 
         $fotoBaru = $request->hasFile('foto')
@@ -106,7 +112,7 @@ class GuruStaffController extends Controller
         ]);
     }
 
-    public function update(Request $request, GuruStaff $guruStaff)
+    public function update(Request $request, GuruStaff $guruStaff, IndonesianTextFormatter $formatter)
     {
         $request->validate([
             'tipe' => 'required|in:guru,staf',
@@ -136,6 +142,11 @@ class GuruStaffController extends Controller
             'status_kepegawaian',
             'pendidikan_terakhir',
             'agama',
+        ]);
+        $data = $formatter->fields($data, [
+            'nama' => 'name',
+            'jabatan' => 'title',
+            'bidang_tugas' => 'title',
         ]);
 
         $fotoLama = $guruStaff->foto;

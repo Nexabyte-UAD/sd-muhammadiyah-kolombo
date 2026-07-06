@@ -25,6 +25,7 @@
             <form action="{{ route('admin.berita.update', $berita->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+                <x-auto-format-notice />
                 <div class="card-body">
                     <div class="form-group">
                         <label for="judul">Judul Berita <span class="text-danger">*</span></label>

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Berita;
 use App\Models\ActivityLog;
+use App\Models\Berita;
+use App\Services\IndonesianTextFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -13,6 +14,7 @@ class BeritaController extends Controller
     public function index()
     {
         $beritas = Berita::orderBy('tanggal', 'desc')->paginate(10);
+
         return view('admin.berita.index', compact('beritas'));
     }
 
@@ -21,17 +23,18 @@ class BeritaController extends Controller
         return view('admin.berita.create');
     }
 
-    public function store(Request $request)
+    public function store(Request $request, IndonesianTextFormatter $formatter)
     {
         $request->validate([
             'judul' => 'required|string|max:255',
             'isi' => 'required',
             'tanggal' => 'required|date',
             'status' => 'required|in:draft,published',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->only(['judul', 'isi', 'tanggal', 'status']);
+        $data = $formatter->fields($data, ['judul' => 'title', 'isi' => 'html']);
         $data['user_id'] = auth()->id();
 
         if ($request->hasFile('gambar')) {
@@ -45,7 +48,7 @@ class BeritaController extends Controller
             'user_id' => auth()->id(),
             'action_type' => 'Tambah',
             'module' => 'Berita',
-            'description' => 'Menambahkan berita baru: ' . Str::limit($data['judul'], 50),
+            'description' => 'Menambahkan berita baru: '.Str::limit($data['judul'], 50),
         ]);
 
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil ditambahkan');
@@ -56,17 +59,18 @@ class BeritaController extends Controller
         return view('admin.berita.edit', compact('berita'));
     }
 
-    public function update(Request $request, Berita $berita)
+    public function update(Request $request, Berita $berita, IndonesianTextFormatter $formatter)
     {
         $request->validate([
             'judul' => 'required|string|max:255',
             'isi' => 'required',
             'tanggal' => 'required|date',
             'status' => 'required|in:draft,published',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->only(['judul', 'isi', 'tanggal', 'status']);
+        $data = $formatter->fields($data, ['judul' => 'title', 'isi' => 'html']);
 
         if ($request->hasFile('gambar')) {
             if ($berita->gambar && Storage::disk('public')->exists($berita->gambar)) {
@@ -82,7 +86,7 @@ class BeritaController extends Controller
             'user_id' => auth()->id(),
             'action_type' => 'Update',
             'module' => 'Berita',
-            'description' => 'Memperbarui berita: ' . Str::limit($data['judul'], 50),
+            'description' => 'Memperbarui berita: '.Str::limit($data['judul'], 50),
         ]);
 
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil diupdate');
@@ -93,7 +97,7 @@ class BeritaController extends Controller
         if ($berita->gambar && Storage::disk('public')->exists($berita->gambar)) {
             Storage::disk('public')->delete($berita->gambar);
         }
-        
+
         $judul = $berita->judul;
         $berita->delete();
 
@@ -101,7 +105,7 @@ class BeritaController extends Controller
             'user_id' => auth()->id(),
             'action_type' => 'Hapus',
             'module' => 'Berita',
-            'description' => 'Menghapus berita: ' . Str::limit($judul, 50),
+            'description' => 'Menghapus berita: '.Str::limit($judul, 50),
         ]);
 
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil dihapus');

@@ -25,6 +25,7 @@
             <form action="{{ route('admin.ekstrakurikuler.update', $ekstrakurikuler->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
+                <x-auto-format-notice />
                 <div class="card-body">
                     <div class="form-group">
                         <label for="nama">Nama Ekstrakurikuler <span class="text-danger">*</span></label>

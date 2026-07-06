@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\IndonesianTextFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -15,6 +16,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::latest()->paginate(10);
+
         return view('admin.users.index', compact('users'));
     }
 
@@ -29,7 +31,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, IndonesianTextFormatter $formatter)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -38,7 +40,7 @@ class UserController extends Controller
         ]);
 
         User::create([
-            'name' => $request->name,
+            'name' => $formatter->name($request->name),
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -58,7 +60,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user, IndonesianTextFormatter $formatter)
     {
         $rules = [
             'name' => 'required|string|max:255',
@@ -72,7 +74,7 @@ class UserController extends Controller
         $request->validate($rules);
 
         $data = [
-            'name' => $request->name,
+            'name' => $formatter->name($request->name),
             'email' => $request->email,
         ];
 

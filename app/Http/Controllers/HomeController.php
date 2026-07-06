@@ -169,7 +169,6 @@ class HomeController extends Controller
             'riwayatPendidikan',
             'riwayatPekerjaan',
             'prestasis' => fn ($query) => $query->orderBy('tanggal', 'desc'),
-            'ekstrakurikulers' => fn ($query) => $query->orderBy('nama'),
         ]);
         if ($tahun) {
             $query->where('tahun_lulus', $tahun);

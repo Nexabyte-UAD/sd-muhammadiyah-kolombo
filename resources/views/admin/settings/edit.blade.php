@@ -39,6 +39,7 @@
         <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
+            <x-auto-format-notice />
             
             <div class="card card-primary card-tabs">
                 <div class="card-header p-0 pt-1">
