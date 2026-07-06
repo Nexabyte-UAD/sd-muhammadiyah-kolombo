@@ -1,10 +1,18 @@
-# KolomboEdu
+<div align="center">
+  <img src="assets/banner.png" alt="KolomboEdu Banner" width="100%">
+  <br><br>
+  <h1>KolomboEdu</h1>
+  <p><strong>Sistem Informasi Terpadu SD Muhammadiyah Komplek Kolombo Yogyakarta</strong></p>
+  <p>A modern, responsive, and dynamic web platform designed to streamline school management and digital presence.</p>
+</div>
+
+---
 
 Sistem informasi dan website resmi untuk SD Muhammadiyah Komplek Kolombo Yogyakarta.
 
 KolomboEdu menyediakan portal publik untuk informasi sekolah dan dashboard admin untuk mengelola konten secara dinamis. Proyek ini berbasis Laravel, Blade, Bootstrap/AdminLTE, dan MySQL.
 
-## Ringkasan
+## 📖 Ringkasan
 
 Aplikasi ini memiliki dua area utama:
 
@@ -13,7 +21,9 @@ Aplikasi ini memiliki dua area utama:
 
 Konten yang diinput dari admin menjadi sumber data untuk halaman publik. Beberapa input teks juga dinormalisasi melalui `IndonesianTextFormatter` agar penulisan konten sekolah lebih konsisten.
 
-## Tim Pengembang
+---
+
+## 👨‍💻 Tim Pengembang
 
 | Peran | Nama Lengkap | NIM | Kontribusi |
 | :--- | :--- | :--- | :--- |
@@ -23,7 +33,9 @@ Konten yang diinput dari admin menjadi sumber data untuk halaman publik. Beberap
 | Backend Developer | Aditya Bintang Rianda Syahputra | 2300018399 | Backend, database, dan Docker |
 | Quality Assurance | Trizana Wafi Reswara | 2300018258 | Testing dan quality assurance |
 
-## Fitur Utama
+---
+
+## ✨ Fitur Utama
 
 ### Portal Publik
 
@@ -51,7 +63,9 @@ Konten yang diinput dari admin menjadi sumber data untuk halaman publik. Beberap
 - Pengaturan website seperti logo, kontak, hero, dan sambutan.
 - Activity log untuk aktivitas sistem.
 
-## Tech Stack
+---
+
+## 🛠️ Tech Stack
 
 | Bagian | Teknologi |
 | :--- | :--- |
@@ -67,7 +81,9 @@ Konten yang diinput dari admin menjadi sumber data untuk halaman publik. Beberap
 
 Catatan: proyek ini tidak bergantung pada Vite/Tailwind untuk tampilan aktif. `npm run dev` dipakai sebagai process runner lokal untuk menjalankan server, queue listener, dan log watcher.
 
-## Instalasi
+---
+
+## 🚀 Instalasi
 
 ### Opsi 1: Docker
 
@@ -167,11 +183,15 @@ npm run dev
 
 Di Windows PowerShell, gunakan `npm.cmd run dev` jika eksekusi `npm.ps1` diblokir oleh execution policy.
 
-## Akun Admin
+---
+
+## 🔐 Akun Admin
 
 Akun admin dibuat melalui seeder. Periksa `database/seeders/DatabaseSeeder.php` untuk kredensial bawaan yang sedang aktif.
 
-## Struktur Folder
+---
+
+## 📂 Struktur Folder
 
 ```text
 app/
@@ -201,7 +221,9 @@ test/user/                Test browser Playwright
 tests/                    Test PHPUnit Laravel
 ```
 
-## Modul Data
+---
+
+## 🗄️ Modul Data
 
 - `User`: akun administrator.
 - `Setting`: konfigurasi website.
@@ -215,7 +237,9 @@ tests/                    Test PHPUnit Laravel
 - `Pesan`: pesan dari formulir kontak.
 - `ActivityLog`: catatan aktivitas sistem.
 
-## Testing
+---
+
+## 🧪 Testing
 
 ### Test Laravel
 
@@ -281,7 +305,9 @@ pytest test/user/test_structural.py
 pytest test/user/test_contact.py
 ```
 
-## Catatan Pengembangan
+---
+
+## 📝 Catatan Pengembangan
 
 - Gunakan `app/Services/IndonesianTextFormatter.php` sebagai pusat normalisasi teks.
 - Jangan menduplikasi aturan kapitalisasi di controller atau view.
@@ -290,7 +316,9 @@ pytest test/user/test_contact.py
 - Modul kelas dan siswa dibuat dinamis, bukan daftar kelas statis.
 - Setelah mengubah route, controller, migration, atau formatter, jalankan test yang relevan.
 
-## Deployment
+---
+
+## 🌐 Deployment
 
 Checklist dasar production:
 
@@ -311,6 +339,8 @@ APP_URL=https://domain-sekolah.example
 
 Arahkan document root web server ke folder `public/`.
 
-## Lisensi
+---
+
+## 📄 Lisensi
 
 Proyek ini menggunakan lisensi MIT. Lihat [LICENSE](LICENSE) untuk detailnya.
