@@ -22,10 +22,10 @@ Route::post('/pesan', [HomeController::class, 'storePesan'])->name('pesan.store'
 
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'admin'])
+    ->middleware(['auth', 'admin', 'admin.idle'])
     ->name('dashboard');
 
-Route::middleware(['auth', 'admin'])->group(function () {
+Route::middleware(['auth', 'admin', 'admin.idle'])->group(function () {
     Route::get('admin/akun', [AdminAccountController::class, 'edit'])->name('admin.account.edit');
     Route::put('admin/akun', [AdminAccountController::class, 'update'])->name('admin.account.update');
 
@@ -40,6 +40,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::resource('admin/prestasi', \App\Http\Controllers\PrestasiController::class)->except('show')->names('admin.prestasi');
     Route::resource('admin/ekstrakurikuler', \App\Http\Controllers\EkstrakurikulerController::class)->except('show')->names('admin.ekstrakurikuler');
     Route::get('admin/pesan', [\App\Http\Controllers\PesanController::class, 'index'])->name('admin.pesan.index');
+    Route::patch('admin/pesan/{pesan}/baca', [\App\Http\Controllers\PesanController::class, 'markAsRead'])->name('admin.pesan.read');
     Route::delete('admin/pesan/{pesan}', [\App\Http\Controllers\PesanController::class, 'destroy'])->name('admin.pesan.destroy');
     
     Route::get('admin/profil/{type}', [\App\Http\Controllers\ProfilSekolahController::class, 'editByType'])->name('admin.profil-sekolah.editType');

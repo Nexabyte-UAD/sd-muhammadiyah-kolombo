@@ -7,6 +7,7 @@ use App\Services\IndonesianTextFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -36,13 +37,14 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'confirmed', Password::min(12)->letters()->mixedCase()->numbers()->symbols()],
         ]);
 
         User::create([
             'name' => $formatter->name($request->name),
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => 'Admin',
         ]);
 
         return redirect()->route('admin.users.index')
@@ -68,7 +70,7 @@ class UserController extends Controller
         ];
 
         if ($request->filled('password')) {
-            $rules['password'] = 'required|string|min:8|confirmed';
+            $rules['password'] = ['required', 'confirmed', Password::min(12)->letters()->mixedCase()->numbers()->symbols()];
         }
 
         $request->validate($rules);

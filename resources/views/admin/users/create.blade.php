@@ -44,7 +44,7 @@
 
                     <div class="form-group">
                         <label for="password">Password <span class="text-danger">*</span></label>
-                        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" required placeholder="Minimal 8 karakter">
+                        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" required placeholder="Minimal 12 karakter, kombinasi huruf, angka, dan simbol">
                         @error('password')
                             <span class="error invalid-feedback">{{ $message }}</span>
                         @enderror

@@ -929,7 +929,7 @@
                         <div class="d-flex align-items-start gap-3">
                             <div>
                                 <h6 class="fw-bold mb-1 text-dark">Layanan Telepon</h6>
-                                <p class="text-secondary mb-0 small">{{ $settings['telepon'] ?? '+62 274 1234567' }}</p>
+                                <p class="text-secondary mb-0 small">{{ $settings['telepon'] ?? '(0274) 585755' }}</p>
                             </div>
                         </div>
                         <div class="d-flex align-items-start gap-3">

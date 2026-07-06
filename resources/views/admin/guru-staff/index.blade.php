@@ -16,6 +16,14 @@
 @stop
 
 @section('content')
+<x-admin-usage-guide
+    description="Petunjuk pengelolaan profil guru dan tenaga kependidikan."
+    :items="[
+        'Pastikan berada pada kategori Guru atau Staf yang sesuai.',
+        'Lengkapi jabatan, bidang tugas, biodata, dan foto untuk tampilan publik.',
+        'Gunakan Edit untuk memperbarui profil dan Hapus hanya untuk data yang tidak lagi digunakan.',
+    ]"
+/>
 <div class="row">
     <div class="col-12">
         <div class="card card-primary card-outline">

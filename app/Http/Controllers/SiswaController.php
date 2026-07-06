@@ -337,7 +337,7 @@ class SiswaController extends Controller
                 'Tahun Masuk', 'Tahun Lulus', 'Sekolah Tujuan/Pendidikan', 'Pekerjaan',
             ]);
 
-            $query->orderBy('nama')->chunk(500, function ($siswas) use ($file) {
+            $query->orderBy('nama')->chunk(500, function ($siswas) use ($file, $aman) {
                 foreach ($siswas as $siswa) {
                     fputcsv($file, array_map($aman, [
                         $siswa->nis,

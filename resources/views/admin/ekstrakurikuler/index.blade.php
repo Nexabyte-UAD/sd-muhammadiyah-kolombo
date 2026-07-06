@@ -16,6 +16,14 @@
 @stop
 
 @section('content')
+<x-admin-usage-guide
+    description="Petunjuk pengelolaan program ekstrakurikuler sekolah."
+    :items="[
+        'Tambahkan satu program untuk setiap kegiatan ekstrakurikuler.',
+        'Lengkapi nama, jadwal, pembina, deskripsi, dan foto kegiatan.',
+        'Data tersimpan digunakan pada website publik dan pilihan ekstrakurikuler siswa.',
+    ]"
+/>
 <div class="row">
     <div class="col-12">
         <div class="card card-primary card-outline">

@@ -34,23 +34,6 @@ class SettingController extends Controller
             Setting::updateOrCreate(['key' => $key], ['value' => $value]);
         }
 
-        // Handle logo file upload
-        if ($request->hasFile('logo')) {
-            $request->validate([
-                'logo' => 'image|mimes:jpeg,png,jpg,svg|max:2048',
-            ]);
-
-            $path = $request->file('logo')->store('settings', 'public');
-
-            // Hapus logo lama jika ada
-            $oldSetting = Setting::where('key', 'logo')->first();
-            if ($oldSetting && $oldSetting->value) {
-                Storage::disk('public')->delete($oldSetting->value);
-            }
-
-            Setting::updateOrCreate(['key' => 'logo'], ['value' => $path]);
-        }
-
         // Handle hero image file upload
         if ($request->hasFile('hero_image')) {
             $request->validate([

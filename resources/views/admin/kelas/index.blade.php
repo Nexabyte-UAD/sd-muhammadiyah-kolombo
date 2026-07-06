@@ -12,6 +12,14 @@
 @stop
 
 @section('content')
+<x-admin-usage-guide
+    description="Petunjuk pengelolaan kelas, kapasitas, dan wali kelas."
+    :items="[
+        'Buat kelas sesuai penamaan resmi yang digunakan sekolah.',
+        'Pilih wali kelas dari data guru dan tentukan kapasitas bila diperlukan.',
+        'Kelas yang masih digunakan siswa tidak dapat dihapus agar data tetap konsisten.',
+    ]"
+/>
 <div class="card card-primary card-outline">
     <div class="card-body p-0 table-responsive">
         @if($errors->any())

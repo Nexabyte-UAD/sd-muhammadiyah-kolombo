@@ -11,6 +11,14 @@
 @stop
 
 @section('content')
+<x-admin-usage-guide
+    description="Petunjuk meninjau pesan dan masukan dari pengunjung website."
+    :items="[
+        'Pesan baru ditampilkan dengan latar lebih tegas sampai ditandai sudah dibaca.',
+        'Gunakan alamat email pengirim untuk memberikan balasan bila diperlukan.',
+        'Hapus permanen hanya pesan yang sudah selesai ditindaklanjuti atau tidak relevan.',
+    ]"
+/>
 <div class="row">
     <div class="col-12">
         <div class="card card-primary card-outline">
@@ -27,7 +35,7 @@
                     </thead>
                     <tbody>
                         @forelse ($pesans as $item)
-                        <tr>
+                        <tr class="{{ $item->read_at ? '' : 'font-weight-bold bg-light' }}">
                             <td class="align-middle">
                                 <div class="d-flex align-items-center">
                                     <div class="bg-primary text-white img-circle d-flex align-items-center justify-content-center mr-2" style="width: 40px; height: 40px; font-weight: bold; display: inline-flex !important;">
@@ -52,6 +60,17 @@
                                 </span>
                             </td>
                             <td class="align-middle text-right">
+                                @if(!$item->read_at)
+                                    <form action="{{ route('admin.pesan.read', $item) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm btn-info" title="Tandai Sudah Dibaca">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                @else
+                                    <span class="badge badge-success mr-1">Dibaca</span>
+                                @endif
                                 <form action="{{ route('admin.pesan.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus pesan ini secara permanen?');" class="d-inline">
                                     @csrf
                                     @method('DELETE')

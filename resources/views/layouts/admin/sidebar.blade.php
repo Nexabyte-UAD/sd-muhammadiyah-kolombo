@@ -1,6 +1,8 @@
 <aside class="admin-sidebar" id="adminSidebar" aria-label="Navigasi admin">
     <a href="{{ route('dashboard') }}" class="admin-brand">
-        <span class="admin-brand-mark">MK</span>
+        <img src="{{ asset('images/logo-sd-muhammadiyah-kolombo.png') }}"
+             class="admin-brand-logo"
+             alt="Logo SD Muhammadiyah Komplek Kolombo">
         <span>
             <strong>Admin Sekolah</strong>
             <small>Komplek Kolombo</small>
@@ -60,10 +62,14 @@
                 <x-admin-icon name="arrow-right" size="15" class="nav-group-chevron"/>
             </summary>
             <div class="admin-nav-children">
-                <a href="{{ route('admin.profil-sekolah.editType', 'tentang') }}">Tentang Sekolah</a>
-                <a href="{{ route('admin.profil-sekolah.editType', 'sambutan') }}">Kata Sambutan</a>
-                <a href="{{ route('admin.profil-sekolah.editType', 'visi_misi') }}">Visi &amp; Misi</a>
-                <a href="{{ route('admin.profil-sekolah.editType', 'akreditasi') }}">Akreditasi</a>
+                <a href="{{ route('admin.profil-sekolah.editType', 'tentang') }}"
+                   class="{{ request()->routeIs('admin.profil-sekolah.*') && request()->route('type') === 'tentang' ? 'active' : '' }}">Tentang Sekolah</a>
+                <a href="{{ route('admin.profil-sekolah.editType', 'sambutan') }}"
+                   class="{{ request()->routeIs('admin.profil-sekolah.*') && request()->route('type') === 'sambutan' ? 'active' : '' }}">Kata Sambutan</a>
+                <a href="{{ route('admin.profil-sekolah.editType', 'visi_misi') }}"
+                   class="{{ request()->routeIs('admin.profil-sekolah.*') && request()->route('type') === 'visi_misi' ? 'active' : '' }}">Visi &amp; Misi</a>
+                <a href="{{ route('admin.profil-sekolah.editType', 'akreditasi') }}"
+                   class="{{ request()->routeIs('admin.profil-sekolah.*') && request()->route('type') === 'akreditasi' ? 'active' : '' }}">Akreditasi</a>
             </div>
         </details>
 

@@ -168,6 +168,49 @@
 
             <section class="admin-card">
                 <header class="admin-card-header">
+                    <div>
+                        <h2 class="admin-card-title">Perlu Ditindaklanjuti</h2>
+                        <p class="admin-card-subtitle">Data yang membutuhkan perhatian admin.</p>
+                    </div>
+                </header>
+                <div class="admin-card-body flush">
+                    <div class="attention-list">
+                        <a href="{{ route('admin.siswa.index', ['status' => 'aktif']) }}" class="attention-item">
+                            <span class="attention-icon yellow"><x-admin-icon name="students" size="19"/></span>
+                            <span class="attention-copy">
+                                <strong>Siswa tanpa kelas</strong>
+                                <small>Lengkapi penempatan kelas siswa aktif.</small>
+                            </span>
+                            <span class="attention-count {{ $countSiswaTanpaKelas > 0 ? 'warning' : 'clear' }}">
+                                {{ number_format($countSiswaTanpaKelas) }}
+                            </span>
+                        </a>
+                        <a href="{{ route('admin.guru-staff.index') }}" class="attention-item">
+                            <span class="attention-icon blue"><x-admin-icon name="users" size="19"/></span>
+                            <span class="attention-copy">
+                                <strong>Data guru/staf belum lengkap</strong>
+                                <small>Periksa foto dan biodata utama.</small>
+                            </span>
+                            <span class="attention-count {{ $countGuruBelumLengkap > 0 ? 'warning' : 'clear' }}">
+                                {{ number_format($countGuruBelumLengkap) }}
+                            </span>
+                        </a>
+                        <a href="{{ route('admin.pesan.index') }}" class="attention-item">
+                            <span class="attention-icon red"><x-admin-icon name="message" size="19"/></span>
+                            <span class="attention-copy">
+                                <strong>Pesan belum dibaca</strong>
+                                <small>Tinjau pesan terbaru dari pengunjung.</small>
+                            </span>
+                            <span class="attention-count {{ $countPesanBelumDibaca > 0 ? 'danger' : 'clear' }}">
+                                {{ number_format($countPesanBelumDibaca) }}
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-card">
+                <header class="admin-card-header">
                     <h2 class="admin-card-title">Aktivitas Terakhir</h2>
                 </header>
                 <div class="admin-card-body flush">

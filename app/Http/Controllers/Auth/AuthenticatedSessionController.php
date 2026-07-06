@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\ActivityLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,6 +28,20 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        $request->session()->put('admin_last_activity', time());
+
+        $user = $request->user();
+        $user->update([
+            'last_login_at' => now(),
+            'last_login_ip' => $request->ip(),
+        ]);
+
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'action_type' => 'Login',
+            'module' => 'Autentikasi',
+            'description' => 'Login pengguna berhasil dari IP '.$request->ip().'.',
+        ]);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
@@ -36,6 +51,15 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        if ($request->user()) {
+            ActivityLog::create([
+                'user_id' => $request->user()->id,
+                'action_type' => 'Logout',
+                'module' => 'Autentikasi',
+                'description' => 'Admin keluar dari sistem.',
+            ]);
+        }
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

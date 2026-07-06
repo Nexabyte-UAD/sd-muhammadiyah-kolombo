@@ -37,7 +37,7 @@
                     <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="tabs-identitas-tab" data-toggle="pill" href="#tabs-identitas" role="tab" aria-controls="tabs-identitas" aria-selected="true">
-                                <i class="fas fa-id-badge mr-1"></i> Identitas & Logo
+                                <i class="fas fa-id-badge mr-1"></i> Identitas Sekolah
                             </a>
                         </li>
                         <li class="nav-item">
@@ -56,35 +56,16 @@
                 <div class="card-body">
                     <div class="tab-content" id="custom-tabs-one-tabContent">
                         
-                        <!-- TAB: Identitas & Logo -->
+                        <!-- TAB: Identitas Sekolah -->
                         <div class="tab-pane fade show active" id="tabs-identitas" role="tabpanel" aria-labelledby="tabs-identitas-tab">
                             <h4 class="mb-3 text-primary">Pengenalan Institusi</h4>
                             <hr>
                             <div class="row">
-                                <div class="col-md-5">
+                                <div class="col-md-7">
                                     <div class="form-group">
                                         <label>Nama Institusi / Sekolah</label>
                                         <input type="text" class="form-control" name="nama_sekolah" value="{{ $settings['nama_sekolah'] ?? '' }}" required>
                                         <small class="form-text text-muted">Akan ditampilkan di tab judul, header, dan atribusi footer bawah.</small>
-                                    </div>
-                                </div>
-                                <div class="col-md-7">
-                                    <div class="form-group">
-                                        <label>Logo Utama Terkini</label>
-                                        <div class="mb-2">
-                                            @if(isset($settings['logo']) && $settings['logo'])
-                                                <div class="p-2 border d-inline-block bg-light">
-                                                    <img src="{{ asset('storage/' . $settings['logo']) }}" alt="Logo" style="max-height: 70px;">
-                                                </div>
-                                            @else
-                                                <span class="text-muted"><i class="fas fa-image mr-1"></i> Belum ada logo</span>
-                                            @endif
-                                        </div>
-                                        <div class="custom-file mt-2">
-                                            <input type="file" class="custom-file-input" name="logo" id="logo" accept="image/*">
-                                            <label class="custom-file-label" for="logo">Pilih logo baru</label>
-                                        </div>
-                                        <small class="form-text text-muted">Biarkan kosong jika tidak merubah. Gunakan format PNG transparan untuk hasil terbaik (Maks 2MB).</small>
                                     </div>
                                 </div>
                             </div>
@@ -204,7 +185,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-phone text-success"></i></span>
                                             </div>
-                                            <input type="text" class="form-control" name="telepon" value="{{ $settings['telepon'] ?? '' }}" placeholder="+62 274...">
+                                            <input type="text" class="form-control" name="telepon" value="{{ $settings['telepon'] ?? '' }}" placeholder="(0274) 585755">
                                         </div>
                                     </div>
                                 </div>

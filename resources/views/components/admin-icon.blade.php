@@ -60,6 +60,9 @@
         @case('clock')
             <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
             @break
+        @case('help')
+            <circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.5 2c-.8.5-1.3 1-1.3 2M12 17h.01"/>
+            @break
         @default
             <circle cx="12" cy="12" r="9"/>
     @endswitch

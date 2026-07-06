@@ -6,6 +6,14 @@
 @section('page_description', 'Perbarui identitas login dan password administrator.')
 
 @section('content')
+    <div class="admin-alert admin-alert-success">
+        <strong>Login terakhir:</strong>
+        {{ $user->last_login_at?->translatedFormat('d F Y, H:i') ?? 'Belum tercatat' }}
+        @if($user->last_login_ip)
+            <span>· IP {{ $user->last_login_ip }}</span>
+        @endif
+    </div>
+
     <form action="{{ route('admin.account.update') }}" method="POST" class="form-card">
         @csrf
         @method('PUT')
@@ -36,8 +44,16 @@
                 <div class="form-field form-field-full">
                     <div class="account-security-note">
                         <strong>Ganti password</strong>
-                        <span>Biarkan kedua kolom berikut kosong jika password tidak ingin diubah.</span>
+                        <span>Gunakan minimal 12 karakter dengan huruf besar, huruf kecil, angka, dan simbol.</span>
                     </div>
+                </div>
+
+                <div class="form-field form-field-full">
+                    <label for="current_password" class="form-label">Password Saat Ini</label>
+                    <input type="password" name="current_password" id="current_password"
+                           class="form-control-admin @error('current_password') is-invalid @enderror"
+                           autocomplete="current-password">
+                    @error('current_password')<div class="form-error">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="form-field">

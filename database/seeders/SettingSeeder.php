@@ -14,9 +14,8 @@ class SettingSeeder extends Seeder
     {
         $settings = [
             ['key' => 'nama_sekolah', 'value' => 'SD Muhammadiyah Kolombo', 'type' => 'text'],
-            ['key' => 'logo', 'value' => null, 'type' => 'image'],
             ['key' => 'alamat', 'value' => 'Jl. Rajawali No. 10, Demangan Baru, Depok, Sleman, Yogyakarta', 'type' => 'text'],
-            ['key' => 'telepon', 'value' => '+62 274 1234567', 'type' => 'text'],
+            ['key' => 'telepon', 'value' => '(0274) 585755', 'type' => 'text'],
             ['key' => 'email', 'value' => 'sdmuhkkolombo@gmail.com', 'type' => 'text'],
             ['key' => 'facebook', 'value' => 'https://facebook.com', 'type' => 'url'],
             ['key' => 'instagram', 'value' => 'https://instagram.com', 'type' => 'url'],

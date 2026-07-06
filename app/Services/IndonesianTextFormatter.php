@@ -106,16 +106,7 @@ class IndonesianTextFormatter
             return $value;
         }
 
-        $digits = preg_replace('/\D+/', '', $value) ?? '';
-        if (str_starts_with($digits, '0')) {
-            $digits = '62'.substr($digits, 1);
-        }
-
-        if (! str_starts_with($digits, '62') || strlen($digits) < 9 || strlen($digits) > 15) {
-            return trim($value);
-        }
-
-        return '+'.$digits;
+        return trim($value);
     }
 
     public function html(?string $value): ?string

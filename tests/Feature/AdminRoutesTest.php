@@ -3,13 +3,17 @@
 namespace Tests\Feature;
 
 use App\Models\Berita;
+use App\Models\ActivityLog;
 use App\Models\GuruStaff;
 use App\Models\Kelas;
 use App\Models\Ekstrakurikuler;
+use App\Models\Pesan;
 use App\Models\RiwayatAkademik;
 use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Tests\TestCase;
 
 class AdminRoutesTest extends TestCase
@@ -20,9 +24,119 @@ class AdminRoutesTest extends TestCase
     {
         $this->get(route('login'))
             ->assertOk()
-            ->assertSee('Panel Administrasi')
-            ->assertSee('Masuk ke Panel Admin')
+            ->assertSee('Logo SD Muhammadiyah Komplek Kolombo')
+            ->assertSee('Login Admin')
+            ->assertSee('data-password-toggle="password"', false)
+            ->assertSee('name="remember"', false)
+            ->assertSee('Lupa password?')
+            ->assertHeader('X-Content-Type-Options', 'nosniff')
+            ->assertHeader('X-Frame-Options', 'DENY')
+            ->assertHeader('Content-Security-Policy')
             ->assertDontSee('adminlte', false);
+    }
+
+    public function test_login_tracks_last_login_and_failed_message_stays_generic(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Login',
+            'email' => 'login@example.test',
+            'password' => 'PasswordAdmin1!',
+            'role' => 'Admin',
+        ]);
+
+        $this->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'password-salah',
+        ])->assertSessionHasErrors([
+            'email' => 'Email atau password salah.',
+        ]);
+
+        $this->assertDatabaseHas('activity_logs', [
+            'user_id' => null,
+            'action_type' => 'Login Gagal',
+            'module' => 'Autentikasi',
+        ]);
+
+        $this->post(route('login'), [
+            'email' => $user->email,
+            'password' => 'PasswordAdmin1!',
+            'remember' => '1',
+        ])->assertRedirect(route('dashboard'));
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertNotNull($user->fresh()->last_login_at);
+        $this->assertDatabaseHas('activity_logs', [
+            'user_id' => $user->id,
+            'action_type' => 'Login',
+            'module' => 'Autentikasi',
+        ]);
+    }
+
+    public function test_guest_is_redirected_and_idle_admin_is_logged_out(): void
+    {
+        $this->get(route('dashboard'))->assertRedirect(route('login'));
+
+        $user = User::create([
+            'name' => 'Admin Idle',
+            'email' => 'idle@example.test',
+            'password' => 'PasswordAdmin1!',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)
+            ->withSession(['admin_last_activity' => time() - 1900])
+            ->get(route('dashboard'))
+            ->assertRedirect(route('login'))
+            ->assertSessionHas('status');
+
+        $this->assertGuest();
+    }
+
+    public function test_password_reset_flow_uses_a_strong_new_password(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Reset',
+            'email' => 'reset@example.test',
+            'password' => 'PasswordLama1!',
+            'role' => 'Admin',
+        ]);
+        $token = Password::createToken($user);
+
+        $this->get(route('password.request'))
+            ->assertOk()
+            ->assertSee('Lupa Password');
+
+        $this->post(route('password.update'), [
+            'token' => $token,
+            'email' => $user->email,
+            'password' => 'PasswordBaru1!',
+            'password_confirmation' => 'PasswordBaru1!',
+        ])->assertRedirect(route('login'));
+
+        $this->assertTrue(Hash::check('PasswordBaru1!', $user->fresh()->password));
+    }
+
+    public function test_login_is_rate_limited_and_forgot_password_does_not_reveal_accounts(): void
+    {
+        for ($attempt = 1; $attempt <= 6; $attempt++) {
+            $response = $this->post(route('login'), [
+                'email' => 'tidak-ada@example.test',
+                'password' => 'password-salah',
+            ]);
+        }
+
+        $response->assertSessionHasErrors('email');
+        $this->assertSame(
+            5,
+            ActivityLog::where('action_type', 'Login Gagal')->count()
+        );
+
+        $this->post(route('password.email'), [
+            'email' => 'tidak-ada@example.test',
+        ])->assertSessionHas(
+            'status',
+            'Jika email terdaftar, tautan reset password akan dikirim.'
+        );
     }
 
     public function test_admin_dashboard_uses_the_custom_panel_layout(): void
@@ -41,6 +155,44 @@ class AdminRoutesTest extends TestCase
             ->assertSee('Ringkasan hari ini')
             ->assertSee('Akses Cepat')
             ->assertSee(asset('css/admin-panel.css'), false);
+    }
+
+    public function test_dashboard_surfaces_actionable_data_and_message_can_be_marked_as_read(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Informasi',
+            'email' => 'informasi@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        Siswa::create([
+            'nama' => 'Siswa Tanpa Kelas',
+            'jenis_kelamin' => 'L',
+            'status' => 'aktif',
+            'tahun_masuk' => 2026,
+        ]);
+        GuruStaff::create([
+            'tipe' => 'guru',
+            'nama' => 'Guru Belum Lengkap',
+            'jabatan' => 'Guru Kelas',
+        ]);
+        $pesan = Pesan::create([
+            'nama' => 'Pengunjung',
+            'email' => 'pengunjung@example.test',
+            'isi' => 'Pesan yang belum dibaca.',
+        ]);
+
+        $dashboard = $this->actingAs($user)->get(route('dashboard'));
+
+        $dashboard->assertOk()
+            ->assertSee('Perlu Ditindaklanjuti')
+            ->assertViewHas('countSiswaTanpaKelas', 1)
+            ->assertViewHas('countGuruBelumLengkap', 1)
+            ->assertViewHas('countPesanBelumDibaca', 1);
+
+        $this->patch(route('admin.pesan.read', $pesan))
+            ->assertRedirect(route('admin.pesan.index'));
+        $this->assertNotNull($pesan->fresh()->read_at);
     }
 
     public function test_admin_can_update_own_account_without_changing_role(): void
@@ -70,6 +222,34 @@ class AdminRoutesTest extends TestCase
         $this->assertSame('Admin Baru', $user->name);
         $this->assertSame('admin-baru@example.test', $user->email);
         $this->assertSame('Admin', $user->role);
+    }
+
+    public function test_admin_must_confirm_current_password_before_changing_password(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Aman',
+            'email' => 'admin-aman@example.test',
+            'password' => 'PasswordLama1!',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)->put(route('admin.account.update'), [
+            'name' => $user->name,
+            'email' => $user->email,
+            'current_password' => 'password-salah',
+            'password' => 'PasswordBaru1!',
+            'password_confirmation' => 'PasswordBaru1!',
+        ])->assertSessionHasErrors('current_password');
+
+        $this->actingAs($user)->put(route('admin.account.update'), [
+            'name' => $user->name,
+            'email' => $user->email,
+            'current_password' => 'PasswordLama1!',
+            'password' => 'PasswordBaru1!',
+            'password_confirmation' => 'PasswordBaru1!',
+        ])->assertRedirect(route('admin.account.edit'));
+
+        $this->assertTrue(\Illuminate\Support\Facades\Hash::check('PasswordBaru1!', $user->fresh()->password));
     }
 
     public function test_guaranteed_admin_resource_routes_do_not_include_unimplemented_show_actions(): void
@@ -321,6 +501,29 @@ class AdminRoutesTest extends TestCase
 
         $siswa = \App\Models\Siswa::where('nama', 'Siswa Robotika')->firstOrFail();
         $this->assertTrue($siswa->ekstrakurikulers->contains($ekstrakurikuler));
+    }
+
+    public function test_student_export_streams_csv_and_escapes_spreadsheet_formulas(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Ekspor',
+            'email' => 'ekspor@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        Siswa::create([
+            'nis' => '=1+1',
+            'nama' => 'Siswa Ekspor',
+            'jenis_kelamin' => 'L',
+            'status' => 'aktif',
+            'tahun_masuk' => 2026,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('admin.siswa.export'));
+
+        $response->assertOk()
+            ->assertDownload('data-siswa-'.date('Y-m-d').'.csv');
+        $this->assertStringContainsString("'=1+1", $response->streamedContent());
     }
 
     public function test_admin_can_set_individual_end_of_year_decisions(): void

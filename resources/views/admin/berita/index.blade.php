@@ -13,6 +13,15 @@
 @endsection
 
 @section('content')
+    <x-admin-usage-guide
+        description="Petunjuk singkat pengelolaan publikasi berita sekolah."
+        :items="[
+            'Pilih Tulis Berita untuk membuat publikasi baru.',
+            'Pastikan judul, tanggal, isi, dan gambar sudah sesuai sebelum disimpan.',
+            'Gunakan Edit untuk memperbarui berita; Hapus hanya jika konten tidak lagi diperlukan.',
+        ]"
+    />
+
     <section class="admin-card">
         <header class="admin-card-header">
             <div>

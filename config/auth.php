@@ -114,4 +114,6 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    'admin_idle_timeout' => (int) env('ADMIN_IDLE_TIMEOUT', 30),
+
 ];

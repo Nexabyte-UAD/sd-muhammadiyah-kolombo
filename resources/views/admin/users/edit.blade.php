@@ -50,7 +50,7 @@
 
                     <div class="form-group">
                         <label for="password">Password Baru</label>
-                        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="Minimal 8 karakter">
+                        <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="Minimal 12 karakter, kombinasi huruf, angka, dan simbol">
                         @error('password')
                             <span class="error invalid-feedback">{{ $message }}</span>
                         @enderror

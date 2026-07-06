@@ -13,6 +13,15 @@ class PesanController extends Controller
         return view('admin.pesan.index', compact('pesans'));
     }
 
+    public function markAsRead(Pesan $pesan)
+    {
+        if ($pesan->read_at === null) {
+            $pesan->update(['read_at' => now()]);
+        }
+
+        return redirect()->route('admin.pesan.index')->with('success', 'Pesan ditandai sudah dibaca.');
+    }
+
     public function destroy(Pesan $pesan)
     {
         $pesan->delete();

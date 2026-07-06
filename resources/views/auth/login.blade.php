@@ -8,14 +8,16 @@
     <link rel="icon" href="{{ asset('favicon.ico') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin-panel.css') }}">
 </head>
 <body class="login-page">
     <main class="login-shell">
-        <section class="login-brand-panel">
+        <section class="login-brand-panel" aria-label="Informasi panel admin">
             <div class="login-brand-content">
-                <span class="login-brand-mark">MK</span>
+                <img src="{{ asset('images/logo-sd-muhammadiyah-kolombo.png') }}"
+                     alt="Logo SD Muhammadiyah Komplek Kolombo"
+                     class="login-brand-logo">
                 <p class="login-eyebrow">Panel Administrasi</p>
                 <h1>Kelola website sekolah dengan lebih sederhana.</h1>
                 <p>Perbarui informasi akademik dan konten publik dari satu ruang kerja yang aman.</p>
@@ -25,35 +27,52 @@
         <section class="login-form-panel">
             <div class="login-card">
                 <a href="{{ route('home') }}" class="login-back-link">← Kembali ke website</a>
+
                 <div class="login-heading">
                     <h2>Selamat datang</h2>
                     <p>Masuk menggunakan akun administrator.</p>
                 </div>
 
                 @if(session('status'))
-                    <div class="admin-alert admin-alert-success">{{ session('status') }}</div>
+                    <div class="admin-alert admin-alert-success" role="status">{{ session('status') }}</div>
                 @endif
 
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
+
                     <div class="form-field login-field">
                         <label for="email" class="form-label">Alamat Email</label>
                         <input type="email" name="email" id="email"
                                class="form-control-admin @error('email') is-invalid @enderror"
-                               value="{{ old('email') }}" autocomplete="username" autofocus required>
-                        @error('email')<div class="form-error">{{ $message }}</div>@enderror
+                               value="{{ old('email') }}"
+                               autocomplete="username"
+                               inputmode="email"
+                               autofocus required>
+                        @error('email')<div class="form-error" role="alert">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="form-field login-field">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" name="password" id="password"
-                               class="form-control-admin @error('password') is-invalid @enderror"
-                               autocomplete="current-password" required>
-                        @error('password')<div class="form-error">{{ $message }}</div>@enderror
+                        <div class="auth-label-row">
+                            <label for="password" class="form-label">Password</label>
+                            <a href="{{ route('password.request') }}">Lupa password?</a>
+                        </div>
+                        <div class="auth-password-wrap">
+                            <input type="password" name="password" id="password"
+                                   class="form-control-admin @error('password') is-invalid @enderror"
+                                   autocomplete="current-password" required>
+                            <button type="button" class="auth-password-toggle"
+                                    data-password-toggle="password"
+                                    aria-label="Tampilkan password"
+                                    aria-pressed="false">
+                                <span class="password-show">Tampilkan</span>
+                                <span class="password-hide">Sembunyikan</span>
+                            </button>
+                        </div>
+                        @error('password')<div class="form-error" role="alert">{{ $message }}</div>@enderror
                     </div>
 
                     <label class="login-remember">
-                        <input type="checkbox" name="remember" value="1">
+                        <input type="checkbox" name="remember" value="1" @checked(old('remember'))>
                         <span>Ingat saya di perangkat ini</span>
                     </label>
 
@@ -62,5 +81,17 @@
             </div>
         </section>
     </main>
+
+    <script>
+        document.querySelectorAll('[data-password-toggle]').forEach((button) => {
+            button.addEventListener('click', () => {
+                const input = document.getElementById(button.dataset.passwordToggle);
+                const show = input.type === 'password';
+                input.type = show ? 'text' : 'password';
+                button.setAttribute('aria-pressed', show ? 'true' : 'false');
+                button.setAttribute('aria-label', show ? 'Sembunyikan password' : 'Tampilkan password');
+            });
+        });
+    </script>
 </body>
 </html>

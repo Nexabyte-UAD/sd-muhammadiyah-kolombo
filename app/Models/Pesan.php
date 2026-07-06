@@ -9,5 +9,9 @@ class Pesan extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama', 'email', 'isi', 'status'];
+    protected $fillable = ['nama', 'email', 'isi', 'status', 'read_at'];
+
+    protected $casts = [
+        'read_at' => 'datetime',
+    ];
 }

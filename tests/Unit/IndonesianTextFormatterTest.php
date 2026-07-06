@@ -133,10 +133,10 @@ class IndonesianTextFormatterTest extends TestCase
         );
     }
 
-    public function test_normalizes_indonesian_phone_to_e164_without_touching_invalid_values(): void
+    public function test_preserves_local_phone_format(): void
     {
-        $this->assertSame('+6281234567890', $this->formatter->phone('0812-3456-7890'));
-        $this->assertSame('+62274567890', $this->formatter->phone('(0274) 567890'));
+        $this->assertSame('0812-3456-7890', $this->formatter->phone('0812-3456-7890'));
+        $this->assertSame('(0274) 585755', $this->formatter->phone('  (0274) 585755  '));
         $this->assertSame('telepon sekolah', $this->formatter->phone('telepon sekolah'));
     }
 }

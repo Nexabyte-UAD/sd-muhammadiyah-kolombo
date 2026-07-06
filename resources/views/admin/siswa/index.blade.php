@@ -19,6 +19,15 @@
 @stop
 
 @section('content')
+<x-admin-usage-guide
+    description="Petunjuk pengelolaan data siswa aktif, alumni, keluar, dan arsip."
+    :items="[
+        'Gunakan filter status dan kelas untuk menemukan siswa dengan cepat.',
+        'Tambah atau edit siswa dengan data kelas dan identitas yang benar.',
+        'Gunakan Kenaikan Kelas Massal hanya setelah keputusan setiap siswa diperiksa.',
+        'Data yang dihapus masuk arsip dan dapat dipulihkan kembali.',
+    ]"
+/>
 <div class="row">
     <div class="col-12">
         <!-- Filter Card -->

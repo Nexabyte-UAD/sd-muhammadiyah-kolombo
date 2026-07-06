@@ -16,6 +16,14 @@
 @stop
 
 @section('content')
+<x-admin-usage-guide
+    description="Petunjuk pencatatan prestasi siswa berdasarkan kategori."
+    :items="[
+        'Tambahkan prestasi pada kategori akademik, nonakademik, atau keagamaan yang tepat.',
+        'Isi nama siswa, pencapaian, penyelenggara, tingkat, tanggal, dan dokumentasi secara lengkap.',
+        'Perubahan data di halaman ini langsung memengaruhi halaman Prestasi dan Penghargaan publik.',
+    ]"
+/>
 <div class="row">
     <div class="col-12">
         <div class="card card-primary card-outline">

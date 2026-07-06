@@ -16,6 +16,14 @@
 @stop
 
 @section('content')
+<x-admin-usage-guide
+    description="Petunjuk pengelolaan akun yang dapat mengakses panel admin."
+    :items="[
+        'Buat akun hanya untuk pengguna yang berwenang mengelola website.',
+        'Gunakan alamat email aktif dan password kuat yang tidak dibagikan.',
+        'Tinjau akun secara berkala dan hapus akses pengguna yang sudah tidak bertugas.',
+    ]"
+/>
 <div class="row">
     <div class="col-12">
         <div class="card card-primary card-outline">

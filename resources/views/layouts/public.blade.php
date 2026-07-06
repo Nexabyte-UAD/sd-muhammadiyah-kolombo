@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Komplek Kolombo' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo-sd-muhammadiyah-kolombo.png') }}">
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
@@ -18,17 +19,17 @@
         font-family: 'Inter', sans-serif;
         background-color: #f8f9fa;
         color: #334155;
-        padding-top: 110px; /* Offset for top-bar + navbar */
+        padding-top: 108px; /* Top bar 36px + navbar 72px */
         font-size: 0.95rem; /* Slightly larger than 0.9rem for readability, but proportional */
         line-height: 1.6;
       }
       
       @media (max-width: 991.98px) {
-        body { padding-top: 96px; }
+        body { padding-top: 108px; }
       }
       
       @media (max-width: 767.98px) {
-        body { padding-top: 86px; }
+        body { padding-top: 108px; }
       }
       
       /* Global Premium Colors & Consistency */
@@ -77,6 +78,38 @@
       .navbar-brand {
         font-weight: 800;
         color: #172554 !important;
+      }
+
+      .navbar-brand-title {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.15;
+        white-space: nowrap;
+      }
+
+      .navbar-brand-title strong {
+        color: #172554;
+        font-size: 0.92rem;
+        letter-spacing: -0.01em;
+      }
+
+      .navbar-brand-title small {
+        margin-top: 0.2rem;
+        color: #475569;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+
+      @media (min-width: 992px) and (max-width: 1199.98px) {
+        .navbar-brand-title {
+          display: none;
+        }
+      }
+
+      @media (max-width: 374.98px) {
+        .navbar-brand-title strong { font-size: 0.78rem; }
+        .navbar-brand-title small { font-size: 0.64rem; }
       }
 
       .nav-link {
@@ -155,20 +188,22 @@
 
         <!-- Kontak Cepat (Kanan) -->
         <div class="d-none d-md-flex align-items-center gap-2 ps-3 border-start border-white border-opacity-25" style="white-space: nowrap; font-size: 0.85rem; font-weight: 500; color: white;">
-          <i class="bi bi-telephone-outbound text-warning me-1"></i> {{ $settings['telepon'] ?? '+62 274 1234567' }}
+          <i class="bi bi-telephone-outbound text-warning me-1"></i> {{ $settings['telepon'] ?? '(0274) 585755' }}
         </div>
 
       </div>
     </div>
 
-    <nav class="navbar navbar-expand-lg fixed-top py-3">
+    <nav class="navbar navbar-expand-lg fixed-top py-2">
       <div class="container">
         <a class="navbar-brand d-flex align-items-center gap-2" href="{{ route('home') }}">
-          @if(isset($settings['logo']) && $settings['logo'])
-            <img src="{{ asset('storage/' . $settings['logo']) }}" alt="Logo" style="height: 40px; width: auto; object-fit: contain;">
-          @else
-            <i class="bi bi-mortarboard-fill text-primary fs-3"></i>
-          @endif
+          <img src="{{ asset('images/logo-sd-muhammadiyah-kolombo.png') }}"
+               alt="Logo SD Muhammadiyah Komplek Kolombo"
+               style="height: 56px; width: 56px; object-fit: contain;">
+          <span class="navbar-brand-title">
+            <strong>SD Muhammadiyah</strong>
+            <small>Komplek Kolombo Yogyakarta</small>
+          </span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
@@ -241,7 +276,7 @@
             </a>
             <div class="d-flex mb-3">
               <i class="bi bi-telephone-fill text-warning me-3 fs-5"></i>
-              <span class="text-light">{{ $settings['telepon'] ?? '+62 274 1234567' }}</span>
+              <span class="text-light">{{ $settings['telepon'] ?? '(0274) 585755' }}</span>
             </div>
             <div class="d-flex mb-4">
               <i class="bi bi-envelope-fill text-warning me-3 fs-5"></i>
