@@ -21,8 +21,14 @@ class AdminAccountController extends Controller
     {
         $user = $request->user();
 
+        if (!$request->has('username')) {
+            $username = $user->username ?: explode('@', $request->input('email') ?? $user->email)[0];
+            $request->merge(['username' => $username]);
+        }
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'alpha_dash', 'max:50', Rule::unique('users')->ignore($user->id)],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'current_password' => ['required_with:password', 'nullable', 'current_password'],
             'password' => ['nullable', 'confirmed', Password::min(12)->letters()->mixedCase()->numbers()->symbols()],

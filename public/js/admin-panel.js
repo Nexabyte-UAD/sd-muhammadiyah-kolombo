@@ -1,18 +1,69 @@
 (() => {
     const body = document.body;
-    const toggle = document.querySelector('[data-sidebar-toggle]');
+    const toggles = document.querySelectorAll('[data-sidebar-toggle]');
     const closeTargets = document.querySelectorAll('[data-sidebar-close]');
 
     const setSidebar = (open) => {
-        body.classList.toggle('sidebar-open', open);
-        toggle?.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (window.innerWidth >= 1024) {
+            body.classList.toggle('sidebar-collapsed', !open);
+            localStorage.setItem('sidebar-collapsed', !open ? 'true' : 'false');
+        } else {
+            body.classList.toggle('sidebar-open', open);
+            toggles.forEach(t => t.setAttribute('aria-expanded', open ? 'true' : 'false'));
+        }
     };
 
-    toggle?.addEventListener('click', () => setSidebar(!body.classList.contains('sidebar-open')));
+    // Load persisted state on desktop
+    if (window.innerWidth >= 1024) {
+        const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+        if (isCollapsed) {
+            body.classList.add('sidebar-collapsed');
+        }
+    }
+
+    toggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            if (window.innerWidth >= 1024) {
+                setSidebar(body.classList.contains('sidebar-collapsed'));
+            } else {
+                setSidebar(!body.classList.contains('sidebar-open'));
+            }
+        });
+    });
+
+    // Expand sidebar when clicking on it while collapsed on desktop
+    const sidebarEl = document.getElementById('adminSidebar');
+    sidebarEl?.addEventListener('click', (e) => {
+        if (window.innerWidth >= 1024 && body.classList.contains('sidebar-collapsed')) {
+            if (!e.target.closest('[data-sidebar-toggle]')) {
+                setSidebar(true);
+            }
+        }
+    });
+
     closeTargets.forEach((target) => target.addEventListener('click', () => setSidebar(false)));
 
     window.addEventListener('resize', () => {
-        if (window.innerWidth >= 1024) setSidebar(false);
+        if (window.innerWidth >= 1024) {
+            body.classList.remove('sidebar-open');
+            const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+            body.classList.toggle('sidebar-collapsed', isCollapsed);
+        } else {
+            body.classList.remove('sidebar-collapsed');
+        }
+    });
+
+    // Theme toggle system (Dark/Light Mode)
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    themeToggleBtn?.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.contains('dark-mode');
+        if (isDark) {
+            document.documentElement.classList.remove('dark-mode');
+            localStorage.setItem('admin-theme', 'light');
+        } else {
+            document.documentElement.classList.add('dark-mode');
+            localStorage.setItem('admin-theme', 'dark');
+        }
     });
 
     document.addEventListener('submit', (event) => {

@@ -5,11 +5,26 @@
 
 <section class="py-5 bg-white">
     <div class="container">
-        <div class="mb-4 pb-3 border-bottom">
-            <h2 class="fw-bold text-dark mb-2" style="font-size: 1.75rem;">Papan Berita</h2>
-            <p class="text-secondary mb-0">
-                Kumpulan informasi, pengumuman, dan artikel terbaru dari SD Muhammadiyah Komplek Kolombo.
-            </p>
+        <div class="mb-4 pb-3 border-bottom d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-3">
+            <div>
+                <h2 class="fw-bold text-dark mb-2" style="font-size: 1.75rem;">Papan Berita</h2>
+                <p class="text-secondary mb-0">
+                    Kumpulan informasi, pengumuman, dan artikel terbaru dari SD Muhammadiyah Komplek Kolombo.
+                </p>
+            </div>
+            <form action="{{ route('berita') }}" method="GET" class="d-flex align-items-center gap-2" style="max-width: 380px; width: 100%;">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control border-secondary-subtle" placeholder="Cari berita..." value="{{ $search ?? '' }}">
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+                @if(isset($search) && $search !== '')
+                    <a href="{{ route('berita') }}" class="btn btn-outline-secondary" title="Reset Pencarian">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </a>
+                @endif
+            </form>
         </div>
 
         <div class="row g-4">
@@ -58,18 +73,74 @@
                 <div class="col-12">
                     <div class="text-center rounded-4 border py-5 px-3 bg-light">
                         <i class="bi bi-newspaper fs-1 text-secondary opacity-25 d-block mb-3"></i>
-                        <h5 class="fw-bold text-dark mb-2">Belum Ada Berita</h5>
-                        <p class="text-secondary mb-0">Saat ini belum ada publikasi berita terbaru.</p>
+                        @if(isset($search) && $search !== '')
+                            <h5 class="fw-bold text-dark mb-2">Pencarian Tidak Ditemukan</h5>
+                            <p class="text-secondary mb-3">Tidak ada berita yang cocok dengan kata kunci "{{ $search }}".</p>
+                            <a href="{{ route('berita') }}" class="btn btn-sm btn-primary rounded-pill px-4">Lihat Semua Berita</a>
+                        @else
+                            <h5 class="fw-bold text-dark mb-2">Belum Ada Berita</h5>
+                            <p class="text-secondary mb-0">Saat ini belum ada publikasi berita terbaru.</p>
+                        @endif
                     </div>
                 </div>
             @endforelse
 
             @if($beritas->hasPages())
-                <div class="col-12 d-flex justify-content-center mt-5">
+                <div class="col-12 d-flex justify-content-center mt-5 pagination-wrapper">
                     {{ $beritas->links('pagination::bootstrap-5') }}
                 </div>
             @endif
         </div>
     </div>
 </section>
+
+@push('styles')
+<style>
+    /* Minimalist Circular Pagination Styles */
+    .pagination-wrapper .pagination {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 0;
+        padding-left: 0;
+        list-style: none;
+        align-items: center;
+    }
+    .pagination-wrapper .page-item .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50% !important;
+        border: none !important;
+        color: #475569 !important; /* Muted Slate text */
+        background-color: transparent !important;
+        font-size: 0.95rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+    .pagination-wrapper .page-item .page-link:hover {
+        background-color: #f1f5f9 !important; /* Soft gray circular highlight */
+        color: #0f172a !important;
+    }
+    .pagination-wrapper .page-item.active .page-link {
+        background-color: #172554 !important; /* Active Navy background */
+        color: #ffffff !important;
+        box-shadow: 0 4px 10px rgba(23, 37, 84, 0.2);
+    }
+    .pagination-wrapper .page-item.disabled .page-link {
+        color: #cbd5e1 !important;
+        background-color: transparent !important;
+        pointer-events: none;
+    }
+    /* Hide default Laravel desktop "Showing X to Y results" block to prevent clutter */
+    .pagination-wrapper p.small.text-muted {
+        display: none !important;
+    }
+    .pagination-wrapper nav > div:first-child {
+        display: none !important;
+    }
+</style>
+@endpush
 @endsection

@@ -1,23 +1,28 @@
 @extends('layouts.admin')
 
 @section('title', 'Edit Kelas')
+@section('page_kicker', 'Akademik · Kelas')
+@section('page_title', 'Edit Kelas')
+@section('page_description', 'Perbarui informasi kelompok kelas belajar.')
 
-@section('content_header')
-    <h1 class="m-0 text-dark">Edit Kelas</h1>
-@stop
+@section('page_actions')
+    <a href="{{ route('admin.kelas.index') }}" class="btn-admin btn-admin-secondary btn-cancel">Kembali</a>
+@endsection
 
 @section('content')
-<div class="card card-accent">
-    <form action="{{ route('admin.kelas.update', $kelas) }}" method="POST">
+    <form action="{{ route('admin.kelas.update', $kelas) }}" method="POST" class="form-card">
         @csrf
         @method('PUT')
-        <div class="card-body">
+        <div class="form-card-header">
+            <h2>Informasi Kelas</h2>
+            <p>Perubahan akan diterapkan setelah disimpan.</p>
+        </div>
+        <div class="form-card-body">
             @include('admin.kelas._form')
         </div>
-        <div class="card-footer">
-            <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Update</button>
-            <a href="{{ route('admin.kelas.index') }}" class="btn btn-default">Batal</a>
+        <div class="form-card-footer">
+            <a href="{{ route('admin.kelas.index') }}" class="btn-admin btn-admin-secondary btn-cancel">Batal</a>
+            <button type="submit" class="btn-admin">Simpan Perubahan</button>
         </div>
     </form>
-</div>
-@stop
+@endsection

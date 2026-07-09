@@ -1,22 +1,27 @@
 @extends('layouts.admin')
 
 @section('title', 'Tambah Kelas')
+@section('page_kicker', 'Akademik · Kelas')
+@section('page_title', 'Tambah Kelas')
+@section('page_description', 'Tambahkan kelompok kelas belajar baru.')
 
-@section('content_header')
-    <h1 class="m-0 text-dark">Tambah Kelas</h1>
-@stop
+@section('page_actions')
+    <a href="{{ route('admin.kelas.index') }}" class="btn-admin btn-admin-secondary btn-cancel">Kembali</a>
+@endsection
 
 @section('content')
-<div class="card card-accent">
-    <form action="{{ route('admin.kelas.store') }}" method="POST">
+    <form action="{{ route('admin.kelas.store') }}" method="POST" class="form-card">
         @csrf
-        <div class="card-body">
+        <div class="form-card-header">
+            <h2>Informasi Kelas</h2>
+            <p>Kolom bertanda bintang wajib diisi.</p>
+        </div>
+        <div class="form-card-body">
             @include('admin.kelas._form')
         </div>
-        <div class="card-footer">
-            <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Simpan</button>
-            <a href="{{ route('admin.kelas.index') }}" class="btn btn-default">Batal</a>
+        <div class="form-card-footer">
+            <a href="{{ route('admin.kelas.index') }}" class="btn-admin btn-admin-secondary btn-cancel">Batal</a>
+            <button type="submit" class="btn-admin">Simpan Kelas</button>
         </div>
     </form>
-</div>
-@stop
+@endsection

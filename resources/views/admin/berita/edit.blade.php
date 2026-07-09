@@ -6,7 +6,7 @@
 @section('page_description', 'Perbarui isi dan status publikasi berita.')
 
 @section('page_actions')
-    <a href="{{ route('admin.berita.index') }}" class="btn-admin btn-admin-secondary">Kembali</a>
+    <a href="{{ route('admin.berita.index') }}" class="btn-admin btn-admin-secondary btn-cancel">Kembali</a>
 @endsection
 
 @section('content')
@@ -21,7 +21,7 @@
             @include('admin.berita._form', ['berita' => $berita])
         </div>
         <div class="form-card-footer">
-            <a href="{{ route('admin.berita.index') }}" class="btn-admin btn-admin-secondary">Batal</a>
+            <a href="{{ route('admin.berita.index') }}" class="btn-admin btn-admin-secondary btn-cancel">Batal</a>
             <button type="submit" class="btn-admin">Simpan Perubahan</button>
         </div>
     </form>

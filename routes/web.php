@@ -26,6 +26,10 @@ Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
 
 Route::middleware(['auth', 'admin', 'admin.idle'])->group(function () {
+    Route::post('admin/ping', function () {
+        return response()->json(['status' => 'ok']);
+    })->name('admin.ping');
+
     Route::get('admin/akun', [AdminAccountController::class, 'edit'])->name('admin.account.edit');
     Route::put('admin/akun', [AdminAccountController::class, 'update'])->name('admin.account.update');
 

@@ -14,6 +14,10 @@ class BeritaController extends Controller
     public function index(Request $request)
     {
         $search = trim((string) $request->query('search', ''));
+        $perPage = (int) $request->query('per_page', 10);
+        if (!in_array($perPage, [5, 10, 25, 50, 100], true)) {
+            $perPage = 10;
+        }
 
         $query = Berita::query();
 
@@ -25,9 +29,9 @@ class BeritaController extends Controller
             });
         }
 
-        $beritas = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
+        $beritas = $query->orderBy('tanggal', 'desc')->paginate($perPage)->withQueryString();
 
-        return view('admin.berita.index', compact('beritas', 'search'));
+        return view('admin.berita.index', compact('beritas', 'search', 'perPage'));
     }
 
     public function create()

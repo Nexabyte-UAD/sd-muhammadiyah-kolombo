@@ -6,6 +6,16 @@
 @section('page_description', 'Perbarui identitas login dan password administrator.')
 
 @section('content')
+    <x-admin-usage-guide
+        description="Petunjuk pengelolaan profil dan password login administrator."
+        :items="[
+            'Perbarui nama lengkap dan email login Anda bila diperlukan.',
+            'Jika ingin mengganti password, isi password baru dan ulangi pada konfirmasi password.',
+            'Kosongkan kolom password jika hanya ingin memperbarui nama atau alamat email.',
+            'Pastikan Anda mengingat password baru karena sesi login aktif dapat langsung terputus.',
+        ]"
+    />
+
     <div class="admin-alert admin-alert-success">
         <strong>Login terakhir:</strong>
         {{ $user->last_login_at?->translatedFormat('d F Y, H:i') ?? 'Belum tercatat' }}
@@ -14,7 +24,7 @@
         @endif
     </div>
 
-    <form action="{{ route('admin.account.update') }}" method="POST" class="form-card">
+    <form action="{{ route('admin.account.update') }}" method="POST" class="form-card" id="account-form" onsubmit="return confirm('Anda akan memperbarui informasi login administrator. Pastikan email dan password baru sudah dicatat dengan benar. Lanjutkan?')">
         @csrf
         @method('PUT')
 
@@ -31,6 +41,14 @@
                            class="form-control-admin @error('name') is-invalid @enderror"
                            value="{{ old('name', $user->name) }}" autocomplete="name" required>
                     @error('name')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-field">
+                    <label for="username" class="form-label">Username <span>*</span></label>
+                    <input type="text" name="username" id="username"
+                           class="form-control-admin @error('username') is-invalid @enderror"
+                           value="{{ old('username', $user->username) }}" autocomplete="username" required>
+                    @error('username')<div class="form-error">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="form-field">

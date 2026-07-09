@@ -196,7 +196,6 @@
         
         // Find existing rows
         const originalRows = Array.from(tableBody.querySelectorAll("tr:not(.no-data-row)"));
-        const noDataRow = tableBody.querySelector(".no-data-row");
 
         function filterTable() {
             const query = searchInput.value.toLowerCase().trim();
@@ -231,7 +230,8 @@
                 }
             });
 
-            // Handle Empty State
+            // Handle Empty State dynamically
+            const noDataRow = tableBody.querySelector(".no-data-row");
             if (matchCount === 0) {
                 if (!noDataRow) {
                     const newNoDataRow = document.createElement("tr");

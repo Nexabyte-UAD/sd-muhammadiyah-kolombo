@@ -7,21 +7,28 @@
 
 @section('content')
     <div class="settings-layout">
+        <x-admin-usage-guide
+            description="Petunjuk pengelolaan konfigurasi sistem, identitas sekolah, dan sosial media."
+            :items="[
+                'Gunakan tab Identitas Sekolah untuk mengubah nama resmi, logo, dan nomor telepon utama.',
+                'Gunakan tab Pengaturan Beranda untuk memperbarui foto banner geser (carousel) dan kata sambutan singkat kepala sekolah.',
+                'Gunakan tab Kontak & Footer untuk memperbarui alamat fisik sekolah dan tautan jejaring sosial media resmi.',
+                'Menyimpan perubahan di halaman ini akan langsung memperbarui identitas di seluruh halaman publik.',
+            ]"
+        />
+
         @if($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="alert alert-danger m-3">
                 <strong>Terjadi kesalahan.</strong>
                 <ul class="mb-0 mt-2 pl-3">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Tutup">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
         @endif
 
-        <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" id="settings-form" onsubmit="return confirm('Perubahan ini akan langsung memengaruhi identitas sekolah dan tampilan halaman depan website. Simpan perubahan?')">
             @csrf
             @method('PUT')
 
@@ -47,6 +54,8 @@
 
             <div class="settings-panel">
                 <div class="tab-content" id="settings-tabs-content">
+                    
+                    <!-- Tab Identitas -->
                     <div class="tab-pane fade show active" id="tabs-identitas" role="tabpanel" aria-labelledby="tabs-identitas-tab">
                         <div class="settings-section">
                             <div class="settings-section-heading">
@@ -56,14 +65,15 @@
 
                             <div class="settings-grid">
                                 <div class="settings-field settings-field-wide">
-                                    <label for="nama_sekolah">Nama Institusi / Sekolah</label>
-                                    <input type="text" class="form-control" id="nama_sekolah" name="nama_sekolah" value="{{ $settings['nama_sekolah'] ?? '' }}" required>
-                                    <small class="form-text text-muted">Akan ditampilkan di tab judul, header, dan atribusi footer bawah.</small>
+                                    <label for="nama_sekolah" class="form-label">Nama Institusi / Sekolah <span>*</span></label>
+                                    <input type="text" class="form-control-admin" id="nama_sekolah" name="nama_sekolah" value="{{ $settings['nama_sekolah'] ?? '' }}" required>
+                                    <div class="form-help">Akan ditampilkan di tab judul, header, dan atribusi footer bawah.</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Tab Beranda -->
                     <div class="tab-pane fade" id="tabs-beranda" role="tabpanel" aria-labelledby="tabs-beranda-tab">
                         <div class="settings-section">
                             <div class="settings-section-heading">
@@ -72,53 +82,50 @@
                             </div>
 
                             <div class="settings-upload-grid">
+                                <!-- Banner 1 -->
                                 <div class="settings-field">
-                                    <label for="hero_image">Banner Utama 1</label>
-                                    <div class="settings-image-preview">
+                                    <label for="hero_image" class="form-label">Banner Utama 1</label>
+                                    <div class="settings-image-preview" id="preview-box-hero_image">
                                         @if(isset($settings['hero_image']) && $settings['hero_image'])
-                                            <img src="{{ asset('storage/' . $settings['hero_image']) }}" alt="Hero 1">
+                                            <img src="{{ asset('storage/' . $settings['hero_image']) }}" id="preview-el-hero_image" alt="Hero 1">
                                         @else
-                                            <i class="fas fa-image"></i>
+                                            <i class="fas fa-image" id="preview-icon-hero_image"></i>
+                                            <img src="#" id="preview-el-hero_image" alt="Hero 1" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                                         @endif
                                     </div>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" name="hero_image" id="hero_image" accept="image/*">
-                                        <label class="custom-file-label text-truncate" for="hero_image">Pilih Banner 1</label>
-                                    </div>
+                                    <input type="file" class="form-control-admin form-file" name="hero_image" id="hero_image" accept="image/*">
                                 </div>
 
+                                <!-- Banner 2 -->
                                 <div class="settings-field">
-                                    <label for="hero_image_2">Banner Slide 2</label>
-                                    <div class="settings-image-preview">
+                                    <label for="hero_image_2" class="form-label">Banner Slide 2</label>
+                                    <div class="settings-image-preview" id="preview-box-hero_image_2">
                                         @if(isset($settings['hero_image_2']) && $settings['hero_image_2'])
-                                            <img src="{{ asset('storage/' . $settings['hero_image_2']) }}" alt="Hero 2">
+                                            <img src="{{ asset('storage/' . $settings['hero_image_2']) }}" id="preview-el-hero_image_2" alt="Hero 2">
                                         @else
-                                            <i class="fas fa-image"></i>
+                                            <i class="fas fa-image" id="preview-icon-hero_image_2"></i>
+                                            <img src="#" id="preview-el-hero_image_2" alt="Hero 2" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                                         @endif
                                     </div>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" name="hero_image_2" id="hero_image_2" accept="image/*">
-                                        <label class="custom-file-label text-truncate" for="hero_image_2">Pilih Banner 2</label>
-                                    </div>
+                                    <input type="file" class="form-control-admin form-file" name="hero_image_2" id="hero_image_2" accept="image/*">
                                 </div>
 
+                                <!-- Banner 3 -->
                                 <div class="settings-field">
-                                    <label for="hero_image_3">Banner Slide 3</label>
-                                    <div class="settings-image-preview">
+                                    <label for="hero_image_3" class="form-label">Banner Slide 3</label>
+                                    <div class="settings-image-preview" id="preview-box-hero_image_3">
                                         @if(isset($settings['hero_image_3']) && $settings['hero_image_3'])
-                                            <img src="{{ asset('storage/' . $settings['hero_image_3']) }}" alt="Hero 3">
+                                            <img src="{{ asset('storage/' . $settings['hero_image_3']) }}" id="preview-el-hero_image_3" alt="Hero 3">
                                         @else
-                                            <i class="fas fa-image"></i>
+                                            <i class="fas fa-image" id="preview-icon-hero_image_3"></i>
+                                            <img src="#" id="preview-el-hero_image_3" alt="Hero 3" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                                         @endif
                                     </div>
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" name="hero_image_3" id="hero_image_3" accept="image/*">
-                                        <label class="custom-file-label text-truncate" for="hero_image_3">Pilih Banner 3</label>
-                                    </div>
+                                    <input type="file" class="form-control-admin form-file" name="hero_image_3" id="hero_image_3" accept="image/*">
                                 </div>
                             </div>
 
-                            <p class="settings-note">Resolusi disarankan minimum 1920x800px. Jika lebih dari satu gambar diunggah, beranda otomatis memakai carousel.</p>
+                            <div class="form-help mt-2">Resolusi disarankan minimum 1920x800px. Jika lebih dari satu gambar diunggah, beranda otomatis memakai carousel.</div>
                         </div>
 
                         <div class="settings-section">
@@ -129,33 +136,29 @@
 
                             <div class="settings-grid">
                                 <div class="settings-field">
-                                    <label for="beranda_profil_judul">Slogan Generasi Beranda</label>
-                                    <input type="text" class="form-control" id="beranda_profil_judul" name="beranda_profil_judul" value="{{ $settings['beranda_profil_judul'] ?? '' }}" placeholder="Islami & Berprestasi">
+                                    <label for="beranda_profil_judul" class="form-label">Slogan Generasi Beranda</label>
+                                    <input type="text" class="form-control-admin" id="beranda_profil_judul" name="beranda_profil_judul" value="{{ $settings['beranda_profil_judul'] ?? '' }}" placeholder="Islami & Berprestasi">
                                 </div>
 
                                 <div class="settings-field">
-                                    <label for="kepsek_nama">Nama Lengkap Kepala Sekolah</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="kepsek_nama" name="kepsek_nama" value="{{ $settings['kepsek_nama'] ?? '' }}" placeholder="Drs. Fulan, M.Pd...">
-                                    </div>
+                                    <label for="kepsek_nama" class="form-label">Nama Lengkap Kepala Sekolah</label>
+                                    <input type="text" class="form-control-admin" id="kepsek_nama" name="kepsek_nama" value="{{ $settings['kepsek_nama'] ?? '' }}" placeholder="Drs. Fulan, M.Pd...">
                                 </div>
 
                                 <div class="settings-field">
-                                    <label for="beranda_profil_teks">Deskripsi Ringkas Sekolah</label>
-                                    <textarea class="form-control" id="beranda_profil_teks" name="beranda_profil_teks" rows="4">{{ $settings['beranda_profil_teks'] ?? '' }}</textarea>
+                                    <label for="beranda_profil_teks" class="form-label">Deskripsi Ringkas Sekolah</label>
+                                    <textarea class="form-control-admin" id="beranda_profil_teks" name="beranda_profil_teks" rows="4">{{ $settings['beranda_profil_teks'] ?? '' }}</textarea>
                                 </div>
 
                                 <div class="settings-field">
-                                    <label for="kepsek_sambutan">Teks Sambutan Kepala Sekolah</label>
-                                    <textarea class="form-control" id="kepsek_sambutan" name="kepsek_sambutan" rows="4">{{ $settings['kepsek_sambutan'] ?? '' }}</textarea>
+                                    <label for="kepsek_sambutan" class="form-label">Teks Sambutan Kepala Sekolah</label>
+                                    <textarea class="form-control-admin" id="kepsek_sambutan" name="kepsek_sambutan" rows="4">{{ $settings['kepsek_sambutan'] ?? '' }}</textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Tab Kontak -->
                     <div class="tab-pane fade" id="tabs-kontak" role="tabpanel" aria-labelledby="tabs-kontak-tab">
                         <div class="settings-section">
                             <div class="settings-section-heading">
@@ -165,28 +168,18 @@
 
                             <div class="settings-grid">
                                 <div class="settings-field">
-                                    <label for="telepon">Nomor Telepon / WhatsApp</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fas fa-phone text-success"></i></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="telepon" name="telepon" value="{{ $settings['telepon'] ?? '' }}" placeholder="(0274) 585755">
-                                    </div>
+                                    <label for="telepon" class="form-label">Nomor Telepon / WhatsApp</label>
+                                    <input type="text" class="form-control-admin" id="telepon" name="telepon" value="{{ $settings['telepon'] ?? '' }}" placeholder="(0274) 585755">
                                 </div>
 
                                 <div class="settings-field">
-                                    <label for="email">Email Kantor</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fas fa-envelope text-danger"></i></span>
-                                        </div>
-                                        <input type="email" class="form-control" id="email" name="email" value="{{ $settings['email'] ?? '' }}" placeholder="info@sekolah.sch.id">
-                                    </div>
+                                    <label for="email" class="form-label">Email Kantor</label>
+                                    <input type="email" class="form-control-admin" id="email" name="email" value="{{ $settings['email'] ?? '' }}" placeholder="info@sekolah.sch.id">
                                 </div>
 
                                 <div class="settings-field settings-field-full">
-                                    <label for="alamat">Alamat Gedung Lengkap</label>
-                                    <textarea class="form-control" id="alamat" name="alamat" rows="3">{{ $settings['alamat'] ?? '' }}</textarea>
+                                    <label for="alamat" class="form-label">Alamat Gedung Lengkap</label>
+                                    <textarea class="form-control-admin" id="alamat" name="alamat" rows="3">{{ $settings['alamat'] ?? '' }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -199,43 +192,23 @@
 
                             <div class="settings-grid settings-grid-compact">
                                 <div class="settings-field">
-                                    <label for="facebook">Facebook</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fab fa-facebook text-primary"></i></span>
-                                        </div>
-                                        <input type="url" class="form-control" id="facebook" name="facebook" value="{{ $settings['facebook'] ?? '' }}" placeholder="https://facebook.com/...">
-                                    </div>
+                                    <label for="facebook" class="form-label">Facebook</label>
+                                    <input type="url" class="form-control-admin" id="facebook" name="facebook" value="{{ $settings['facebook'] ?? '' }}" placeholder="https://facebook.com/...">
                                 </div>
 
                                 <div class="settings-field">
-                                    <label for="instagram">Instagram</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fab fa-instagram text-fuchsia"></i></span>
-                                        </div>
-                                        <input type="url" class="form-control" id="instagram" name="instagram" value="{{ $settings['instagram'] ?? '' }}" placeholder="https://instagram.com/...">
-                                    </div>
+                                    <label for="instagram" class="form-label">Instagram</label>
+                                    <input type="url" class="form-control-admin" id="instagram" name="instagram" value="{{ $settings['instagram'] ?? '' }}" placeholder="https://instagram.com/...">
                                 </div>
 
                                 <div class="settings-field">
-                                    <label for="youtube">YouTube</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fab fa-youtube text-danger"></i></span>
-                                        </div>
-                                        <input type="url" class="form-control" id="youtube" name="youtube" value="{{ $settings['youtube'] ?? '' }}" placeholder="https://youtube.com/...">
-                                    </div>
+                                    <label for="youtube" class="form-label">YouTube</label>
+                                    <input type="url" class="form-control-admin" id="youtube" name="youtube" value="{{ $settings['youtube'] ?? '' }}" placeholder="https://youtube.com/...">
                                 </div>
 
                                 <div class="settings-field">
-                                    <label for="tiktok">TikTok</label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fab fa-tiktok text-dark"></i></span>
-                                        </div>
-                                        <input type="url" class="form-control" id="tiktok" name="tiktok" value="{{ $settings['tiktok'] ?? '' }}" placeholder="https://tiktok.com/@...">
-                                    </div>
+                                    <label for="tiktok" class="form-label">TikTok</label>
+                                    <input type="url" class="form-control-admin" id="tiktok" name="tiktok" value="{{ $settings['tiktok'] ?? '' }}" placeholder="https://tiktok.com/@...">
                                 </div>
                             </div>
                         </div>
@@ -244,22 +217,51 @@
             </div>
 
             <div class="settings-actions">
-                <a href="{{ route('dashboard') }}" class="btn btn-secondary">Batalkan</a>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save mr-1"></i> Simpan Perubahan
-                </button>
+                <a href="{{ route('dashboard') }}" class="btn-admin btn-admin-secondary">Batalkan</a>
+                <button type="submit" class="btn-admin">Simpan Perubahan</button>
             </div>
         </form>
     </div>
-@stop
+@endsection
 
-@push('js')
-<script>
-    $(function () {
-        $('.custom-file-input').on('change', function() {
-            let fileName = $(this).val().split('\\').pop();
-            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+@push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Function to handle image preview
+            function setupImagePreview(inputId) {
+                const input = document.getElementById(inputId);
+                if (input) {
+                    input.addEventListener('change', function(event) {
+                        const file = event.target.files[0];
+                        if (file) {
+                            if (file.size > 2 * 1024 * 1024) {
+                                alert('Ukuran file terlalu besar! Maksimal 2 MB.');
+                                event.target.value = '';
+                                return;
+                            }
+
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                const previewEl = document.getElementById('preview-el-' + inputId);
+                                const previewIcon = document.getElementById('preview-icon-' + inputId);
+                                
+                                if (previewEl) {
+                                    previewEl.src = e.target.result;
+                                    previewEl.style.display = 'block';
+                                    if (previewIcon) {
+                                        previewIcon.style.display = 'none';
+                                    }
+                                }
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                }
+            }
+
+            setupImagePreview('hero_image');
+            setupImagePreview('hero_image_2');
+            setupImagePreview('hero_image_3');
         });
-    });
-</script>
+    </script>
 @endpush

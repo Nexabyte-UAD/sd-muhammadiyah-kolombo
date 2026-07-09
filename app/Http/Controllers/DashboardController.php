@@ -7,6 +7,8 @@ use App\Models\Berita;
 use App\Models\GuruStaff;
 use App\Models\Pesan;
 use App\Models\Siswa;
+use App\Models\Ekstrakurikuler;
+use App\Models\Prestasi;
 use Illuminate\View\View;
 
 class DashboardController extends Controller
@@ -31,6 +33,12 @@ class DashboardController extends Controller
                 }
             })->count(),
             'countPesanBelumDibaca' => Pesan::whereNull('read_at')->count(),
+            'countBeritaDraft' => Berita::where('status', 'draft')->count(),
+            'countEkskulBelumLengkap' => Ekstrakurikuler::where(function($query) {
+                $query->whereNull('pembina')->orWhere('pembina', '')
+                      ->orWhereNull('jadwal')->orWhere('jadwal', '');
+            })->count(),
+            'countPrestasiTanpaFoto' => Prestasi::whereNull('gambar')->orWhere('gambar', '')->count(),
         ]);
     }
 }

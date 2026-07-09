@@ -26,13 +26,17 @@
                 
                 <div class="text-secondary" style="line-height: 1.8; font-size: 1rem; text-align: justify;">
                     @if(isset($profil) && $profil->konten)
-                        @foreach(explode("\n", str_replace("\r", "", $profil->konten)) as $paragraph)
-                            @if(trim($paragraph))
-                                <p class="mb-3" style="text-indent: 2rem;">
-                                    {{ trim($paragraph) }}
-                                </p>
-                            @endif
-                        @endforeach
+                        @if(strip_tags($profil->konten) !== $profil->konten)
+                            {!! $profil->konten !!}
+                        @else
+                            @foreach(explode("\n", str_replace("\r", "", $profil->konten)) as $paragraph)
+                                @if(trim($paragraph))
+                                    <p class="mb-3" style="text-indent: 2rem;">
+                                        {{ trim($paragraph) }}
+                                    </p>
+                                @endif
+                            @endforeach
+                        @endif
                     @else
                         <p class="mb-3" style="text-indent: 2rem;">
                             SD Muhammadiyah Komplek Kolombo hadir sebagai lembaga pendidikan dasar Islam yang mengintegrasikan kurikulum ilmu pengetahuan umum dengan penanaman nilai-nilai adab dan akhlak Islam secara menyeluruh (holistik). Kami senantiasa berkomitmen untuk memberikan pembelajaran terbaik guna mendukung tumbuh kembang rohani, jasmani, dan intelektual putra-putri bangsa agar siap menghadapi tantangan zaman.

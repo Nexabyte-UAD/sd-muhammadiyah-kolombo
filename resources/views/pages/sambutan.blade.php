@@ -24,7 +24,11 @@
                 <h3 class="fw-bold text-dark mb-4" style="font-size: 1.8rem;">Kata Sambutan</h3>
                 <div class="text-secondary" style="line-height: 1.8; font-size: 1rem;">
                     @if(isset($profil) && $profil->konten)
-                        {!! nl2br(e($profil->konten)) !!}
+                        @if(strip_tags($profil->konten) !== $profil->konten)
+                            {!! $profil->konten !!}
+                        @else
+                            {!! nl2br(e($profil->konten)) !!}
+                        @endif
                     @else
                         <p>Assalamualaikum Warahmatullahi Wabarakatuh,</p>
                         <p>Selamat datang di website resmi SD Muhammadiyah Komplek Kolombo. Puji syukur kita panjatkan ke hadirat Allah SWT atas segala limpahan rahmat dan karunia-Nya.</p>

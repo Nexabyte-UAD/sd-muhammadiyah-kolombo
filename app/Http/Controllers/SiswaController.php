@@ -24,6 +24,10 @@ class SiswaController extends Controller
         $status = $request->query('status', 'aktif');
         $kelas = $request->query('kelas');
         $search = $request->query('search');
+        $perPage = (int) $request->query('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100], true)) {
+            $perPage = 10;
+        }
 
         $query = ($status === 'arsip' ? Siswa::onlyTrashed() : Siswa::query())
             ->with('kelasData');
@@ -50,11 +54,11 @@ class SiswaController extends Controller
             });
         }
 
-        $siswas = $query->orderBy('nama', 'asc')->paginate(10)->withQueryString();
+        $siswas = $query->orderBy('nama', 'asc')->paginate($perPage)->withQueryString();
 
         $daftarKelas = $this->daftarKelas();
 
-        return view('admin.siswa.index', compact('siswas', 'status', 'kelas', 'search', 'daftarKelas'));
+        return view('admin.siswa.index', compact('siswas', 'status', 'kelas', 'search', 'daftarKelas', 'perPage'));
     }
 
     /**

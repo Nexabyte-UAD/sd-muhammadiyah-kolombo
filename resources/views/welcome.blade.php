@@ -906,7 +906,7 @@
                     <p class="text-secondary mb-0">Informasi dan kegiatan terbaru dari sekolah</p>
                 </div>
                 <a href="{{ route('berita') }}" class="btn btn-outline-primary rounded-1 btn-sm fw-bold d-none d-sm-inline-flex align-items-center">
-                    Lihat Semua Berita <i class="bi bi-arrow-right ms-2"></i>
+                    Lihat Semua
                 </a>
             </div>
 
@@ -974,7 +974,7 @@
                     </div>
                 </div>
                 <div class="text-center mt-4 d-sm-none">
-                    <a href="{{ route('berita') }}" class="btn btn-outline-primary fw-bold">Lihat Semua Berita</a>
+                    <a href="{{ route('berita') }}" class="btn btn-outline-primary fw-bold">Lihat Semua</a>
                 </div>
             @else
                 <div class="bg-white rounded-4 shadow-sm p-5 text-center text-muted">

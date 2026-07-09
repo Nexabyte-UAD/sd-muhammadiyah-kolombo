@@ -33,6 +33,9 @@
         @case('activity')
             <path d="M4 17 10 11l4 4 6-7"/><path d="M14 8h6v6"/>
             @break
+        @case('pulse')
+            <path d="M3 12h4l3-9 4 18 3-9h4"/>
+            @break
         @case('school')
             <path d="M3 21h18M5 21V9l7-5 7 5v12M9 21v-6h6v6M9 11h.01M15 11h.01"/>
             @break

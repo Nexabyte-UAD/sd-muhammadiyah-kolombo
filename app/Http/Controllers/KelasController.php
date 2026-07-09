@@ -11,13 +11,35 @@ use Illuminate\Validation\ValidationException;
 
 class KelasController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kelas = Kelas::with('waliKelas')
-            ->withCount(['siswas' => fn ($query) => $query->where('status', 'aktif')])
-            ->orderByRaw('urutan IS NULL')->orderBy('urutan')->orderBy('tingkat')->paginate(10);
+        $perPage = (int) $request->query('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100], true)) {
+            $perPage = 10;
+        }
 
-        return view('admin.kelas.index', compact('kelas'));
+        $search = $request->query('search');
+
+        $query = Kelas::with('waliKelas')
+            ->withCount(['siswas' => fn ($query) => $query->where('status', 'aktif')]);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('tingkat', 'like', "%{$search}%")
+                  ->orWhere('jurusan', 'like', "%{$search}%")
+                  ->orWhereHas('waliKelas', function ($wq) use ($search) {
+                      $wq->where('nama', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $kelas = $query->orderByRaw('urutan IS NULL')
+            ->orderBy('urutan')
+            ->orderBy('tingkat')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return view('admin.kelas.index', compact('kelas', 'perPage', 'search'));
     }
 
     public function create()

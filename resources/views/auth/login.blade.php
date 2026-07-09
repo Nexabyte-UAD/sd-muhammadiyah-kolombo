@@ -41,14 +41,13 @@
                     @csrf
 
                     <div class="form-field login-field">
-                        <label for="email" class="form-label">Alamat Email</label>
-                        <input type="email" name="email" id="email"
-                               class="form-control-admin @error('email') is-invalid @enderror"
-                               value="{{ old('email') }}"
+                        <label for="login" class="form-label">Username atau Email</label>
+                        <input type="text" name="login" id="login"
+                               class="form-control-admin @error('login') is-invalid @enderror"
+                               value="{{ old('login') }}"
                                autocomplete="username"
-                               inputmode="email"
                                autofocus required>
-                        @error('email')<div class="form-error" role="alert">{{ $message }}</div>@enderror
+                        @error('login')<div class="form-error" role="alert">{{ $message }}</div>@enderror
                     </div>
 
                     <div class="form-field login-field">
@@ -56,16 +55,14 @@
                             <label for="password" class="form-label">Password</label>
                             <a href="{{ route('password.request') }}">Lupa password?</a>
                         </div>
-                        <div class="auth-password-wrap">
+                        <div style="position: relative;">
                             <input type="password" name="password" id="password"
                                    class="form-control-admin @error('password') is-invalid @enderror"
-                                   autocomplete="current-password" required>
-                            <button type="button" class="auth-password-toggle"
-                                    data-password-toggle="password"
-                                    aria-label="Tampilkan password"
-                                    aria-pressed="false">
-                                <span class="password-show">Tampilkan</span>
-                                <span class="password-hide">Sembunyikan</span>
+                                   autocomplete="current-password" required style="padding-right: 42px;">
+                            <button type="button" id="toggle-password" data-password-toggle="password"
+                                    style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; font-size: 15px; line-height: 1;"
+                                    aria-label="Tampilkan password">
+                                <i class="fas fa-eye"></i>
                             </button>
                         </div>
                         @error('password')<div class="form-error" role="alert">{{ $message }}</div>@enderror
@@ -83,15 +80,16 @@
     </main>
 
     <script>
-        document.querySelectorAll('[data-password-toggle]').forEach((button) => {
-            button.addEventListener('click', () => {
-                const input = document.getElementById(button.dataset.passwordToggle);
-                const show = input.type === 'password';
-                input.type = show ? 'text' : 'password';
-                button.setAttribute('aria-pressed', show ? 'true' : 'false');
-                button.setAttribute('aria-label', show ? 'Sembunyikan password' : 'Tampilkan password');
-            });
+        const btn = document.getElementById('toggle-password');
+        const input = document.getElementById('password');
+        btn.addEventListener('click', function () {
+            const show = input.type === 'password';
+            input.type = show ? 'text' : 'password';
+            btn.querySelector('i').className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+            btn.setAttribute('aria-label', show ? 'Sembunyikan password' : 'Tampilkan password');
         });
     </script>
 </body>
 </html>
+
+

@@ -1,19 +1,16 @@
 @extends('layouts.admin')
 
 @section('title', 'Manajemen Pegawai')
+@section('page_kicker', 'Konten website')
+@section('page_title', 'Data ' . ucfirst($tipe))
+@section('page_description', 'Kelola informasi profil pendidik dan tenaga kependidikan.')
 
-@section('content_header')
-    <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Data {{ ucfirst($tipe) }}</h1>
-        </div>
-        <div class="col-sm-6 text-right">
-            <a href="{{ route('admin.guru-staff.create', ['tipe' => $tipe]) }}" class="btn btn-primary">
-                <i class="fas fa-plus mr-1"></i> Tambah {{ ucfirst($tipe) }}
-            </a>
-        </div>
-    </div>
-@stop
+@section('page_actions')
+    <a href="{{ route('admin.guru-staff.create', ['tipe' => $tipe]) }}" class="btn-admin">
+        <x-admin-icon name="plus" size="18"/>
+        Tambah {{ ucfirst($tipe) }}
+    </a>
+@endsection
 
 @section('content')
 <x-admin-usage-guide
@@ -24,75 +21,130 @@
         'Gunakan Edit untuk memperbarui profil dan Hapus hanya untuk data yang tidak lagi digunakan.',
     ]"
 />
-<div class="row">
-    <div class="col-12">
-        <div class="card card-accent">
-            <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
-                    <thead>
-                        <tr>
-                            <th>Profil</th>
-                            <th>Informasi Pegawai</th>
-                            <th>Jabatan</th>
-                            <th class="text-right">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($gurus as $item)
-                        <tr>
-                            <td class="align-middle">
-                                @if($item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto))
-                                    <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" class="img-circle" style="width: 50px; height: 50px; object-fit: cover;">
-                                @else
-                                    <div class="bg-primary text-white img-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-weight: bold; display: inline-flex !important;">
-                                        {{ substr($item->nama, 0, 1) }}
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="align-middle">
-                                <strong>{{ $item->nama }}</strong>
-                                <div class="text-muted small mt-1">
-                                    NIP: {{ $item->nip ?: '-' }}
+
+<section class="admin-card">
+    <header class="admin-card-header admin-card-header-with-search">
+        <div>
+            <h2 class="admin-card-title">Daftar {{ ucfirst($tipe) }}</h2>
+            <div class="admin-card-subtitle">{{ $gurus->total() }} data ditemukan</div>
+        </div>
+        <form method="GET" action="{{ route('admin.guru-staff.index') }}" class="admin-card-search" aria-label="Cari pegawai">
+            <input type="hidden" name="tipe" value="{{ $tipe }}">
+            <select name="per_page" class="form-control-admin" style="width: auto; min-height: 38px; padding: 6px 12px; font-size: 12px; border: 1px solid #cfd8e3; border-radius: 8px; outline: none;" onchange="this.form.submit()">
+                <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10 baris</option>
+                <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 baris</option>
+                <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 baris</option>
+            </select>
+            <label class="data-search">
+                <i class="fas fa-search"></i>
+                <input type="search" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama, NIP, jabatan...">
+            </label>
+            <button type="submit" class="data-filter-submit">
+                <i class="fas fa-search"></i>
+                <span>Cari</span>
+            </button>
+            @if(isset($search) && $search !== '')
+                <a href="{{ route('admin.guru-staff.index', ['tipe' => $tipe]) }}" class="data-reset">Reset</a>
+            @endif
+        </form>
+    </header>
+
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Profil</th>
+                    <th>Informasi Pegawai</th>
+                    <th>Jabatan</th>
+                    <th class="text-center" style="width: 150px;">Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($gurus as $item)
+                    <tr>
+                        <td class="align-middle">
+                            @if($item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto))
+                                <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+                            @else
+                                <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-weight: bold; border-radius: 50%; font-size: 18px;">
+                                    {{ substr($item->nama, 0, 1) }}
                                 </div>
-                            </td>
-                            <td class="align-middle">
-                                <span class="badge badge-info px-2 py-1 mb-1">
-                                    {{ $item->jabatan }}
-                                </span>
-                                @if($item->bidang_tugas)
+                            @endif
+                        </td>
+                        <td class="align-middle">
+                            <strong class="text-navy">{{ $item->nama }}</strong>
+                            <div class="text-muted small mt-1">
+                                NIP: {{ $item->nip ?: '-' }}
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <span class="badge badge-info px-2 py-1 mb-1">
+                                {{ $item->jabatan }}
+                            </span>
+                            @if($item->bidang_tugas)
                                 <div class="small text-muted">Bidang Tugas: {{ $item->bidang_tugas }}</div>
-                                @endif
-                            </td>
-                            <td class="align-middle text-right">
-                                <a href="{{ route('admin.guru-staff.edit', $item->id) }}" class="btn btn-sm btn-info" title="Edit">
-                                    <i class="fas fa-edit"></i>
+                            @endif
+                        </td>
+                        <td class="align-middle text-center">
+                            <div class="table-actions">
+                                <a href="{{ route('admin.guru-staff.edit', $item->id) }}" class="action-button" title="Edit">
+                                    Edit
                                 </a>
-                                <form action="{{ route('admin.guru-staff.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');" class="d-inline">
+                                <form action="{{ route('admin.guru-staff.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
-                                        <i class="fas fa-trash"></i>
+                                    <button type="submit" class="action-button action-danger" title="Hapus">
+                                        Hapus
                                     </button>
                                 </form>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="4" class="text-center py-5 text-muted">
-                                <i class="fas fa-folder-open fa-3x d-block mb-3"></i>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            @if(isset($search) && $search !== '')
+                                <div class="empty-state">
+                                    <strong>{{ ucfirst($tipe) }} tidak ditemukan</strong>
+                                    <p>Tidak ada data {{ $tipe }} yang cocok dengan pencarian "{{ $search }}".</p>
+                                    <a href="{{ route('admin.guru-staff.index', ['tipe' => $tipe]) }}" class="btn-admin">Tampilkan Semua</a>
+                                </div>
+                            @else
+                                <i class="fas fa-folder-open fa-3x d-block mb-3" style="color: #b4bdc9;"></i>
                                 Belum ada data pegawai.
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            @if($gurus instanceof \Illuminate\Pagination\LengthAwarePaginator && $gurus->hasPages())
-            <div class="card-footer clearfix">
-                {{ $gurus->appends(['tipe' => $tipe])->links('pagination::bootstrap-4') }}
-            </div>
-            @endif
-        </div>
+                            @endif
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
-</div>
+
+    @if($gurus->hasPages())
+        <footer class="admin-card-footer">
+            <span>Halaman {{ $gurus->currentPage() }} dari {{ $gurus->lastPage() }}</span>
+            <div class="pager">
+                @if($gurus->onFirstPage())
+                    <span class="pager-link disabled">Sebelumnya</span>
+                @else
+                    <a href="{{ $gurus->previousPageUrl() }}" class="pager-link">Sebelumnya</a>
+                @endif
+
+                @for ($i = 1; $i <= $gurus->lastPage(); $i++)
+                    @if ($i == $gurus->currentPage())
+                        <span class="pager-link active">{{ $i }}</span>
+                    @else
+                        <a href="{{ $gurus->url($i) }}" class="pager-link">{{ $i }}</a>
+                    @endif
+                @endfor
+
+                @if($gurus->hasMorePages())
+                    <a href="{{ $gurus->nextPageUrl() }}" class="pager-link">Berikutnya</a>
+                @else
+                    <span class="pager-link disabled">Berikutnya</span>
+                @endif
+            </div>
+        </footer>
+    @endif
+</section>
 @stop

@@ -306,10 +306,10 @@
           <!-- Lokasi Sekolah -->
           <div class="col-lg-5 col-md-12">
             <h5 class="fw-bold text-white mb-4">Lokasi Kami</h5>
-            <div class="position-relative rounded overflow-hidden">
+            <div class="position-relative rounded-4 overflow-hidden" style="transform: translateZ(0); border-radius: 16px;">
               <!-- Overlay link to open Google Maps directly in new tab -->
               <a href="https://www.google.com/maps/search/?api=1&query=SD+Muhammadiyah+Komplek+Kolombo" target="_blank" class="position-absolute top-0 start-0 w-100 h-100 d-block" style="z-index: 10; background: rgba(0,0,0,0);" title="Buka di Google Maps"></a>
-              <iframe src="https://maps.google.com/maps?q=SD%20Muhammadiyah%20Komplek%20Kolombo&t=&z=17&ie=UTF8&iwloc=&output=embed" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              <iframe src="https://maps.google.com/maps?q=SD%20Muhammadiyah%20Komplek%20Kolombo&t=&z=17&ie=UTF8&iwloc=&output=embed" width="100%" height="200" style="border:0; border-radius: 16px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
           </div>
         </div>

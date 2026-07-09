@@ -194,16 +194,27 @@ class HomeController extends Controller
         return view('pages.ekstrakurikuler', compact('ekstrakurikulers'));
     }
 
-    public function berita()
+    public function berita(Request $request)
     {
-        $beritas = Berita::where('status', 'published')->orderBy('tanggal', 'desc')->paginate(9);
+        $search = $request->query('search');
 
-        return view('pages.berita', compact('beritas'));
+        $query = Berita::where('status', 'published')->orderBy('tanggal', 'desc');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('konten', 'like', "%{$search}%");
+            });
+        }
+
+        $beritas = $query->paginate(6)->withQueryString();
+
+        return view('pages.berita', compact('beritas', 'search'));
     }
 
     public function detailBerita(Berita $berita)
     {
-        if ($berita->status !== 'published') {
+        if ($berita->status !== 'published' && !auth()->check()) {
             abort(404);
         }
 

@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'admin@sekolah.com'],
             [
                 'name' => 'Administrator',
+                'username' => 'admin',
                 'password' => Hash::make('password'),
                 'role' => 'Admin'
             ]

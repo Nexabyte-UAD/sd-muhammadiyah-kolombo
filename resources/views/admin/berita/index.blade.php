@@ -29,6 +29,12 @@
                 <div class="admin-card-subtitle">{{ $beritas->total() }} berita tersimpan</div>
             </div>
             <form method="GET" action="{{ route('admin.berita.index') }}" class="admin-card-search" aria-label="Cari berita">
+                <select name="per_page" class="form-control-admin" style="width: auto; min-height: 38px; padding: 6px 12px; font-size: 12px; border: 1px solid #cfd8e3; border-radius: 8px; outline: none;" onchange="this.form.submit()">
+                    <option value="5" {{ $perPage == 5 ? 'selected' : '' }}>5 baris</option>
+                    <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10 baris</option>
+                    <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 baris</option>
+                    <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 baris</option>
+                </select>
                 <label class="data-search">
                     <i class="fas fa-search"></i>
                     <input type="search" name="search" value="{{ $search }}" placeholder="Cari judul atau isi berita...">
@@ -52,13 +58,13 @@
                                 <th>Berita</th>
                                 <th class="text-center">Tanggal Rilis</th>
                                 <th class="text-center">Status</th>
-                                <th class="text-center">Aksi</th>
+                                <th class="text-center" style="width: 150px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($beritas as $item)
+                             @foreach($beritas as $item)
                                 <tr>
-                                    <td class="text-center">
+                                    <td>
                                         <div class="content-cell">
                                             <div class="content-thumb content-thumb-lg">
                                                 @if($item->gambar)
@@ -68,18 +74,22 @@
                                                 @endif
                                             </div>
                                             <div>
-                                                <div class="content-title">{{ $item->judul }}</div>
+                                                <div class="content-title">
+                                                    <a href="{{ route('berita.detail', $item) }}" target="_blank" style="text-decoration: none; color: inherit;" title="Pratinjau Berita">
+                                                        {{ $item->judul }} <i class="fas fa-external-link-alt text-muted" style="font-size: 10px; margin-left: 4px;"></i>
+                                                    </a>
+                                                </div>
                                                 <div class="content-meta">{{ Str::limit(strip_tags($item->isi), 78) }}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="text-center">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
-                                    <td>
+                                    <td class="text-center">
                                         <span class="status-badge {{ $item->status === 'published' ? 'status-success' : 'status-muted' }}">
                                             {{ $item->status === 'published' ? 'Terbit' : 'Draft' }}
                                         </span>
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <div class="table-actions">
                                             <a href="{{ route('admin.berita.edit', $item) }}" class="action-button" title="Edit berita">
                                                 Edit
@@ -121,6 +131,15 @@
                     @else
                         <a href="{{ $beritas->previousPageUrl() }}" class="pager-link">Sebelumnya</a>
                     @endif
+
+                    @for ($i = 1; $i <= $beritas->lastPage(); $i++)
+                        @if ($i == $beritas->currentPage())
+                            <span class="pager-link active">{{ $i }}</span>
+                        @else
+                            <a href="{{ $beritas->url($i) }}" class="pager-link">{{ $i }}</a>
+                        @endif
+                    @endfor
+
                     @if($beritas->hasMorePages())
                         <a href="{{ $beritas->nextPageUrl() }}" class="pager-link">Berikutnya</a>
                     @else

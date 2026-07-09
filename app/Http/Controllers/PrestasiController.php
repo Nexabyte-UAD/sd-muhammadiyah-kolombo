@@ -16,6 +16,10 @@ class PrestasiController extends Controller
     {
         $search = trim((string) $request->query('search', ''));
         $kategori = (string) $request->query('kategori', '');
+        $perPage = (int) $request->query('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100], true)) {
+            $perPage = 10;
+        }
 
         $query = Prestasi::query();
 
@@ -32,10 +36,10 @@ class PrestasiController extends Controller
             $query->where('kategori', $kategori);
         }
 
-        $prestasis = $query->orderBy('tanggal', 'desc')->paginate(12)->withQueryString();
+        $prestasis = $query->orderBy('tanggal', 'desc')->paginate($perPage)->withQueryString();
         $kategoriPrestasi = Prestasi::KATEGORI;
 
-        return view('admin.prestasi.index', compact('prestasis', 'kategoriPrestasi', 'search', 'kategori'));
+        return view('admin.prestasi.index', compact('prestasis', 'kategoriPrestasi', 'search', 'kategori', 'perPage'));
     }
 
     public function create()

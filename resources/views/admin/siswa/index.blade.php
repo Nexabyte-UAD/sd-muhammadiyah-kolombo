@@ -1,127 +1,110 @@
 @extends('layouts.admin')
 
 @section('title', 'Manajemen Siswa')
+@section('page_kicker', 'Akademik')
+@section('page_title', 'Data Siswa & Alumni')
+@section('page_description', 'Kelola data siswa aktif, alumni, keluar, dan arsip.')
 
-@section('content_header')
-    <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Data Siswa & Alumni</h1>
-        </div>
-        <div class="col-sm-6 text-right">
-            <a href="{{ route('admin.siswa.create') }}" class="btn btn-primary mr-1">
-                <i class="fas fa-plus mr-1"></i> Tambah Siswa
-            </a>
-            <a href="{{ route('admin.siswa.promote.page') }}" class="btn btn-success">
-                <i class="fas fa-arrow-up mr-1"></i> Kenaikan Kelas Massal
-            </a>
-        </div>
-    </div>
-@stop
+@section('page_actions')
+    <a href="{{ route('admin.siswa.export', ['status' => $status]) }}" class="btn-admin btn-admin-secondary">
+        <i class="fas fa-file-csv mr-1"></i> Ekspor CSV
+    </a>
+    <a href="{{ route('admin.siswa.promote.page') }}" class="btn-admin btn-admin-secondary">
+        <i class="fas fa-arrow-up mr-1"></i> Kenaikan Kelas
+    </a>
+    <a href="{{ route('admin.siswa.create') }}" class="btn-admin">
+        <x-admin-icon name="plus" size="18"/>
+        Tambah Siswa
+    </a>
+@endsection
 
 @section('content')
-<x-admin-usage-guide
-    description="Petunjuk pengelolaan data siswa aktif, alumni, keluar, dan arsip."
-    :items="[
-        'Gunakan filter status dan kelas untuk menemukan siswa dengan cepat.',
-        'Tambah atau edit siswa dengan data kelas dan identitas yang benar.',
-        'Gunakan Kenaikan Kelas Massal hanya setelah keputusan setiap siswa diperiksa.',
-        'Data yang dihapus masuk arsip dan dapat dipulihkan kembali.',
-    ]"
-/>
-<div class="row">
-    <div class="col-12">
-        <!-- Filter Card -->
-        <div class="card mb-3">
-            <div class="card-body">
-                <form method="GET" action="{{ route('admin.siswa.index') }}" class="row align-items-center">
-                    <!-- Status Filter -->
-                    <div class="col-md-2 mb-2 mb-md-0">
-                        <label class="small text-muted font-weight-bold">Status</label>
-                        <select name="status" class="form-control" onchange="this.form.submit()">
-                            <option value="aktif" {{ $status === 'aktif' ? 'selected' : '' }}>Siswa Aktif</option>
-                            <option value="alumni" {{ $status === 'alumni' ? 'selected' : '' }}>Alumni</option>
-                            <option value="keluar" {{ $status === 'keluar' ? 'selected' : '' }}>Pindah / Keluar</option>
-                            <option value="arsip" {{ $status === 'arsip' ? 'selected' : '' }}>Arsip</option>
-                        </select>
-                    </div>
+    <x-admin-usage-guide
+        description="Petunjuk pengelolaan data siswa aktif, alumni, keluar, dan arsip."
+        :items="[
+            'Gunakan filter status dan kelas untuk menemukan siswa dengan cepat.',
+            'Tambah atau edit siswa dengan data kelas dan identitas yang benar.',
+            'Gunakan Kenaikan Kelas Massal hanya setelah keputusan setiap siswa diperiksa.',
+            'Data yang dihapus masuk arsip dan dapat dipulihkan kembali.',
+        ]"
+    />
 
-                    <!-- Kelas Filter (Only for aktif status) -->
-                    @if($status === 'aktif')
-                    <div class="col-md-3 mb-2 mb-md-0">
-                        <label class="small text-muted font-weight-bold">Kelas</label>
-                        <select name="kelas" class="form-control" onchange="this.form.submit()">
-                            <option value="">Semua Kelas</option>
-                            @foreach($daftarKelas as $itemKelas)
-                                <option value="{{ $itemKelas->tingkat }}" @selected($kelas === $itemKelas->tingkat)>
-                                    {{ $itemKelas->tingkat }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @endif
-
-                    <!-- Search Input -->
-                    <div class="col-md-5 mb-2 mb-md-0">
-                        <label class="small text-muted font-weight-bold">Pencarian</label>
-                        <div class="input-group">
-                            <input type="text" name="search" class="form-control" placeholder="Cari nama atau NIS..." value="{{ $search }}">
-                            <div class="input-group-append">
-                                <button class="btn btn-default" type="submit">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Reset Filters -->
-                    <div class="col-md-2 mt-md-4 text-md-right">
-                        <a href="{{ route('admin.siswa.index', ['status' => $status]) }}" class="btn btn-outline-secondary btn-block">Reset</a>
-                    </div>
-                </form>
+    <section class="admin-card">
+        <header class="admin-card-header admin-card-header-with-search">
+            <div>
+                <h2 class="admin-card-title">Daftar Siswa</h2>
+                <div class="admin-card-subtitle">{{ $siswas->total() }} siswa tersimpan</div>
             </div>
-        </div>
+            <form method="GET" action="{{ route('admin.siswa.index') }}" class="admin-card-search" aria-label="Cari siswa">
+                <select name="per_page" class="form-control-admin" style="width: auto; min-height: 38px; padding: 6px 12px; font-size: 12px; border: 1px solid #cfd8e3; border-radius: 8px; outline: none;" onchange="this.form.submit()">
+                    <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10 baris</option>
+                    <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 baris</option>
+                    <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 baris</option>
+                </select>
 
-        <div class="mb-3 text-right">
-            <a href="{{ route('admin.siswa.export', ['status' => $status]) }}" class="btn btn-success">
-                <i class="fas fa-file-csv mr-1"></i> Ekspor CSV
-            </a>
-        </div>
+                <select name="status" class="form-control-admin" style="width: auto; min-height: 38px; padding: 6px 12px; font-size: 12px; border: 1px solid #cfd8e3; border-radius: 8px; outline: none;" onchange="this.form.submit()">
+                    <option value="aktif" {{ $status === 'aktif' ? 'selected' : '' }}>Siswa Aktif</option>
+                    <option value="alumni" {{ $status === 'alumni' ? 'selected' : '' }}>Alumni</option>
+                    <option value="keluar" {{ $status === 'keluar' ? 'selected' : '' }}>Pindah / Keluar</option>
+                    <option value="arsip" {{ $status === 'arsip' ? 'selected' : '' }}>Arsip</option>
+                </select>
 
-        <!-- Data Card -->
-        <div class="card card-accent">
-            <div class="card-body table-responsive p-0">
-                <table class="table table-hover admin-compact-table siswa-table">
-                    <thead>
-                        <tr>
-                            <th class="col-photo">Foto</th>
-                            <th>Nama Lengkap</th>
-                            <th class="col-nis">NIS</th>
-                            <th class="col-gender">L/P</th>
-                            <th class="col-ttl">TTL</th>
-                            <th>{{ $status === 'aktif' ? 'Kelas' : ($status === 'alumni' ? 'Tahun Lulus' : 'Status') }}</th>
-                            <th class="col-year">Tahun Masuk</th>
-                            <th class="text-right col-actions">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($siswas as $item)
+                @if($status === 'aktif')
+                    <select name="kelas" class="form-control-admin" style="width: auto; min-height: 38px; padding: 6px 12px; font-size: 12px; border: 1px solid #cfd8e3; border-radius: 8px; outline: none;" onchange="this.form.submit()">
+                        <option value="">Semua Kelas</option>
+                        @foreach($daftarKelas as $itemKelas)
+                            <option value="{{ $itemKelas->tingkat }}" @selected($kelas === $itemKelas->tingkat)>
+                                Kelas {{ $itemKelas->tingkat }}
+                            </option>
+                        @endforeach
+                    </select>
+                @endif
+
+                <label class="data-search">
+                    <i class="fas fa-search"></i>
+                    <input type="search" name="search" value="{{ $search }}" placeholder="Cari nama atau NIS...">
+                </label>
+                <button type="submit" class="data-filter-submit">
+                    <i class="fas fa-search"></i>
+                    <span>Cari</span>
+                </button>
+                @if($search !== '' || $kelas !== '' || $status !== 'aktif' || $perPage != 10)
+                    <a href="{{ route('admin.siswa.index', ['status' => $status]) }}" class="data-reset">Reset</a>
+                @endif
+            </form>
+        </header>
+
+        <div class="table-responsive">
+            <table class="table table-hover admin-compact-table siswa-table">
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">Foto</th>
+                        <th>Nama Lengkap</th>
+                        <th style="width: 110px;">NIS</th>
+                        <th style="width: 80px;" class="text-center">L/P</th>
+                        <th>TTL</th>
+                        <th style="width: 130px;">{{ $status === 'aktif' ? 'Kelas' : ($status === 'alumni' ? 'Tahun Lulus' : 'Status') }}</th>
+                        <th style="width: 120px;">Tahun Masuk</th>
+                        <th class="text-center" style="width: 150px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($siswas as $item)
                         <tr>
                             <td class="align-middle">
                                 @if($item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto))
-                                    <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" class="img-circle" style="width: 45px; height: 45px; object-fit: cover;">
+                                    <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" class="img-circle" style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;">
                                 @else
-                                    <div class="bg-primary text-white img-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; font-weight: bold; display: inline-flex !important;">
+                                    <div class="bg-primary text-white img-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; font-weight: bold; display: inline-flex !important; border-radius: 50%;">
                                         {{ substr($item->nama, 0, 1) }}
                                     </div>
                                 @endif
                             </td>
                             <td class="align-middle">
-                                <span class="font-weight-bold">{{ $item->nama }}</span>
+                                <strong class="text-navy">{{ $item->nama }}</strong>
                             </td>
-                            <td class="align-middle">
-                                {{ $item->nis ?? '-' }}
-                            </td>
-                            <td class="align-middle">
+                            <td class="align-middle">{{ $item->nis ?? '-' }}</td>
+                            <td class="align-middle text-center">
                                 <span class="badge {{ $item->jenis_kelamin === 'L' ? 'badge-primary' : 'badge-danger' }} px-2 py-1">
                                     {{ $item->jenis_kelamin }}
                                 </span>
@@ -131,7 +114,7 @@
                                     {{ $item->tempat_lahir ?? '-' }}, {{ $item->tanggal_lahir ? $item->tanggal_lahir->translatedFormat('d M Y') : '-' }}
                                 @else
                                     -
-                                @endif
+                                  @endif
                             </td>
                             <td class="align-middle">
                                 @if($status === 'aktif')
@@ -148,46 +131,68 @@
                                 @endif
                             </td>
                             <td class="align-middle">{{ $item->tahun_masuk }}</td>
-                            <td class="align-middle text-right">
-                                @if($status === 'arsip')
-                                    <form action="{{ route('admin.siswa.restore', $item->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit" class="btn btn-sm btn-success" title="Pulihkan">
-                                            <i class="fas fa-undo"></i>
-                                        </button>
-                                    </form>
-                                @else
-                                    <a href="{{ route('admin.siswa.edit', $item->id) }}" class="btn btn-sm btn-info" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('admin.siswa.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Arsipkan data siswa ini?');" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Arsipkan">
-                                            <i class="fas fa-archive"></i>
-                                        </button>
-                                    </form>
-                                @endif
+                            <td class="align-middle text-center">
+                                <div class="table-actions">
+                                    @if($status === 'arsip')
+                                        <form action="{{ route('admin.siswa.restore', $item->id) }}" method="POST" class="restore-form" onsubmit="return confirm('Apakah Anda yakin ingin memulihkan siswa ini kembali menjadi status aktif?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="action-button" title="Pulihkan">
+                                                Pulihkan
+                                            </button>
+                                        </form>
+                                    @else
+                                        <a href="{{ route('admin.siswa.edit', $item->id) }}" class="action-button" title="Edit">
+                                            Edit
+                                        </a>
+                                        <form action="{{ route('admin.siswa.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Arsipkan data siswa ini?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-button action-danger" title="Arsipkan">
+                                                Arsip
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
-                        @empty
+                    @empty
                         <tr>
                             <td colspan="8" class="text-center py-5 text-muted">
-                                <i class="fas fa-user-graduate fa-3x d-block mb-3"></i>
+                                <i class="fas fa-user-graduate fa-3x d-block mb-3" style="color: #b4bdc9;"></i>
                                 Belum ada data siswa ditemukan.
                             </td>
                         </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-            @if($siswas->hasPages())
-            <div class="card-footer clearfix">
-                {{ $siswas->links('pagination::bootstrap-4') }}
-            </div>
-            @endif
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-    </div>
-</div>
+
+        @if($siswas->hasPages())
+            <footer class="admin-card-footer">
+                <span>Halaman {{ $siswas->currentPage() }} dari {{ $siswas->lastPage() }}</span>
+                <div class="pager">
+                    @if($siswas->onFirstPage())
+                        <span class="pager-link disabled">Sebelumnya</span>
+                    @else
+                        <a href="{{ $siswas->previousPageUrl() }}" class="pager-link">Sebelumnya</a>
+                    @endif
+
+                    @for ($i = 1; $i <= $siswas->lastPage(); $i++)
+                        @if ($i == $siswas->currentPage())
+                            <span class="pager-link active">{{ $i }}</span>
+                        @else
+                            <a href="{{ $siswas->url($i) }}" class="pager-link">{{ $i }}</a>
+                        @endif
+                    @endfor
+
+                    @if($siswas->hasMorePages())
+                        <a href="{{ $siswas->nextPageUrl() }}" class="pager-link">Berikutnya</a>
+                    @else
+                        <span class="pager-link disabled">Berikutnya</span>
+                    @endif
+                </div>
+            </footer>
+        @endif
+    </section>
 @stop

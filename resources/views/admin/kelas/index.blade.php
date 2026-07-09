@@ -1,15 +1,16 @@
 @extends('layouts.admin')
 
 @section('title', 'Data Kelas')
+@section('page_kicker', 'Akademik')
+@section('page_title', 'Data Kelas')
+@section('page_description', 'Kelola kelompok kelas belajar, wali kelas, dan kapasitas siswa.')
 
-@section('content_header')
-    <div class="d-flex justify-content-between align-items-center">
-        <h1 class="m-0 text-dark">Data Kelas</h1>
-        <a href="{{ route('admin.kelas.create') }}" class="btn btn-primary">
-            <i class="fas fa-plus mr-1"></i> Tambah Kelas
-        </a>
-    </div>
-@stop
+@section('page_actions')
+    <a href="{{ route('admin.kelas.create') }}" class="btn-admin">
+        <x-admin-icon name="plus" size="18"/>
+        Tambah Kelas
+    </a>
+@endsection
 
 @section('content')
 <x-admin-usage-guide
@@ -20,8 +21,34 @@
         'Kelas yang masih digunakan siswa tidak dapat dihapus agar data tetap konsisten.',
     ]"
 />
-<div class="card card-accent">
-    <div class="card-body p-0 table-responsive">
+
+<section class="admin-card">
+    <header class="admin-card-header admin-card-header-with-search">
+        <div>
+            <h2 class="admin-card-title">Daftar Kelas</h2>
+            <div class="admin-card-subtitle">{{ $kelas->total() }} kelas terdaftar</div>
+        </div>
+        <form method="GET" action="{{ route('admin.kelas.index') }}" class="admin-card-search" aria-label="Cari kelas">
+            <select name="per_page" class="form-control-admin" style="width: auto; min-height: 38px; padding: 6px 12px; font-size: 12px; border: 1px solid #cfd8e3; border-radius: 8px; outline: none;" onchange="this.form.submit()">
+                <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10 baris</option>
+                <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 baris</option>
+                <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 baris</option>
+            </select>
+            <label class="data-search">
+                <i class="fas fa-search"></i>
+                <input type="search" name="search" value="{{ $search ?? '' }}" placeholder="Cari tingkat, jurusan, wali kelas...">
+            </label>
+            <button type="submit" class="data-filter-submit">
+                <i class="fas fa-search"></i>
+                <span>Cari</span>
+            </button>
+            @if(isset($search) && $search !== '')
+                <a href="{{ route('admin.kelas.index') }}" class="data-reset">Reset</a>
+            @endif
+        </form>
+    </header>
+
+    <div class="table-responsive">
         @if($errors->any())
             <div class="alert alert-danger m-3">{{ $errors->first() }}</div>
         @endif
@@ -33,45 +60,79 @@
                     <th>Jurusan</th>
                     <th>Wali Kelas</th>
                     <th>Kapasitas</th>
-                    <th class="text-right">Aksi</th>
+                    <th class="text-center" style="width: 150px;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($kelas as $item)
                     <tr>
                         <td class="align-middle text-center">{{ $kelas->firstItem() + $loop->index }}</td>
-                        <td class="align-middle font-weight-bold">{{ $item->tingkat }}</td>
+                        <td class="align-middle font-weight-bold text-navy">{{ $item->tingkat }}</td>
                         <td class="align-middle">{{ $item->jurusan ?: '-' }}</td>
                         <td class="align-middle">{{ $item->waliKelas?->nama ?? '-' }}</td>
                         <td class="align-middle">
                             {{ $item->siswas_count }} / {{ $item->kapasitas ?: '∞' }}
                         </td>
-                        <td class="align-middle text-right">
-                            <a href="{{ route('admin.kelas.edit', $item) }}" class="btn btn-sm btn-info" title="Edit">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <form action="{{ route('admin.kelas.destroy', $item) }}" method="POST"
-                                  class="d-inline" onsubmit="return confirm('Hapus data kelas ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                        <td class="align-middle text-center">
+                            <div class="table-actions">
+                                <a href="{{ route('admin.kelas.edit', $item) }}" class="action-button" title="Edit">
+                                    Edit
+                                </a>
+                                <form action="{{ route('admin.kelas.destroy', $item) }}" method="POST"
+                                      onsubmit="return confirm('Hapus data kelas ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="action-button action-danger" title="Hapus">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="text-center text-muted py-5">
-                            Belum ada data kelas. Klik “Tambah Kelas” untuk mulai mengisi.
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            @if(isset($search) && $search !== '')
+                                <div class="empty-state">
+                                    <strong>Kelas tidak ditemukan</strong>
+                                    <p>Tidak ada data kelas yang cocok dengan pencarian "{{ $search }}".</p>
+                                    <a href="{{ route('admin.kelas.index') }}" class="btn-admin">Tampilkan Semua</a>
+                                </div>
+                            @else
+                                Belum ada data kelas. Klik “Tambah Kelas” untuk mulai mengisi.
+                            @endif
                         </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
+
     @if($kelas->hasPages())
-        <div class="card-footer">{{ $kelas->links('pagination::bootstrap-4') }}</div>
+        <footer class="admin-card-footer">
+            <span>Halaman {{ $kelas->currentPage() }} dari {{ $kelas->lastPage() }}</span>
+            <div class="pager">
+                @if($kelas->onFirstPage())
+                    <span class="pager-link disabled">Sebelumnya</span>
+                @else
+                    <a href="{{ $kelas->previousPageUrl() }}" class="pager-link">Sebelumnya</a>
+                @endif
+
+                @for ($i = 1; $i <= $kelas->lastPage(); $i++)
+                    @if ($i == $kelas->currentPage())
+                        <span class="pager-link active">{{ $i }}</span>
+                    @else
+                        <a href="{{ $kelas->url($i) }}" class="pager-link">{{ $i }}</a>
+                    @endif
+                @endfor
+
+                @if($kelas->hasMorePages())
+                    <a href="{{ $kelas->nextPageUrl() }}" class="pager-link">Berikutnya</a>
+                @else
+                    <span class="pager-link disabled">Berikutnya</span>
+                @endif
+            </div>
+        </footer>
     @endif
-</div>
+</section>
 @stop

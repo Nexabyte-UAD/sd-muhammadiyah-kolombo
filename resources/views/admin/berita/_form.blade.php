@@ -42,15 +42,15 @@
 
     <div class="form-field form-field-full">
         <label for="gambar" class="form-label">{{ isset($berita) ? 'Ganti Gambar' : 'Gambar Berita' }}</label>
-        @if(isset($berita) && $berita->gambar)
-            <div class="current-image">
-                <img src="{{ asset('storage/' . $berita->gambar) }}" alt="Gambar berita saat ini">
-                <div>
-                    <strong>Gambar saat ini</strong>
-                    <small>Pilih file baru hanya jika ingin menggantinya.</small>
-                </div>
+        
+        <div class="current-image" id="image-preview-box" style="display: {{ (isset($berita) && $berita->gambar) ? 'flex' : 'none' }}">
+            <img src="{{ (isset($berita) && $berita->gambar) ? asset('storage/' . $berita->gambar) : '#' }}" id="image-preview-element" alt="Pratinjau Gambar">
+            <div>
+                <strong id="image-preview-title">{{ isset($berita) ? 'Gambar saat ini' : 'Pratinjau gambar baru' }}</strong>
+                <small id="image-preview-help">{{ isset($berita) ? 'Pilih file baru jika ingin menggantinya.' : 'Gambar belum disimpan.' }}</small>
             </div>
-        @endif
+        </div>
+
         <input type="file" name="gambar" id="gambar"
                class="form-control-admin form-file @error('gambar') is-invalid @enderror"
                accept="image/jpeg,image/png,image/gif">
@@ -58,3 +58,78 @@
         @error('gambar')<div class="form-error">{{ $message }}</div>@enderror
     </div>
 </div>
+
+@push('styles')
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 250px;
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@39.0.1/build/ckeditor.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize CKEditor 5
+            ClassicEditor
+                .create(document.querySelector('#isi'), {
+                    toolbar: [
+                        'heading', '|', 
+                        'bold', 'italic', 'link', '|',
+                        'bulletedList', 'numberedList', '|',
+                        'blockQuote', 'undo', 'redo'
+                    ],
+                    heading: {
+                        options: [
+                            { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                            { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                            { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                        ]
+                    }
+                })
+                .then(editor => {
+                    // Update textarea before form submission
+                    editor.model.document.on('change:data', () => {
+                        document.querySelector('#isi').value = editor.getData();
+                        window.isFormDirty = true;
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+
+            // Instant Image Preview & Size Validation
+            const gambarInput = document.getElementById('gambar');
+            if (gambarInput) {
+                gambarInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        // Max size 2MB
+                        if (file.size > 2 * 1024 * 1024) {
+                            alert('Ukuran file terlalu besar! Maksimal 2 MB.');
+                            event.target.value = '';
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewBox = document.getElementById('image-preview-box');
+                            const previewEl = document.getElementById('image-preview-element');
+                            const previewTitle = document.getElementById('image-preview-title');
+                            const previewHelp = document.getElementById('image-preview-help');
+
+                            if (previewEl && previewBox) {
+                                previewEl.src = e.target.result;
+                                previewBox.style.display = 'flex';
+                                if (previewTitle) previewTitle.textContent = 'Pratinjau gambar baru';
+                                if (previewHelp) previewHelp.textContent = 'Gambar terpilih (belum disimpan).';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        });
+    </script>
+@endpush

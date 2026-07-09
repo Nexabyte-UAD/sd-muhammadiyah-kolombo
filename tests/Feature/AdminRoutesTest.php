@@ -39,15 +39,16 @@ class AdminRoutesTest extends TestCase
         $user = User::create([
             'name' => 'Admin Login',
             'email' => 'login@example.test',
+            'username' => 'adminlogin',
             'password' => 'PasswordAdmin1!',
             'role' => 'Admin',
         ]);
 
         $this->post(route('login'), [
-            'email' => $user->email,
+            'login' => 'adminlogin',
             'password' => 'password-salah',
         ])->assertSessionHasErrors([
-            'email' => 'Email atau password salah.',
+            'login' => 'Email/Username atau password salah.',
         ]);
 
         $this->assertDatabaseHas('activity_logs', [
@@ -57,7 +58,7 @@ class AdminRoutesTest extends TestCase
         ]);
 
         $this->post(route('login'), [
-            'email' => $user->email,
+            'login' => 'adminlogin',
             'password' => 'PasswordAdmin1!',
             'remember' => '1',
         ])->assertRedirect(route('dashboard'));

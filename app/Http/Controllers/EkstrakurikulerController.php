@@ -10,11 +10,29 @@ use Illuminate\Support\Facades\Storage;
 
 class EkstrakurikulerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $ekstrakurikulers = Ekstrakurikuler::paginate(10);
+        $perPage = (int) $request->query('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100], true)) {
+            $perPage = 10;
+        }
 
-        return view('admin.ekstrakurikuler.index', compact('ekstrakurikulers'));
+        $search = $request->query('search');
+
+        $query = Ekstrakurikuler::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('deskripsi', 'like', "%{$search}%")
+                  ->orWhere('pembina', 'like', "%{$search}%")
+                  ->orWhere('jadwal', 'like', "%{$search}%");
+            });
+        }
+
+        $ekstrakurikulers = $query->paginate($perPage)->withQueryString();
+
+        return view('admin.ekstrakurikuler.index', compact('ekstrakurikulers', 'perPage', 'search'));
     }
 
     public function create()

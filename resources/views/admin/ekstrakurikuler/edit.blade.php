@@ -1,98 +1,108 @@
 @extends('layouts.admin')
 
 @section('title', 'Edit Ekstrakurikuler')
+@section('page_kicker', 'Konten website · Ekstrakurikuler')
+@section('page_title', 'Edit Ekstrakurikuler')
+@section('page_description', 'Perbarui informasi kegiatan ekstrakurikuler.')
 
-@section('content_header')
-    <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Edit Ekstrakurikuler</h1>
-        </div>
-        <div class="col-sm-6 text-right">
-            <a href="{{ route('admin.ekstrakurikuler.index') }}" class="btn btn-default">
-                <i class="fas fa-arrow-left mr-1"></i> Kembali
-            </a>
-        </div>
-    </div>
-@stop
+@section('page_actions')
+    <a href="{{ route('admin.ekstrakurikuler.index') }}" class="btn-admin btn-admin-secondary btn-cancel">Kembali</a>
+@endsection
 
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <div class="card card-accent">
-            <div class="card-header">
-                <h3 class="card-title">Form Edit Ekstrakurikuler</h3>
-            </div>
-            <form action="{{ route('admin.ekstrakurikuler.update', $ekstrakurikuler->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <x-auto-format-notice />
-                <div class="card-body">
-                    <div class="form-group">
-                        <label for="nama">Nama Ekstrakurikuler <span class="text-danger">*</span></label>
-                        <input type="text" name="nama" id="nama" class="form-control @error('nama') is-invalid @enderror" value="{{ old('nama', $ekstrakurikuler->nama) }}" required>
-                        @error('nama')
-                            <span class="error invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="pembina">Pembina</label>
-                        <input type="text" name="pembina" id="pembina" class="form-control @error('pembina') is-invalid @enderror" value="{{ old('pembina', $ekstrakurikuler->pembina) }}">
-                        @error('pembina')
-                            <span class="error invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="jadwal">Jadwal <span class="text-danger">*</span></label>
-                        <input type="text" name="jadwal" id="jadwal" class="form-control @error('jadwal') is-invalid @enderror" value="{{ old('jadwal', $ekstrakurikuler->jadwal) }}" required>
-                        @error('jadwal')
-                            <span class="error invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label for="deskripsi">Deskripsi <span class="text-danger">*</span></label>
-                        <textarea name="deskripsi" id="deskripsi" class="form-control @error('deskripsi') is-invalid @enderror" rows="4" required>{{ old('deskripsi', $ekstrakurikuler->deskripsi) }}</textarea>
-                        @error('deskripsi')
-                            <span class="error invalid-feedback">{{ $message }}</span>
-                        @enderror
-                    </div>
-                    <div class="form-group">
-                        <label>Foto Saat Ini</label>
-                        <div class="mt-2 mb-3">
-                            @if($ekstrakurikuler->foto)
-                                <img src="{{ asset('storage/' . $ekstrakurikuler->foto) }}" height="100" class="img-thumbnail">
-                            @else
-                                <span class="text-muted"><i class="fas fa-image mr-1"></i> Tidak ada foto</span>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="foto">Ganti Foto (Opsional)</label>
-                        <div class="custom-file">
-                            <input type="file" name="foto" class="custom-file-input @error('foto') is-invalid @enderror" id="foto" accept="image/*">
-                            <label class="custom-file-label" for="foto">Pilih file baru</label>
-                        </div>
-                        <small class="form-text text-muted">Biarkan kosong jika tidak ingin mengubah foto.</small>
-                        @error('foto')
-                            <span class="error invalid-feedback d-block">{{ $message }}</span>
-                        @enderror
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Update</button>
-                </div>
-            </form>
+    <form action="{{ route('admin.ekstrakurikuler.update', $ekstrakurikuler->id) }}" method="POST" enctype="multipart/form-data" class="form-card">
+        @csrf
+        @method('PUT')
+        <div class="form-card-header">
+            <h2>Informasi Ekstrakurikuler</h2>
+            <p>Perubahan akan diterapkan setelah disimpan.</p>
         </div>
-    </div>
-</div>
-@stop
+        <div class="form-card-body">
+            <x-auto-format-notice />
+            <div class="form-grid">
+                <div class="form-field form-field-full">
+                    <label for="nama" class="form-label">Nama Ekstrakurikuler <span>*</span></label>
+                    <input type="text" name="nama" id="nama" class="form-control-admin @error('nama') is-invalid @enderror" value="{{ old('nama', $ekstrakurikuler->nama) }}" required>
+                    @error('nama')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
 
-@push('js')
-<script>
-    $(function () {
-        $('.custom-file-input').on('change', function() {
-            let fileName = $(this).val().split('\\').pop();
-            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+                <div class="form-field">
+                    <label for="pembina" class="form-label">Pembina</label>
+                    <input type="text" name="pembina" id="pembina" class="form-control-admin @error('pembina') is-invalid @enderror" value="{{ old('pembina', $ekstrakurikuler->pembina) }}">
+                    @error('pembina')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-field form-field-full">
+                    <label for="jadwal" class="form-label">Jadwal <span>*</span></label>
+                    <input type="text" name="jadwal" id="jadwal" class="form-control-admin @error('jadwal') is-invalid @enderror" value="{{ old('jadwal', $ekstrakurikuler->jadwal) }}" required>
+                    @error('jadwal')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-field form-field-full">
+                    <label for="deskripsi" class="form-label">Deskripsi <span>*</span></label>
+                    <textarea name="deskripsi" id="deskripsi" class="form-control-admin @error('deskripsi') is-invalid @enderror" rows="4" required>{{ old('deskripsi', $ekstrakurikuler->deskripsi) }}</textarea>
+                    @error('deskripsi')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-field form-field-full">
+                    <label for="foto" class="form-label">Foto Kegiatan</label>
+                    
+                    <div class="current-image" id="image-preview-box" style="display: {{ $ekstrakurikuler->foto ? 'flex' : 'none' }}">
+                        <img src="{{ $ekstrakurikuler->foto ? asset('storage/' . $ekstrakurikuler->foto) : '#' }}" id="image-preview-element" alt="Pratinjau Gambar">
+                        <div>
+                            <strong id="image-preview-title">{{ $ekstrakurikuler->foto ? 'Foto saat ini' : 'Pratinjau gambar baru' }}</strong>
+                            <small id="image-preview-help">{{ $ekstrakurikuler->foto ? 'Pilih file baru jika ingin menggantinya.' : 'Gambar belum disimpan.' }}</small>
+                        </div>
+                    </div>
+
+                    <input type="file" name="foto" id="foto"
+                           class="form-control-admin form-file @error('foto') is-invalid @enderror"
+                           accept="image/jpeg,image/png,image/gif">
+                    <div class="form-help">JPG, PNG, atau GIF. Maksimal 2 MB.</div>
+                    @error('foto')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+            </div>
+        </div>
+        <div class="form-card-footer">
+            <a href="{{ route('admin.ekstrakurikuler.index') }}" class="btn-admin btn-admin-secondary btn-cancel">Batal</a>
+            <button type="submit" class="btn-admin">Simpan Perubahan</button>
+        </div>
+    </form>
+@endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Instant Image Preview & Size Validation
+            const fotoInput = document.getElementById('foto');
+            if (fotoInput) {
+                fotoInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        if (file.size > 2 * 1024 * 1024) {
+                            alert('Ukuran file terlalu besar! Maksimal 2 MB.');
+                            event.target.value = '';
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewBox = document.getElementById('image-preview-box');
+                            const previewEl = document.getElementById('image-preview-element');
+                            const previewTitle = document.getElementById('image-preview-title');
+                            const previewHelp = document.getElementById('image-preview-help');
+
+                            if (previewEl && previewBox) {
+                                previewEl.src = e.target.result;
+                                previewBox.style.display = 'flex';
+                                if (previewTitle) previewTitle.textContent = 'Pratinjau gambar baru';
+                                if (previewHelp) previewHelp.textContent = 'Gambar terpilih (belum disimpan).';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
         });
-    });
-</script>
+    </script>
 @endpush

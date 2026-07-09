@@ -34,14 +34,20 @@ class UserController extends Controller
      */
     public function store(Request $request, IndonesianTextFormatter $formatter)
     {
+        if (!$request->has('username') && $request->has('email')) {
+            $request->merge(['username' => explode('@', $request->email)[0]]);
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
+            'username' => 'required|string|alpha_dash|max:50|unique:users,username',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Password::min(12)->letters()->mixedCase()->numbers()->symbols()],
         ]);
 
         User::create([
             'name' => $formatter->name($request->name),
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => 'Admin',
@@ -64,8 +70,14 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user, IndonesianTextFormatter $formatter)
     {
+        if (!$request->has('username')) {
+            $username = $user->username ?: explode('@', $request->input('email') ?? $user->email)[0];
+            $request->merge(['username' => $username]);
+        }
+
         $rules = [
             'name' => 'required|string|max:255',
+            'username' => ['required', 'string', 'alpha_dash', 'max:50', Rule::unique('users')->ignore($user->id)],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
         ];
 
@@ -77,6 +89,7 @@ class UserController extends Controller
 
         $data = [
             'name' => $formatter->name($request->name),
+            'username' => $request->username,
             'email' => $request->email,
         ];
 

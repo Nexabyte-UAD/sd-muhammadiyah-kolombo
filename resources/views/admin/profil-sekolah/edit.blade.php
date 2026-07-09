@@ -1,162 +1,188 @@
 @extends('layouts.admin')
 
-@section('title', 'Edit ' . $profil->judul)
-
-@section('content_header')
-    <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Edit: {{ $profil->judul }}</h1>
-        </div>
-    </div>
-@stop
+@section('title', $profil->judul)
+@section('page_kicker', 'Konten website · Profil Sekolah')
+@section('page_title', $profil->judul)
+@section('page_description', 'Kelola informasi profil sekolah untuk ditampilkan pada website publik.')
 
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        @if($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <h5><i class="icon fas fa-ban mr-1"></i> Terjadi Kesalahan!</h5>
-                <ul class="mb-0 pl-3">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-        @endif
+    @if($errors->any())
+        <div class="alert alert-danger m-3">
+            <ul class="mb-0 pl-3">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-        <div class="card card-accent">
-            <div class="card-header">
-                <h3 class="card-title">Form Profil Sekolah</h3>
-            </div>
-            <form action="{{ route('admin.profil-sekolah.updateType', $type) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <x-auto-format-notice />
-                <div class="card-body">
-                    <div class="row">
-                        @if($type === 'akreditasi')
-                            <!-- Khusus Akreditasi: Hanya Upload Gambar Sertifikat -->
-                            <div class="col-md-12">
-                                <h4 class="mb-3 text-primary"><i class="fas fa-file-signature mr-2"></i>Sertifikat Akreditasi</h4>
-                                <hr>
-                                
-                                <input type="hidden" name="judul" value="{{ old('judul', $profil->judul ?: 'Sertifikat Akreditasi') }}">
-                                <input type="hidden" name="konten" value="{{ old('konten', $profil->konten ?: '-') }}">
+    <form action="{{ route('admin.profil-sekolah.updateType', $type) }}" method="POST" enctype="multipart/form-data" class="form-card">
+        @csrf
+        @method('PUT')
+        <div class="form-card-header">
+            <h2>Form Profil Sekolah</h2>
+            <p>Perubahan akan langsung ditampilkan di halaman publik setelah disimpan.</p>
+        </div>
+        <div class="form-card-body">
+            <x-auto-format-notice />
+            <div class="form-grid">
+                @if($type === 'akreditasi')
+                    <!-- Khusus Akreditasi: Hanya Upload Gambar Sertifikat -->
+                    <input type="hidden" name="judul" value="{{ old('judul', $profil->judul ?: 'Sertifikat Akreditasi') }}">
+                    <input type="hidden" name="konten" value="{{ old('konten', $profil->konten ?: '-') }}">
 
-                                <div class="form-group">
-                                    <label>Gambar Sertifikat Saat Ini</label>
-                                    <div class="bg-light p-3 border text-center mb-3 rounded">
-                                        @if($profil->gambar)
-                                            <img src="{{ asset('storage/' . $profil->gambar) }}" class="img-fluid img-thumbnail shadow-sm" style="max-height: 450px;" alt="Sertifikat Akreditasi">
-                                        @else
-                                            <div class="py-5 text-muted">
-                                                <i class="fas fa-file-image fa-4x mb-3 text-secondary"></i>
-                                                <p class="mb-0">Belum ada file gambar sertifikat yang diunggah.</p>
-                                            </div>
-                                        @endif
-                                    </div>
+                    <div class="form-field form-field-full">
+                        <label class="form-label">Gambar Sertifikat Saat Ini</label>
+                        <div class="current-image" id="image-preview-box" style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; padding: 20px; border: 1px solid var(--admin-border); border-radius: 8px;">
+                            @if($profil->gambar)
+                                <img src="{{ asset('storage/' . $profil->gambar) }}" id="image-preview-element" alt="Sertifikat Akreditasi" style="max-height: 450px; width: auto; object-fit: contain; border-radius: 8px;">
+                            @else
+                                <div id="image-placeholder" style="text-align: center; padding: 40px 0; color: #94a3b8;">
+                                    <i class="fas fa-file-image fa-4x mb-3"></i>
+                                    <p class="mb-0">Belum ada file gambar sertifikat yang diunggah.</p>
                                 </div>
-                                
-                                <div class="form-group">
-                                    <label for="gambar">Unggah Gambar Sertifikat Baru</label>
-                                    <div class="custom-file">
-                                        <input type="file" name="gambar" class="custom-file-input @error('gambar') is-invalid @enderror" id="gambar" accept="image/jpeg,image/png,image/jpg" required>
-                                        <label class="custom-file-label" for="gambar">Pilih file gambar sertifikat</label>
-                                    </div>
-                                    <small class="form-text text-muted">Format: JPG, JPEG, PNG. Maksimal ukuran file: 2MB. Mengunggah gambar baru akan menimpa sertifikat lama.</small>
-                                    @error('gambar')
-                                        <span class="error invalid-feedback d-block">{{ $message }}</span>
-                                    @enderror
-                                </div>
+                                <img src="#" id="image-preview-element" alt="Pratinjau Gambar" style="display: none; max-height: 450px; width: auto; object-fit: contain; border-radius: 8px;">
+                            @endif
+                        </div>
+                    </div>
 
-                                <div class="alert alert-info mt-4">
-                                    <h5><i class="icon fas fa-info"></i> Info!</h5>
-                                    Setelah gambar sertifikat berhasil diganti, refresh halaman publik (frontend) Anda untuk melihat perubahannya.
-                                </div>
-                            </div>
-                        @else
-                            <!-- Sisi Kiri: Teks -->
-                            <div class="{{ $type === 'visi_misi' ? 'col-md-12' : 'col-md-7' }}">
-                                <h4 class="mb-3 text-primary"><i class="fas fa-file-alt mr-2"></i>Konten Teks</h4>
-                                <hr>
-                                <div class="form-group">
-                                    <label for="judul">Judul Halaman <span class="text-danger">*</span></label>
-                                    <input type="text" name="judul" id="judul" class="form-control @error('judul') is-invalid @enderror" value="{{ old('judul', $profil->judul) }}" required>
-                                    @error('judul')
-                                        <span class="error invalid-feedback">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="konten">Isi Konten / Penjelasan <span class="text-danger">*</span></label>
-                                    <textarea name="konten" id="konten" class="form-control @error('konten') is-invalid @enderror" rows="12" placeholder="Ketik isi dari halaman ini..." required>{{ old('konten', $profil->konten) }}</textarea>
-                                    <small class="form-text text-muted">Gunakan tombol <code>Enter</code> pada keyboard untuk memisahkan paragraf satu dengan yang lainnya.</small>
-                                    @error('konten')
-                                        <span class="error invalid-feedback">{{ $message }}</span>
-                                    @enderror
+                    <div class="form-field form-field-full">
+                        <label for="gambar" class="form-label">Unggah Gambar Sertifikat Baru <span>*</span></label>
+                        <input type="file" name="gambar" id="gambar" class="form-control-admin form-file @error('gambar') is-invalid @enderror" accept="image/jpeg,image/png,image/jpg" required>
+                        <div class="form-help">Format: JPG, JPEG, PNG. Maksimal ukuran file: 2MB. Mengunggah gambar baru akan menimpa sertifikat lama.</div>
+                        @error('gambar')<div class="form-error">{{ $message }}</div>@enderror
+                    </div>
+                @else
+                    <!-- Tipe Umum (Visi Misi, Sejarah, dsb.) -->
+                    <div class="form-field form-field-full">
+                        <label for="judul" class="form-label">Judul Halaman <span>*</span></label>
+                        <input type="text" name="judul" id="judul" class="form-control-admin @error('judul') is-invalid @enderror" value="{{ old('judul', $profil->judul) }}" required>
+                        @error('judul')<div class="form-error">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="form-field form-field-full">
+                        <label for="konten" class="form-label">Isi Konten / Penjelasan <span>*</span></label>
+                        <textarea name="konten" id="konten" class="form-control-admin @error('konten') is-invalid @enderror" rows="12" placeholder="Ketik isi dari halaman ini..." required style="line-height: 1.6;">{{ old('konten', $profil->konten) }}</textarea>
+                        <div class="form-help">Gunakan tombol <code>Enter</code> pada keyboard untuk memisahkan paragraf satu dengan yang lainnya.</div>
+                        @error('konten')<div class="form-error">{{ $message }}</div>@enderror
+                    </div>
+
+                    @if($type !== 'visi_misi')
+                        <div class="form-field form-field-full">
+                            <label class="form-label">Gambar Saat Ini</label>
+                            
+                            <div class="current-image" id="image-preview-box" style="display: {{ $profil->gambar ? 'flex' : 'none' }}">
+                                <img src="{{ $profil->gambar ? asset('storage/' . $profil->gambar) : '#' }}" id="image-preview-element" alt="Pratinjau Gambar">
+                                <div>
+                                    <strong id="image-preview-title">{{ $profil->gambar ? 'Gambar saat ini' : 'Pratinjau gambar baru' }}</strong>
+                                    <small id="image-preview-help">{{ $profil->gambar ? 'Pilih file baru jika ingin menggantinya.' : 'Gambar belum disimpan.' }}</small>
                                 </div>
                             </div>
                             
-                            @if($type !== 'visi_misi')
-                            <!-- Sisi Kanan: Gambar -->
-                            <div class="col-md-5">
-                                <h4 class="mb-3 text-primary"><i class="fas fa-image mr-2"></i>Media Gambar</h4>
-                                <hr>
-                                <div class="form-group">
-                                    <label>Gambar Saat Ini</label>
-                                    <div class="bg-light p-3 border text-center mb-3">
-                                        @if($profil->gambar)
-                                            <img src="{{ asset('storage/' . $profil->gambar) }}" class="img-fluid img-thumbnail" style="max-height: 250px;" alt="Preview">
-                                        @else
-                                            <div class="py-5 text-muted">
-                                                <i class="fas fa-camera-retro fa-3x mb-3"></i>
-                                                <p class="mb-0">Belum ada gambar yang diunggah.</p>
-                                            </div>
-                                        @endif
-                                    </div>
+                            @if(!$profil->gambar)
+                                <div id="image-placeholder" style="padding: 20px; background: #f8fafc; border: 1px solid var(--admin-border); border-radius: 8px; text-align: center; color: #94a3b8; margin-bottom: 12px;">
+                                    <i class="fas fa-camera-retro fa-3x mb-2"></i>
+                                    <p class="mb-0">Belum ada gambar yang diunggah.</p>
                                 </div>
-                                
-                                <div class="form-group">
-                                    <label for="gambar">Unggah Gambar Baru</label>
-                                    <div class="custom-file">
-                                        <input type="file" name="gambar" class="custom-file-input @error('gambar') is-invalid @enderror" id="gambar" accept="image/jpeg,image/png,image/jpg">
-                                        <label class="custom-file-label" for="gambar">Pilih file</label>
-                                    </div>
-                                    <small class="form-text text-muted">Format: JPG, PNG. Maksimal ukuran file: 2MB. Mengunggah gambar baru akan otomatis menimpa gambar lama.</small>
-                                    @error('gambar')
-                                        <span class="error invalid-feedback d-block">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                
-                                <div class="alert alert-info mt-4">
-                                    <h5><i class="icon fas fa-info"></i> Info!</h5>
-                                    Setelah gambar berhasil diganti, refresh halaman publik (frontend) Anda untuk melihat perubahannya.
-                                </div>
-                            </div>
                             @endif
-                        @endif
-                    </div>
-                </div>
-                
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Simpan Perubahan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@stop
+                        </div>
 
-@push('js')
-<script>
-    $(function () {
-        $('.custom-file-input').on('change', function() {
-            let fileName = $(this).val().split('\\').pop();
-            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+                        <div class="form-field form-field-full">
+                            <label for="gambar" class="form-label">Unggah Gambar Baru</label>
+                            <input type="file" name="gambar" id="gambar" class="form-control-admin form-file @error('gambar') is-invalid @enderror" accept="image/jpeg,image/png,image/jpg">
+                            <div class="form-help">Format: JPG, PNG. Maksimal ukuran file: 2MB. Mengunggah gambar baru akan otomatis menimpa gambar lama.</div>
+                            @error('gambar')<div class="form-error">{{ $message }}</div>@enderror
+                        </div>
+                    @endif
+                @endif
+            </div>
+        </div>
+        <div class="form-card-footer">
+            <button type="submit" class="btn-admin">Simpan Perubahan</button>
+        </div>
+    </form>
+@endsection
+
+@push('styles')
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 320px;
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    @if($type !== 'akreditasi')
+        <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@39.0.1/build/ckeditor.js"></script>
+    @endif
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            @if($type !== 'akreditasi')
+                // Initialize CKEditor 5
+                ClassicEditor
+                    .create(document.querySelector('#konten'), {
+                        toolbar: [
+                            'heading', '|', 
+                            'bold', 'italic', 'link', '|',
+                            'bulletedList', 'numberedList', '|',
+                            'blockQuote', 'undo', 'redo'
+                        ],
+                        heading: {
+                            options: [
+                                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                            ]
+                        }
+                    })
+                    .then(editor => {
+                        // Update textarea before form submission
+                        editor.model.document.on('change:data', () => {
+                            document.querySelector('#konten').value = editor.getData();
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            @endif
+
+            // Instant Image Preview & Size Validation
+            const gambarInput = document.getElementById('gambar');
+            if (gambarInput) {
+                gambarInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        if (file.size > 2 * 1024 * 1024) {
+                            alert('Ukuran file terlalu besar! Maksimal 2 MB.');
+                            event.target.value = '';
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewBox = document.getElementById('image-preview-box');
+                            const previewEl = document.getElementById('image-preview-element');
+                            const previewTitle = document.getElementById('image-preview-title');
+                            const previewHelp = document.getElementById('image-preview-help');
+                            const placeholder = document.getElementById('image-placeholder');
+
+                            if (previewEl) {
+                                previewEl.src = e.target.result;
+                                previewEl.style.display = 'block';
+                            }
+                            if (previewBox) {
+                                previewBox.style.display = 'flex';
+                            }
+                            if (placeholder) {
+                                placeholder.style.display = 'none';
+                            }
+                            if (previewTitle) previewTitle.textContent = 'Pratinjau gambar baru';
+                            if (previewHelp) previewHelp.textContent = 'Gambar terpilih (belum disimpan).';
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
         });
-    });
-</script>
+    </script>
 @endpush

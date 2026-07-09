@@ -7,10 +7,15 @@ use Illuminate\Http\Request;
 
 class PesanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pesans = Pesan::orderBy('created_at', 'desc')->paginate(10);
-        return view('admin.pesan.index', compact('pesans'));
+        $perPage = (int) $request->query('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100], true)) {
+            $perPage = 10;
+        }
+
+        $pesans = Pesan::orderBy('created_at', 'desc')->paginate($perPage)->withQueryString();
+        return view('admin.pesan.index', compact('pesans', 'perPage'));
     }
 
     public function markAsRead(Pesan $pesan)

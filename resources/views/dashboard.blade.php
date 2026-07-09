@@ -5,12 +5,6 @@
 @section('page_title', 'Dashboard')
 @section('page_description', 'Pantau data sekolah dan kelola konten website dari satu tempat.')
 
-@section('page_actions')
-    <a href="{{ route('admin.berita.create') }}" class="btn-admin">
-        <x-admin-icon name="plus" size="18"/>
-        Tambah Berita
-    </a>
-@endsection
 
 @section('content')
     <section class="stats-grid" aria-label="Statistik sekolah">
@@ -30,7 +24,7 @@
         <article class="stat-card">
             <div class="stat-card-top">
                 <div>
-                    <div class="stat-label">Guru &amp; Staf</div>
+                    <div class="stat-label">Guru & Staf</div>
                     <div class="stat-value">{{ number_format($countGuru) }}</div>
                 </div>
                 <span class="stat-icon green"><x-admin-icon name="users" size="21"/></span>
@@ -72,7 +66,6 @@
             <section class="admin-card">
                 <header class="admin-card-header">
                     <h2 class="admin-card-title">Berita Terbaru</h2>
-                    <a href="{{ route('admin.berita.index') }}" class="admin-card-link">Lihat semua</a>
                 </header>
                 <div class="admin-card-body flush">
                     @if($latestBerita->isNotEmpty())
@@ -179,7 +172,7 @@
                 </div>
             </section>
 
-            <section class="admin-card">
+            <section class="admin-card dashboard-attention-card">
                 <header class="admin-card-header">
                     <div>
                         <h2 class="admin-card-title">Perlu Ditindaklanjuti</h2>
@@ -216,6 +209,36 @@
                             </span>
                             <span class="attention-count {{ $countPesanBelumDibaca > 0 ? 'danger' : 'clear' }}">
                                 {{ number_format($countPesanBelumDibaca) }}
+                            </span>
+                        </a>
+                        <a href="{{ route('admin.berita.index') }}" class="attention-item">
+                            <span class="attention-icon orange" style="color: #ea580c; background: #fff7ed;"><x-admin-icon name="news" size="19"/></span>
+                            <span class="attention-copy">
+                                <strong>Artikel berita draf</strong>
+                                <small>Lengkapi dan terbitkan artikel draf.</small>
+                            </span>
+                            <span class="attention-count {{ $countBeritaDraft > 0 ? 'warning' : 'clear' }}">
+                                {{ number_format($countBeritaDraft) }}
+                            </span>
+                        </a>
+                        <a href="{{ route('admin.ekstrakurikuler.index') }}" class="attention-item">
+                            <span class="attention-icon purple" style="color: #7c3aed; background: #f5f3ff;"><x-admin-icon name="pulse" size="19"/></span>
+                            <span class="attention-copy">
+                                <strong>Ekskul belum lengkap</strong>
+                                <small>Periksa pembina dan jadwal ekskul.</small>
+                            </span>
+                            <span class="attention-count {{ $countEkskulBelumLengkap > 0 ? 'warning' : 'clear' }}">
+                                {{ number_format($countEkskulBelumLengkap) }}
+                            </span>
+                        </a>
+                        <a href="{{ route('admin.prestasi.index') }}" class="attention-item">
+                            <span class="attention-icon green" style="color: #16a34a; background: #f0fdf4;"><x-admin-icon name="award" size="19"/></span>
+                            <span class="attention-copy">
+                                <strong>Prestasi tanpa foto</strong>
+                                <small>Unggah foto dokumentasi prestasi.</small>
+                            </span>
+                            <span class="attention-count {{ $countPrestasiTanpaFoto > 0 ? 'warning' : 'clear' }}">
+                                {{ number_format($countPrestasiTanpaFoto) }}
                             </span>
                         </a>
                     </div>

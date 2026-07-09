@@ -5,12 +5,13 @@
 
 @php
     $konten = trim($profil->konten ?? '');
+    $isHtml = (strip_tags($konten) !== $konten);
     
     $visiLines = [];
     $misiLines = [];
     $isMisiSection = false;
     
-    if (!empty($konten)) {
+    if (!$isHtml && !empty($konten)) {
         $lines = explode("\n", str_replace("\r", "", $konten));
         foreach ($lines as $line) {
             $trimmedLine = trim($line);
@@ -89,32 +90,38 @@
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="bg-white p-4 p-md-5 rounded-4 shadow-sm border">
-                    <!-- Visi Section -->
-                    <div class="text-center mb-5">
-                        <h4 class="text-primary fw-bold text-uppercase tracking-wider mb-3" style="font-size: 0.9rem; letter-spacing: 1.5px;">Visi Sekolah</h4>
-                        <p class="text-dark fs-2 fw-bold lh-sm mb-0" style="letter-spacing: -0.5px; font-family: 'Outfit', sans-serif;">
-                            “{{ $visiText }}”
-                        </p>
-                    </div>
-
-                    <hr class="my-5" style="opacity: 0.15;">
-
-                    <!-- Misi Section -->
-                    <div>
-                        <h4 class="text-primary fw-bold text-uppercase tracking-wider text-center mb-4" style="font-size: 0.9rem; letter-spacing: 1.5px;">Misi Sekolah</h4>
-                        <div class="d-flex flex-column gap-3">
-                            @foreach($misiItems as $index => $item)
-                                <div class="d-flex align-items-start gap-3">
-                                    <div class="d-flex align-items-center justify-content-center text-primary rounded-circle fw-bold" style="width: 28px; height: 28px; font-size: 0.9rem; flex-shrink: 0; background-color: #eff6ff;">
-                                        {{ $index + 1 }}
-                                    </div>
-                                    <div class="text-secondary lh-lg mb-0" style="font-size: 1.05rem; text-align: justify;">
-                                        {{ $item }}
-                                    </div>
-                                </div>
-                            @endforeach
+                    @if($isHtml)
+                        <div class="text-secondary rich-text-content" style="font-size: 1.05rem; line-height: 1.8;">
+                            {!! $profil->konten !!}
                         </div>
-                    </div>
+                    @else
+                        <!-- Visi Section -->
+                        <div class="text-center mb-5">
+                            <h4 class="text-primary fw-bold text-uppercase tracking-wider mb-3" style="font-size: 0.9rem; letter-spacing: 1.5px;">Visi Sekolah</h4>
+                            <p class="text-dark fs-2 fw-bold lh-sm mb-0" style="letter-spacing: -0.5px; font-family: 'Outfit', sans-serif;">
+                                “{{ $visiText }}”
+                            </p>
+                        </div>
+
+                        <hr class="my-5" style="opacity: 0.15;">
+
+                        <!-- Misi Section -->
+                        <div>
+                            <h4 class="text-primary fw-bold text-uppercase tracking-wider text-center mb-4" style="font-size: 0.9rem; letter-spacing: 1.5px;">Misi Sekolah</h4>
+                            <div class="d-flex flex-column gap-3">
+                                @foreach($misiItems as $index => $item)
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="d-flex align-items-center justify-content-center text-primary rounded-circle fw-bold" style="width: 28px; height: 28px; font-size: 0.9rem; flex-shrink: 0; background-color: #eff6ff;">
+                                            {{ $index + 1 }}
+                                        </div>
+                                        <div class="text-secondary lh-lg mb-0" style="font-size: 1.05rem; text-align: justify;">
+                                            {{ $item }}
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

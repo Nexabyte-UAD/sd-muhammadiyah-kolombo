@@ -1,168 +1,155 @@
 @extends('layouts.admin')
 
 @section('title', 'Edit Pegawai')
+@section('page_kicker', 'Akademik · Pegawai')
+@section('page_title', 'Edit ' . ucfirst($guru->tipe))
+@section('page_description', 'Perbarui data guru atau staf kependidikan.')
 
-@section('content_header')
-    <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1 class="m-0 text-dark">Edit {{ ucfirst($guru->tipe) }}</h1>
-        </div>
-        <div class="col-sm-6 text-right">
-            <a href="{{ route('admin.guru-staff.index', ['tipe' => $guru->tipe]) }}" class="btn btn-default">
-                <i class="fas fa-arrow-left mr-1"></i> Kembali
-            </a>
-        </div>
-    </div>
-@stop
+@section('page_actions')
+    <a href="{{ route('admin.guru-staff.index', ['tipe' => $guru->tipe]) }}" class="btn-admin btn-admin-secondary btn-cancel">Kembali</a>
+@endsection
 
 @section('content')
-<div class="row">
-    <div class="col-md-12">
-        <div class="card card-accent">
-            <div class="card-header">
-                <h3 class="card-title">Informasi Dasar {{ ucfirst($guru->tipe) }}</h3>
-            </div>
-            <form action="{{ route('admin.guru-staff.update', $guru->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <x-auto-format-notice />
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="nama">Nama Lengkap <span class="text-danger">*</span></label>
-                                <input type="text" name="nama" id="nama" class="form-control @error('nama') is-invalid @enderror" value="{{ old('nama', $guru->nama) }}" required placeholder="Contoh: Ahmad Dahlan, S.Pd">
-                                @error('nama')
-                                    <span class="error invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="jenis_kelamin">Jenis Kelamin <span class="text-danger">*</span></label>
-                                <select name="jenis_kelamin" id="jenis_kelamin" class="form-control @error('jenis_kelamin') is-invalid @enderror" required>
-                                    <option value="">Pilih jenis kelamin</option>
-                                    @foreach($jenisKelamin as $value => $label)
-                                        <option value="{{ $value }}" @selected(old('jenis_kelamin', $guru->jenis_kelamin) === $value)>{{ $label }}</option>
-                                    @endforeach
-                                </select>
-                                @error('jenis_kelamin')
-                                    <span class="error invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="nip">NIP</label>
-                                <input type="text" name="nip" id="nip" class="form-control @error('nip') is-invalid @enderror" value="{{ old('nip', $guru->nip) }}" placeholder="Nomor Induk Pegawai (Opsional)">
-                                @error('nip')
-                                    <span class="error invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="status_kepegawaian">Status Kepegawaian <span class="text-danger">*</span></label>
-                                <select name="status_kepegawaian" id="status_kepegawaian" class="form-control @error('status_kepegawaian') is-invalid @enderror" required>
-                                    <option value="">Pilih status kepegawaian</option>
-                                    @foreach($statusKepegawaian as $value => $label)
-                                        <option value="{{ $value }}" @selected(old('status_kepegawaian', $guru->status_kepegawaian) === $value)>{{ $label }}</option>
-                                    @endforeach
-                                </select>
-                                @error('status_kepegawaian')
-                                    <span class="error invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <input type="hidden" name="tipe" value="{{ $guru->tipe }}">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="jabatan">Jabatan Pokok <span class="text-danger">*</span></label>
-                                <input type="text" name="jabatan" id="jabatan" class="form-control @error('jabatan') is-invalid @enderror" value="{{ old('jabatan', $guru->jabatan) }}" required placeholder="Contoh: Guru Kelas, Wali Kelas, Bendahara">
-                                @error('jabatan')
-                                    <span class="error invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="bidang_tugas">Bidang Tugas (Opsional)</label>
-                                <input type="text" name="bidang_tugas" id="bidang_tugas" class="form-control @error('bidang_tugas') is-invalid @enderror" value="{{ old('bidang_tugas', $guru->bidang_tugas) }}" placeholder="Contoh: Guru Kelas, Matematika, Tata Usaha">
-                                <small class="form-text text-muted">Dapat dikosongkan jika tidak memiliki bidang khusus.</small>
-                                @error('bidang_tugas')
-                                    <span class="error invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="pendidikan_terakhir">Pendidikan Terakhir <span class="text-danger">*</span></label>
-                                <select name="pendidikan_terakhir" id="pendidikan_terakhir" class="form-control @error('pendidikan_terakhir') is-invalid @enderror" required>
-                                    <option value="">Pilih pendidikan terakhir</option>
-                                    @foreach($pendidikanTerakhir as $value => $label)
-                                        <option value="{{ $value }}" @selected(old('pendidikan_terakhir', $guru->pendidikan_terakhir) === $value)>{{ $label }}</option>
-                                    @endforeach
-                                </select>
-                                @error('pendidikan_terakhir')
-                                    <span class="error invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="agama">Agama <span class="text-danger">*</span></label>
-                                <select name="agama" id="agama" class="form-control @error('agama') is-invalid @enderror" required>
-                                    <option value="">Pilih agama</option>
-                                    @foreach($daftarAgama as $value => $label)
-                                        <option value="{{ $value }}" @selected(old('agama', $guru->agama) === $value)>{{ $label }}</option>
-                                    @endforeach
-                                </select>
-                                @error('agama')
-                                    <span class="error invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label>Foto Saat Ini</label>
-                                <div class="mb-2">
-                                    @if($guru->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($guru->foto))
-                                        <img src="{{ asset('storage/' . $guru->foto) }}" class="img-thumbnail" style="max-height: 100px;" alt="Preview">
-                                    @else
-                                        <span class="text-muted"><i class="fas fa-image mr-1"></i> Tidak ada foto</span>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="foto">Ganti Foto Profil</label>
-                                <div class="custom-file">
-                                    <input type="file" name="foto" class="custom-file-input @error('foto') is-invalid @enderror" id="foto" accept="image/jpeg,image/png,image/gif">
-                                    <label class="custom-file-label" for="foto">Pilih file baru</label>
-                                </div>
-                                <small class="form-text text-muted">Format: JPG, PNG. Abaikan jika tidak ingin mengubah foto lama.</small>
-                                @error('foto')
-                                    <span class="error invalid-feedback d-block">{{ $message }}</span>
-                                @enderror
-                            </div>
+    <form action="{{ route('admin.guru-staff.update', $guru->id) }}" method="POST" enctype="multipart/form-data" class="form-card">
+        @csrf
+        @method('PUT')
+        <div class="form-card-header">
+            <h2>Informasi Profil {{ ucfirst($guru->tipe) }}</h2>
+            <p>Perubahan akan diterapkan setelah disimpan.</p>
+        </div>
+        <div class="form-card-body">
+            <x-auto-format-notice />
+            <div class="form-grid">
+                <div class="form-field form-field-full">
+                    <label for="nama" class="form-label">Nama Lengkap <span>*</span></label>
+                    <input type="text" name="nama" id="nama" class="form-control-admin @error('nama') is-invalid @enderror" value="{{ old('nama', $guru->nama) }}" required placeholder="Contoh: Ahmad Dahlan, S.Pd">
+                    @error('nama')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-field">
+                    <label for="jenis_kelamin" class="form-label">Jenis Kelamin <span>*</span></label>
+                    <select name="jenis_kelamin" id="jenis_kelamin" class="form-control-admin @error('jenis_kelamin') is-invalid @enderror" required>
+                        <option value="">Pilih jenis kelamin</option>
+                        @foreach($jenisKelamin as $value => $label)
+                            <option value="{{ $value }}" @selected(old('jenis_kelamin', $guru->jenis_kelamin) === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @error('jenis_kelamin')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-field">
+                    <label for="nip" class="form-label">NIP</label>
+                    <input type="text" name="nip" id="nip" class="form-control-admin @error('nip') is-invalid @enderror" value="{{ old('nip', $guru->nip) }}" placeholder="Nomor Induk Pegawai (Opsional)">
+                    @error('nip')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-field">
+                    <label for="status_kepegawaian" class="form-label">Status Kepegawaian <span>*</span></label>
+                    <select name="status_kepegawaian" id="status_kepegawaian" class="form-control-admin @error('status_kepegawaian') is-invalid @enderror" required>
+                        <option value="">Pilih status kepegawaian</option>
+                        @foreach($statusKepegawaian as $value => $label)
+                            <option value="{{ $value }}" @selected(old('status_kepegawaian', $guru->status_kepegawaian) === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @error('status_kepegawaian')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <input type="hidden" name="tipe" value="{{ $guru->tipe }}">
+
+                <div class="form-field">
+                    <label for="jabatan" class="form-label">Jabatan Pokok <span>*</span></label>
+                    <input type="text" name="jabatan" id="jabatan" class="form-control-admin @error('jabatan') is-invalid @enderror" value="{{ old('jabatan', $guru->jabatan) }}" required placeholder="Contoh: Guru Kelas, Wali Kelas, Bendahara">
+                    @error('jabatan')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-field">
+                    <label for="bidang_tugas" class="form-label">Bidang Tugas</label>
+                    <input type="text" name="bidang_tugas" id="bidang_tugas" class="form-control-admin @error('bidang_tugas') is-invalid @enderror" value="{{ old('bidang_tugas', $guru->bidang_tugas) }}" placeholder="Contoh: Guru Kelas, Tata Usaha">
+                    <div class="form-help">Dapat dikosongkan jika tidak memiliki bidang khusus.</div>
+                    @error('bidang_tugas')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-field">
+                    <label for="pendidikan_terakhir" class="form-label">Pendidikan Terakhir <span>*</span></label>
+                    <select name="pendidikan_terakhir" id="pendidikan_terakhir" class="form-control-admin @error('pendidikan_terakhir') is-invalid @enderror" required>
+                        <option value="">Pilih pendidikan terakhir</option>
+                        @foreach($pendidikanTerakhir as $value => $label)
+                            <option value="{{ $value }}" @selected(old('pendidikan_terakhir', $guru->pendidikan_terakhir) === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @error('pendidikan_terakhir')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-field">
+                    <label for="agama" class="form-label">Agama <span>*</span></label>
+                    <select name="agama" id="agama" class="form-control-admin @error('agama') is-invalid @enderror" required>
+                        <option value="">Pilih agama</option>
+                        @foreach($daftarAgama as $value => $label)
+                            <option value="{{ $value }}" @selected(old('agama', $guru->agama) === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                    @error('agama')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+
+                <div class="form-field form-field-full">
+                    <label for="foto" class="form-label">Foto Profil</label>
+                    
+                    <div class="current-image" id="image-preview-box" style="display: {{ $guru->foto ? 'flex' : 'none' }}">
+                        <img src="{{ $guru->foto ? asset('storage/' . $guru->foto) : '#' }}" id="image-preview-element" alt="Pratinjau Gambar">
+                        <div>
+                            <strong id="image-preview-title">{{ $guru->foto ? 'Foto saat ini' : 'Pratinjau gambar baru' }}</strong>
+                            <small id="image-preview-help">{{ $guru->foto ? 'Pilih file baru jika ingin menggantinya.' : 'Gambar belum disimpan.' }}</small>
                         </div>
                     </div>
-                </div>
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Update {{ ucfirst($guru->tipe) }}</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-@stop
 
-@push('js')
-<script>
-    $(function () {
-        $('.custom-file-input').on('change', function() {
-            let fileName = $(this).val().split('\\').pop();
-            $(this).next('.custom-file-label').addClass("selected").html(fileName);
+                    <input type="file" name="foto" id="foto"
+                           class="form-control-admin form-file @error('foto') is-invalid @enderror"
+                           accept="image/jpeg,image/png,image/gif">
+                    <div class="form-help">JPG, PNG, atau GIF. Maksimal 2 MB.</div>
+                    @error('foto')<div class="form-error">{{ $message }}</div>@enderror
+                </div>
+            </div>
+        </div>
+        <div class="form-card-footer">
+            <a href="{{ route('admin.guru-staff.index', ['tipe' => $guru->tipe]) }}" class="btn-admin btn-admin-secondary btn-cancel">Batal</a>
+            <button type="submit" class="btn-admin">Simpan Perubahan</button>
+        </div>
+    </form>
+@endsection
+
+@push('scripts')
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Instant Image Preview & Size Validation
+            const fotoInput = document.getElementById('foto');
+            if (fotoInput) {
+                fotoInput.addEventListener('change', function(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        if (file.size > 2 * 1024 * 1024) {
+                            alert('Ukuran file terlalu besar! Maksimal 2 MB.');
+                            event.target.value = '';
+                            return;
+                        }
+
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const previewBox = document.getElementById('image-preview-box');
+                            const previewEl = document.getElementById('image-preview-element');
+                            const previewTitle = document.getElementById('image-preview-title');
+                            const previewHelp = document.getElementById('image-preview-help');
+
+                            if (previewEl && previewBox) {
+                                previewEl.src = e.target.result;
+                                previewBox.style.display = 'flex';
+                                if (previewTitle) previewTitle.textContent = 'Pratinjau gambar baru';
+                                if (previewHelp) previewHelp.textContent = 'Gambar terpilih (belum disimpan).';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
         });
-    });
-</script>
+    </script>
 @endpush
