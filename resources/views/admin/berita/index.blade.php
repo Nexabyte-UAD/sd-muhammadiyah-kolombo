@@ -23,29 +23,42 @@
     />
 
     <section class="admin-card">
-        <header class="admin-card-header">
+        <header class="admin-card-header admin-card-header-with-search">
             <div>
                 <h2 class="admin-card-title">Daftar Berita</h2>
                 <div class="admin-card-subtitle">{{ $beritas->total() }} berita tersimpan</div>
             </div>
+            <form method="GET" action="{{ route('admin.berita.index') }}" class="admin-card-search" aria-label="Cari berita">
+                <label class="data-search">
+                    <i class="fas fa-search"></i>
+                    <input type="search" name="search" value="{{ $search }}" placeholder="Cari judul atau isi berita...">
+                </label>
+                <button type="submit" class="data-filter-submit">
+                    <i class="fas fa-search"></i>
+                    <span>Cari</span>
+                </button>
+                @if($search !== '')
+                    <a href="{{ route('admin.berita.index') }}" class="data-reset">Reset</a>
+                @endif
+            </form>
         </header>
 
         <div class="admin-card-body flush">
             @if($beritas->isNotEmpty())
                 <div class="admin-table-wrap">
-                    <table class="admin-table">
+                    <table class="admin-table berita-admin-table">
                         <thead>
                             <tr>
                                 <th>Berita</th>
-                                <th>Tanggal Rilis</th>
-                                <th>Status</th>
-                                <th class="table-actions-heading">Aksi</th>
+                                <th class="text-center">Tanggal Rilis</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($beritas as $item)
                                 <tr>
-                                    <td>
+                                    <td class="text-center">
                                         <div class="content-cell">
                                             <div class="content-thumb content-thumb-lg">
                                                 @if($item->gambar)
@@ -60,7 +73,7 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td>{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
+                                    <td class="text-center">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
                                     <td>
                                         <span class="status-badge {{ $item->status === 'published' ? 'status-success' : 'status-muted' }}">
                                             {{ $item->status === 'published' ? 'Terbit' : 'Draft' }}
@@ -86,9 +99,15 @@
                 </div>
             @else
                 <div class="empty-state">
-                    <strong>Belum ada berita</strong>
-                    <p>Mulai dengan menambahkan publikasi pertama sekolah.</p>
-                    <a href="{{ route('admin.berita.create') }}" class="btn-admin">Tulis Berita</a>
+                    @if($search !== '')
+                        <strong>Berita tidak ditemukan</strong>
+                        <p>Tidak ada berita yang cocok dengan pencarian "{{ $search }}".</p>
+                        <a href="{{ route('admin.berita.index') }}" class="btn-admin">Tampilkan Semua</a>
+                    @else
+                        <strong>Belum ada berita</strong>
+                        <p>Mulai dengan menambahkan publikasi pertama sekolah.</p>
+                        <a href="{{ route('admin.berita.create') }}" class="btn-admin">Tulis Berita</a>
+                    @endif
                 </div>
             @endif
         </div>

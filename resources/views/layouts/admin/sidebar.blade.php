@@ -89,9 +89,19 @@
     </nav>
 
     <div class="admin-sidebar-footer">
-        <a href="{{ route('home') }}" target="_blank" rel="noopener" class="admin-nav-link">
-            <x-admin-icon name="external"/>
-            <span>Lihat Website</span>
+        <a href="{{ route('admin.account.edit') }}" class="admin-sidebar-account" title="Buka akun admin">
+            <div class="admin-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}</div>
+            <div class="admin-account-copy">
+                <strong>{{ auth()->user()->name ?? 'Administrator' }}</strong>
+                <small>Administrator</small>
+            </div>
         </a>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit" class="admin-logout-button" title="Keluar" aria-label="Keluar dari panel admin">
+                <x-admin-icon name="logout" size="18"/>
+                <span>Keluar</span>
+            </button>
+        </form>
     </div>
 </aside>

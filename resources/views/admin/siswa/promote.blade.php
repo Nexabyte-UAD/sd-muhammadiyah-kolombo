@@ -15,7 +15,7 @@
 @stop
 
 @section('content')
-    <div class="card card-primary card-outline">
+    <div class="card card-accent">
         <div class="card-header">
             <h3 class="card-title">1. Pilih Periode dan Kelas Asal</h3>
         </div>
@@ -58,7 +58,7 @@
             <input type="hidden" name="kelas_asal" value="{{ $kelasAsal }}">
             <input type="hidden" name="tahun_ajaran" value="{{ $tahunAjaran }}">
 
-            <div class="card card-success card-outline">
+            <div class="card card-accent-success">
                 <div class="card-header">
                     <h3 class="card-title">2. Tentukan Keputusan Siswa — {{ $kelasAsal }}</h3>
                     <div class="card-tools">
@@ -151,7 +151,7 @@
         </form>
     @endif
 
-    <div class="card card-secondary card-outline">
+    <div class="card card-accent-muted">
         <div class="card-header">
             <h3 class="card-title">Riwayat Proses Terbaru</h3>
         </div>

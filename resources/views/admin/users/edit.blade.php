@@ -18,7 +18,7 @@
 @section('content')
 <div class="row">
     <div class="col-md-8 offset-md-2">
-        <div class="card card-primary">
+        <div class="card card-accent">
             <div class="card-header">
                 <h3 class="card-title">Form Edit User</h3>
             </div>

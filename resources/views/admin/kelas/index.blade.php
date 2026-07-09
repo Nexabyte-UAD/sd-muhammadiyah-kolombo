@@ -20,7 +20,7 @@
         'Kelas yang masih digunakan siswa tidak dapat dihapus agar data tetap konsisten.',
     ]"
 />
-<div class="card card-primary card-outline">
+<div class="card card-accent">
     <div class="card-body p-0 table-responsive">
         @if($errors->any())
             <div class="alert alert-danger m-3">{{ $errors->first() }}</div>

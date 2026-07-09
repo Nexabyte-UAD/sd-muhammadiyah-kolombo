@@ -27,7 +27,7 @@
             </div>
         @endif
 
-        <div class="card card-primary">
+        <div class="card card-accent">
             <div class="card-header">
                 <h3 class="card-title">Form Profil Sekolah</h3>
             </div>

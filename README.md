@@ -10,7 +10,7 @@
 
 Sistem informasi dan website resmi untuk SD Muhammadiyah Komplek Kolombo Yogyakarta.
 
-KolomboEdu menyediakan portal publik untuk informasi sekolah dan dashboard admin untuk mengelola konten secara dinamis. Proyek ini berbasis Laravel, Blade, Bootstrap/AdminLTE, dan MySQL.
+KolomboEdu menyediakan portal publik untuk informasi sekolah dan dashboard admin untuk mengelola konten secara dinamis. Proyek ini berbasis Laravel, Blade, custom CSS, Bootstrap, dan MySQL.
 
 ## 📖 Ringkasan
 
@@ -72,7 +72,7 @@ Konten yang diinput dari admin menjadi sumber data untuk halaman publik. Beberap
 | Framework | Laravel 13 |
 | Bahasa | PHP 8.3+ |
 | Template | Blade |
-| Dashboard Admin | AdminLTE 3, Bootstrap 4, jQuery |
+| Dashboard Admin | Custom CSS, Bootstrap 4, jQuery |
 | Database | MySQL atau MariaDB |
 | Testing Laravel | PHPUnit |
 | Testing Browser | Python, Pytest, Playwright |
@@ -207,7 +207,7 @@ public/
   css/                    CSS publik/admin
   js/                     JavaScript admin
   images/                 Aset gambar publik
-  vendor/                 Aset vendor AdminLTE/Bootstrap/jQuery
+  vendor/                 Aset vendor Bootstrap/jQuery/FontAwesome
 resources/views/
   admin/                  Halaman dashboard admin
   auth/                   Halaman login dan reset password

@@ -88,19 +88,19 @@
         </div>
 
         <!-- Data Card -->
-        <div class="card card-primary card-outline">
+        <div class="card card-accent">
             <div class="card-body table-responsive p-0">
-                <table class="table table-hover text-nowrap">
+                <table class="table table-hover admin-compact-table siswa-table">
                     <thead>
                         <tr>
-                            <th style="width: 70px;">Foto</th>
+                            <th class="col-photo">Foto</th>
                             <th>Nama Lengkap</th>
-                            <th>NIS</th>
-                            <th>L/P</th>
-                            <th>TTL</th>
+                            <th class="col-nis">NIS</th>
+                            <th class="col-gender">L/P</th>
+                            <th class="col-ttl">TTL</th>
                             <th>{{ $status === 'aktif' ? 'Kelas' : ($status === 'alumni' ? 'Tahun Lulus' : 'Status') }}</th>
-                            <th>Tahun Masuk</th>
-                            <th class="text-right">Aksi</th>
+                            <th class="col-year">Tahun Masuk</th>
+                            <th class="text-right col-actions">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>

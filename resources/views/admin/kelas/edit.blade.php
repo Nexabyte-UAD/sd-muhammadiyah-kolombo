@@ -7,7 +7,7 @@
 @stop
 
 @section('content')
-<div class="card card-primary">
+<div class="card card-accent">
     <form action="{{ route('admin.kelas.update', $kelas) }}" method="POST">
         @csrf
         @method('PUT')

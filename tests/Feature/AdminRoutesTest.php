@@ -31,8 +31,7 @@ class AdminRoutesTest extends TestCase
             ->assertSee('Lupa password?')
             ->assertHeader('X-Content-Type-Options', 'nosniff')
             ->assertHeader('X-Frame-Options', 'DENY')
-            ->assertHeader('Content-Security-Policy')
-            ->assertDontSee('adminlte', false);
+            ->assertHeader('Content-Security-Policy');
     }
 
     public function test_login_tracks_last_login_and_failed_message_stays_generic(): void

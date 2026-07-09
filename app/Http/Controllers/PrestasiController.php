@@ -12,11 +12,30 @@ use Illuminate\Validation\Rule;
 
 class PrestasiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $prestasis = Prestasi::orderBy('tanggal', 'desc')->paginate(10);
+        $search = trim((string) $request->query('search', ''));
+        $kategori = (string) $request->query('kategori', '');
 
-        return view('admin.prestasi.index', compact('prestasis'));
+        $query = Prestasi::query();
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                    ->orWhere('nama_siswa', 'like', "%{$search}%")
+                    ->orWhere('prestasi_medali', 'like', "%{$search}%")
+                    ->orWhere('penyelenggara', 'like', "%{$search}%");
+            });
+        }
+
+        if (array_key_exists($kategori, Prestasi::KATEGORI)) {
+            $query->where('kategori', $kategori);
+        }
+
+        $prestasis = $query->orderBy('tanggal', 'desc')->paginate(12)->withQueryString();
+        $kategoriPrestasi = Prestasi::KATEGORI;
+
+        return view('admin.prestasi.index', compact('prestasis', 'kategoriPrestasi', 'search', 'kategori'));
     }
 
     public function create()

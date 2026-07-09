@@ -114,27 +114,40 @@
                 </div>
             </section>
 
-            <section class="admin-card">
+            <section class="admin-card dashboard-activity-summary">
                 <header class="admin-card-header">
-                    <h2 class="admin-card-title">Pesan Terbaru</h2>
-                    <a href="{{ route('admin.pesan.index') }}" class="admin-card-link">Buka kotak masuk</a>
+                    <div>
+                        <h2 class="admin-card-title">Aktivitas Terakhir</h2>
+                        <p class="admin-card-subtitle">Riwayat perubahan dan autentikasi terbaru.</p>
+                    </div>
+                    <a href="{{ route('admin.activities.index') }}" class="admin-card-link">Lihat semua</a>
                 </header>
                 <div class="admin-card-body flush">
-                    @forelse($latestPesan as $pesan)
-                        <div class="activity-item">
-                            <span class="activity-dot"></span>
-                            <div class="activity-copy">
-                                <strong>{{ $pesan->nama }}</strong>
-                                <p>{{ Str::limit($pesan->isi, 90) }}</p>
-                                <span class="activity-time">
-                                    <x-admin-icon name="clock" size="12"/>
-                                    {{ $pesan->created_at->diffForHumans() }}
-                                </span>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="empty-state">Belum ada pesan masuk.</div>
-                    @endforelse
+                    <ul class="activity-list">
+                        @forelse($recentActivities as $activity)
+                            @php
+                                $dotClass = match($activity->action_type) {
+                                    'Tambah' => 'green',
+                                    'Update' => 'yellow',
+                                    'Hapus' => 'red',
+                                    default => '',
+                                };
+                            @endphp
+                            <li class="activity-item">
+                                <span class="activity-dot {{ $dotClass }}"></span>
+                                <div class="activity-copy">
+                                    <strong>{{ $activity->module }} - {{ $activity->action_type }}</strong>
+                                    <p>{{ Str::limit($activity->description, 90) }}</p>
+                                    <span class="activity-time">
+                                        <x-admin-icon name="clock" size="12"/>
+                                        {{ $activity->created_at->diffForHumans() }}
+                                    </span>
+                                </div>
+                            </li>
+                        @empty
+                            <li class="empty-state">Belum ada aktivitas tercatat.</li>
+                        @endforelse
+                    </ul>
                 </div>
             </section>
         </div>
@@ -209,7 +222,7 @@
                 </div>
             </section>
 
-            <section class="admin-card">
+            <section class="admin-card dashboard-sidebar-activity">
                 <header class="admin-card-header">
                     <h2 class="admin-card-title">Aktivitas Terakhir</h2>
                 </header>
@@ -243,4 +256,33 @@
             </section>
         </aside>
     </div>
+
+    <section class="admin-card dashboard-message-card">
+        <header class="admin-card-header">
+            <div>
+                <h2 class="admin-card-title">Pesan Terbaru</h2>
+                <p class="admin-card-subtitle">Pesan dan masukan terbaru dari pengunjung website.</p>
+            </div>
+            <a href="{{ route('admin.pesan.index') }}" class="admin-card-link">Buka kotak masuk</a>
+        </header>
+        <div class="admin-card-body flush">
+            <ul class="activity-list dashboard-message-list">
+                @forelse($latestPesan as $pesan)
+                    <li class="activity-item">
+                        <span class="activity-dot"></span>
+                        <div class="activity-copy">
+                            <strong>{{ $pesan->nama }}</strong>
+                            <p>{{ Str::limit($pesan->isi, 120) }}</p>
+                            <span class="activity-time">
+                                <x-admin-icon name="clock" size="12"/>
+                                {{ $pesan->created_at->diffForHumans() }}
+                            </span>
+                        </div>
+                    </li>
+                @empty
+                    <li class="empty-state">Belum ada pesan masuk.</li>
+                @endforelse
+            </ul>
+        </div>
+    </section>
 @endsection

@@ -11,11 +11,23 @@ use Illuminate\Support\Str;
 
 class BeritaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $beritas = Berita::orderBy('tanggal', 'desc')->paginate(10);
+        $search = trim((string) $request->query('search', ''));
 
-        return view('admin.berita.index', compact('beritas'));
+        $query = Berita::query();
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                    ->orWhere('isi', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%");
+            });
+        }
+
+        $beritas = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
+
+        return view('admin.berita.index', compact('beritas', 'search'));
     }
 
     public function create()

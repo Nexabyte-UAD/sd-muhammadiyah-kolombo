@@ -20,7 +20,7 @@ class DashboardController extends Controller
             'countSiswa' => Siswa::aktif()->count(),
             'latestBerita' => Berita::latest()->take(4)->get(),
             'latestPesan' => Pesan::latest()->take(3)->get(),
-            'recentActivities' => ActivityLog::latest()->take(5)->get(),
+            'recentActivities' => ActivityLog::latest()->take(3)->get(),
             'countSiswaTanpaKelas' => Siswa::aktif()
                 ->whereNull('kelas_id')
                 ->where(fn ($query) => $query->whereNull('kelas')->orWhere('kelas', ''))

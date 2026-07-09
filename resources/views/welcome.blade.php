@@ -133,58 +133,181 @@
         .welcome-poster-section {
             position: relative;
             overflow: hidden;
-            padding: 4rem 0;
-            background:
-                linear-gradient(135deg, transparent 0 84%, rgba(30, 58, 138, .035) 84% 91%, transparent 91%),
-                linear-gradient(45deg, rgba(30, 58, 138, .025) 0 8%, transparent 8% 100%),
-                #fff;
+            padding: 5.5rem 0;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
         }
 
-        .welcome-poster {
-            max-width: 1020px;
-            margin: 0 auto;
+        .welcome-image-container {
+            position: relative;
+            padding-right: 1.5rem;
+            padding-bottom: 1.5rem;
         }
 
-        .welcome-poster-title {
-            margin: 0;
-            color: #111827;
-            font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
-            font-size: clamp(3rem, 7vw, 5.5rem);
+        .welcome-image-accent {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            width: 90px;
+            height: 90px;
+            border-top: 5px solid #FEF102;
+            border-left: 5px solid #FEF102;
+            z-index: 1;
+            border-radius: 12px 0 0 0;
+        }
+
+        .welcome-img-wrapper {
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+            height: 420px;
+        }
+
+        .welcome-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .welcome-image-container:hover .welcome-img-wrapper img {
+            transform: scale(1.03);
+        }
+
+        .welcome-floating-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            z-index: 3;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 1rem 1.25rem;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+            border: 1px solid #f1f5f9;
+            min-width: 210px;
+            animation: welcomeBadgeFloat 3s infinite alternate ease-in-out;
+        }
+
+        @keyframes welcomeBadgeFloat {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-8px); }
+        }
+
+        .badge-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            flex-shrink: 0;
+        }
+
+        .welcome-text-container {
+            position: relative;
+            z-index: 5;
+        }
+
+        .welcome-pre-title {
+            font-size: 0.85rem;
             font-weight: 800;
-            letter-spacing: -.015em;
-            line-height: .95;
+            color: #2563eb;
+            letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        .welcome-poster-subtitle {
-            margin: .75rem 0 1.4rem;
-            color: #475569;
-            font-size: clamp(.85rem, 1.8vw, 1.25rem);
-            font-weight: 700;
-            letter-spacing: .14em;
-            text-transform: uppercase;
+        .welcome-headline {
+            font-size: clamp(2rem, 3.5vw, 2.8rem);
+            font-weight: 850;
+            color: #0f172a;
+            line-height: 1.2;
+            letter-spacing: -0.75px;
         }
 
-        .welcome-school-name {
-            width: min(100%, 900px);
-            margin: 0 auto;
-            padding: .85rem 1.75rem;
-            color: #111827;
+        .text-underline-highlight {
+            position: relative;
+            display: inline-block;
+            z-index: 1;
+        }
+
+        .text-underline-highlight::after {
+            content: "";
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            width: 100%;
+            height: 12px;
             background: #FEF102;
-            border-radius: 999px;
-            font-size: clamp(1rem, 2.4vw, 1.4rem);
-            font-weight: 750;
-            line-height: 1.3;
-            box-shadow: 0 8px 20px rgba(254, 241, 2, .16);
+            z-index: -1;
+            opacity: 0.9;
+            border-radius: 2px;
         }
 
-        .welcome-poster-description {
-            max-width: 760px;
-            margin: 1.25rem auto 0;
+        .welcome-desc {
             color: #475569;
-            font-size: clamp(.95rem, 1.8vw, 1.12rem);
-            font-style: italic;
-            line-height: 1.6;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        .welcome-desc strong {
+            color: #1e3a8a;
+            font-weight: 700;
+        }
+
+        .welcome-feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        .welcome-feature-item:hover {
+            transform: translateX(4px);
+        }
+
+        .welcome-feature-icon {
+            font-size: 1.25rem;
+            color: #16a34a;
+            flex-shrink: 0;
+        }
+
+        .welcome-feature-text {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 0.95rem;
+        }
+
+        .welcome-btn-primary {
+            background-color: #1e3a8a;
+            border-color: #1e3a8a;
+            transition: all 0.3s ease;
+        }
+
+        .welcome-btn-primary:hover {
+            background-color: #1d4ed8;
+            border-color: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(29, 78, 216, 0.15);
+        }
+
+        @media (max-width: 991.98px) {
+            .welcome-image-container {
+                padding-right: 0;
+                padding-bottom: 0;
+                margin-bottom: 3rem;
+                max-width: 500px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .welcome-img-wrapper {
+                height: 340px;
+            }
+            .welcome-poster-section {
+                padding: 4.5rem 0;
+            }
         }
 
         .sambutan-img-wrapper {
@@ -393,18 +516,77 @@
         }
     </style>
 
-    <!-- Selamat Datang -->
+    <!-- Selamat Datang (Elegant Premium Split Layout) -->
     <section class="welcome-poster-section">
         <div class="container">
-            <div class="welcome-poster text-center">
-                <h2 class="welcome-poster-title">Selamat Datang</h2>
-                <p class="welcome-poster-subtitle">di Website Resmi</p>
-                <div class="welcome-school-name">
-                    {{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Komplek Kolombo' }}
+            <div class="row align-items-center">
+                
+                <!-- Left Column: Visual Image Composition -->
+                <div class="col-lg-6">
+                    <div class="welcome-image-container">
+                        <div class="welcome-image-accent"></div>
+                        <div class="welcome-img-wrapper">
+                            <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800&auto=format&fit=crop" alt="SD Muhammadiyah Komplek Kolombo Yogyakarta">
+                        </div>
+                        <div class="welcome-floating-badge">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="badge-icon-box bg-warning bg-opacity-10 text-warning">
+                                    <i class="bi bi-patch-check-fill"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;">Akreditasi A</h6>
+                                    <p class="text-secondary mb-0 small" style="font-size: 0.75rem;">Unggul & Terpercaya</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p class="welcome-poster-description">
-                    Bersama membentuk generasi yang cerdas secara intelektual, unggul dalam berprestasi, dan berakhlak mulia berlandaskan nilai-nilai Islami.
-                </p>
+
+                <!-- Right Column: Clean Premium Welcome Content -->
+                <div class="col-lg-6">
+                    <div class="welcome-text-container ps-lg-4">
+                        <span class="welcome-pre-title d-block mb-2">Selamat Datang</span>
+                        <h2 class="welcome-headline mb-3">
+                            Membina Generasi Islami, <br>
+                            <span class="text-underline-highlight">Cerdas & Berkarakter</span>
+                        </h2>
+                        
+                        <p class="welcome-desc mb-4">
+                            Selamat datang di portal resmi <strong>{{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Komplek Kolombo' }}</strong>. Kami berkomitmen menyelenggarakan pendidikan dasar holistik yang memadukan keunggulan akademis dengan penanaman nilai-nilai adab dan akhlak mulia sejak dini.
+                        </p>
+                        
+                        <!-- Value Features -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <div class="welcome-feature-item">
+                                    <i class="bi bi-shield-fill-check welcome-feature-icon"></i>
+                                    <span class="welcome-feature-text">Kurikulum Terpadu</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="welcome-feature-item">
+                                    <i class="bi bi-people-fill welcome-feature-icon"></i>
+                                    <span class="welcome-feature-text">Pengajar Profesional</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="welcome-feature-item">
+                                    <i class="bi bi-trophy-fill welcome-feature-icon"></i>
+                                    <span class="welcome-feature-text">Bakat & Minat Anak</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="welcome-feature-item">
+                                    <i class="bi bi-check-circle-fill welcome-feature-icon"></i>
+                                    <span class="welcome-feature-text">Fasilitas Lengkap</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
