@@ -45,7 +45,7 @@
                 <select name="status" class="form-control-admin" style="width: auto; min-height: 38px; padding: 6px 12px; font-size: 12px; border: 1px solid #cfd8e3; border-radius: 8px; outline: none;" onchange="this.form.submit()">
                     <option value="aktif" {{ $status === 'aktif' ? 'selected' : '' }}>Siswa Aktif</option>
                     <option value="alumni" {{ $status === 'alumni' ? 'selected' : '' }}>Alumni</option>
-                    <option value="keluar" {{ $status === 'keluar' ? 'selected' : '' }}>Pindah / Keluar</option>
+                    <option value="keluar" {{ $status === 'keluar' ? 'selected' : '' }}>Keluar</option>
                     <option value="arsip" {{ $status === 'arsip' ? 'selected' : '' }}>Arsip</option>
                 </select>
 
@@ -60,9 +60,9 @@
                     </select>
                 @endif
 
-                <label class="data-search">
+                <label class="data-search" for="search-input">
                     <i class="fas fa-search"></i>
-                    <input type="search" name="search" value="{{ $search }}" placeholder="Cari nama atau NIS...">
+                    <input type="search" id="search-input" name="search" value="{{ $search }}" placeholder="Cari nama atau NIS...">
                 </label>
                 <button type="submit" class="data-filter-submit">
                     <i class="fas fa-search"></i>
@@ -75,11 +75,11 @@
         </header>
 
         <div class="table-responsive">
-            <table class="table table-hover admin-compact-table siswa-table">
+            <table class="table table-hover admin-compact-table siswa-table" style="min-width: 950px;">
                 <thead>
                     <tr>
                         <th style="width: 80px;">Foto</th>
-                        <th>Nama Lengkap</th>
+                        <th style="white-space: nowrap;">Nama Lengkap</th>
                         <th style="width: 110px;">NIS</th>
                         <th style="width: 80px;" class="text-center">L/P</th>
                         <th>TTL</th>
@@ -93,15 +93,20 @@
                         <tr>
                             <td class="align-middle">
                                 @if($item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto))
-                                    <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" class="img-circle" style="width: 45px; height: 45px; object-fit: cover; border-radius: 50%;">
+                                    <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" style="width: 45px; height: 45px; object-fit: cover; border-radius: 8px;">
                                 @else
-                                    <div class="bg-primary text-white img-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px; font-weight: bold; display: inline-flex !important; border-radius: 50%;">
-                                        {{ substr($item->nama, 0, 1) }}
+                                    <div class="bg-light text-secondary d-flex align-items-center justify-content-center border" style="width: 45px; height: 45px; border-radius: 8px; background: #f8fafc; border-color: #cbd5e1; display: inline-flex !important;">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.65;">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                            <circle cx="12" cy="7" r="4"/>
+                                        </svg>
                                     </div>
                                 @endif
                             </td>
                             <td class="align-middle">
-                                <strong class="text-navy">{{ $item->nama }}</strong>
+                                <div style="max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $item->nama }}">
+                                    <strong class="text-navy">{{ $item->nama }}</strong>
+                                </div>
                             </td>
                             <td class="align-middle">{{ $item->nis ?? '-' }}</td>
                             <td class="align-middle text-center">
@@ -122,7 +127,7 @@
                                 @elseif($status === 'alumni')
                                     <span class="badge badge-success px-2 py-1">Lulus {{ $item->tahun_lulus }}</span>
                                 @elseif($status === 'keluar')
-                                    <span class="badge badge-secondary px-2 py-1">Pindah / Keluar</span>
+                                    <span class="badge badge-secondary px-2 py-1">Keluar</span>
                                     @if($item->sekolah_tujuan)
                                         <div class="small text-muted mt-1">{{ $item->sekolah_tujuan }}</div>
                                     @endif

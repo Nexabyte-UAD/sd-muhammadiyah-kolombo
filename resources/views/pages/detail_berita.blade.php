@@ -22,7 +22,11 @@
                 @endif
                 
                 <div class="text-secondary" style="font-size: 1.05rem; line-height: 1.8;">
-                    {!! nl2br(e($berita->isi)) !!}
+                    @if(strip_tags($berita->isi) !== $berita->isi)
+                        {!! $berita->isi !!}
+                    @else
+                        {!! nl2br(e($berita->isi)) !!}
+                    @endif
                 </div>
                 
                 <div class="mt-5 pt-4 border-top">

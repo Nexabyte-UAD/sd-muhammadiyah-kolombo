@@ -42,9 +42,9 @@
                 @endforeach
             </select>
 
-            <label class="data-search">
+            <label class="data-search" for="search-input">
                 <i class="fas fa-search"></i>
-                <input type="search" name="search" value="{{ $search }}" placeholder="Cari prestasi, siswa, penyelenggara...">
+                <input type="search" id="search-input" name="search" value="{{ $search }}" placeholder="Cari prestasi, siswa, penyelenggara...">
             </label>
             <button type="submit" class="data-filter-submit">
                 <i class="fas fa-search"></i>
@@ -60,26 +60,26 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
-                    <th style="width: 90px;">Gambar</th>
+                    <th style="width: 80px;">Gambar</th>
                     <th>Nama Lomba / Siswa</th>
-                    <th>Prestasi / Medali</th>
+                    <th>Prestasi</th>
                     <th>Penyelenggara</th>
-                    <th>Kategori</th>
-                    <th>Tanggal</th>
-                    <th class="text-center" style="width: 150px;">Aksi</th>
+                    <th style="width: 140px;">Kategori</th>
+                    <th style="width: 130px;">Tanggal</th>
+                    <th class="text-center" style="width: 160px;">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($prestasis as $item)
                     <tr>
                         <td class="align-middle">
-                            @if($item->gambar)
-                                <img src="{{ asset('storage/' . $item->gambar) }}" alt="Foto {{ $item->judul }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
-                            @else
-                                <div style="width: 50px; height: 50px; background: #f1f5f9; color: #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
-                                    <i class="fas fa-trophy" title="Tanpa gambar"></i>
-                                </div>
-                            @endif
+                            <div class="content-thumb content-thumb-lg">
+                                @if($item->gambar)
+                                    <img src="{{ asset('storage/' . $item->gambar) }}" alt="Foto {{ $item->judul }}">
+                                @else
+                                    <img src="{{ asset('images/icon-prestasi.png') }}" alt="" style="width: 26px; height: 26px; object-fit: contain; opacity: 0.5;">
+                                @endif
+                            </div>
                         </td>
                         <td class="align-middle">
                             <strong class="text-navy">{{ $item->judul }}</strong>
@@ -87,14 +87,22 @@
                                 <i class="fas fa-user mr-1"></i> {{ $item->nama_siswa ?: '-' }}
                             </div>
                         </td>
-                        <td class="align-middle">{{ $item->prestasi_medali ?: '-' }}</td>
-                        <td class="align-middle">{{ $item->penyelenggara ?: '-' }}</td>
                         <td class="align-middle">
+                            <div style="max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $item->prestasi_medali ?? '' }}">
+                                {{ $item->prestasi_medali ?: '-' }}
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <div style="max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $item->penyelenggara ?? '' }}">
+                                {{ $item->penyelenggara ?: '-' }}
+                            </div>
+                        </td>
+                        <td class="align-middle" style="white-space: nowrap;">
                             <span class="badge badge-primary px-2 py-1">
                                 {{ $kategoriPrestasi[$item->kategori] ?? ucfirst($item->kategori) }}
                             </span>
                         </td>
-                        <td class="align-middle">
+                        <td class="align-middle" style="white-space: nowrap;">
                             <span class="badge badge-success px-2 py-1">
                                 {{ $item->tanggal ? \Carbon\Carbon::parse($item->tanggal)->format('d M Y') : '-' }}
                             </span>
@@ -104,7 +112,7 @@
                                 <a href="{{ route('admin.prestasi.edit', $item->id) }}" class="action-button" title="Edit">
                                     Edit
                                 </a>
-                                <form action="{{ route('admin.prestasi.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                <form action="{{ route('admin.prestasi.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');" style="display: inline-block;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="action-button action-danger" title="Hapus">

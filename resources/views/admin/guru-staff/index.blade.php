@@ -35,9 +35,9 @@
                 <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 baris</option>
                 <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 baris</option>
             </select>
-            <label class="data-search">
+            <label class="data-search" for="search-input">
                 <i class="fas fa-search"></i>
-                <input type="search" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama, NIP, jabatan...">
+                <input type="search" id="search-input" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama, NIP, jabatan...">
             </label>
             <button type="submit" class="data-filter-submit">
                 <i class="fas fa-search"></i>
@@ -64,10 +64,13 @@
                     <tr>
                         <td class="align-middle">
                             @if($item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto))
-                                <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%;">
+                                <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
                             @else
-                                <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-weight: bold; border-radius: 50%; font-size: 18px;">
-                                    {{ substr($item->nama, 0, 1) }}
+                                <div class="bg-light text-secondary d-flex align-items-center justify-content-center border" style="width: 50px; height: 50px; border-radius: 8px; background: #f8fafc; border-color: #cbd5e1;">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.65;">
+                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                                        <circle cx="12" cy="7" r="4"/>
+                                    </svg>
                                 </div>
                             @endif
                         </td>

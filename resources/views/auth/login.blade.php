@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Halaman login administrator portal akademik dan manajemen website SD Muhammadiyah Komplek Kolombo Yogyakarta.">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login Administrator · {{ config('app.name', 'Sekolah') }}</title>
     <link rel="icon" href="{{ asset('favicon.ico') }}">

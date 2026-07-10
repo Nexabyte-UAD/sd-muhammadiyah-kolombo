@@ -108,7 +108,7 @@
                     <select name="status" id="status" class="form-control-admin @error('status') is-invalid @enderror" required>
                         <option value="aktif" {{ old('status', 'aktif') == 'aktif' ? 'selected' : '' }}>Siswa Aktif</option>
                         <option value="alumni" {{ old('status') == 'alumni' ? 'selected' : '' }}>Alumni / Lulus</option>
-                        <option value="keluar" {{ old('status') == 'keluar' ? 'selected' : '' }}>Pindah / Keluar</option>
+                        <option value="keluar" {{ old('status') == 'keluar' ? 'selected' : '' }}>Keluar</option>
                     </select>
                     @error('status')<div class="form-error">{{ $message }}</div>@enderror
                 </div>

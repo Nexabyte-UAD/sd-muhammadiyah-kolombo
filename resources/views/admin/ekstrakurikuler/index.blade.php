@@ -34,9 +34,9 @@
                 <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 baris</option>
                 <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 baris</option>
             </select>
-            <label class="data-search">
+            <label class="data-search" for="search-input">
                 <i class="fas fa-search"></i>
-                <input type="search" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama, pembina, jadwal...">
+                <input type="search" id="search-input" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama, pembina, jadwal...">
             </label>
             <button type="submit" class="data-filter-submit">
                 <i class="fas fa-search"></i>
@@ -63,13 +63,13 @@
                 @forelse ($ekstrakurikulers as $item)
                     <tr>
                         <td class="align-middle">
-                            @if($item->foto)
-                                <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px;">
-                            @else
-                                <div style="width: 50px; height: 50px; background: #f1f5f9; color: #94a3b8; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
-                                    <i class="fas fa-image"></i>
-                                </div>
-                            @endif
+                            <div class="content-thumb content-thumb-lg">
+                                @if($item->foto)
+                                    <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto">
+                                @else
+                                    <img src="{{ asset('images/icon-ekstrakurikuler.png') }}" alt="" style="width: 26px; height: 26px; object-fit: contain; opacity: 0.5;">
+                                @endif
+                            </div>
                         </td>
                         <td class="align-middle">
                             <strong class="text-navy">{{ $item->nama }}</strong>

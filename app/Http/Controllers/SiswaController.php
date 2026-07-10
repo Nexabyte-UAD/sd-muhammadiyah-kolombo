@@ -62,6 +62,42 @@ class SiswaController extends Controller
     }
 
     /**
+     * Display a dedicated alumni listing page.
+     */
+    public function alumniIndex(Request $request)
+    {
+        $tahunLulus = $request->query('tahun_lulus');
+        $search = $request->query('search');
+        $perPage = (int) $request->query('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100], true)) {
+            $perPage = 10;
+        }
+
+        $query = Siswa::alumni()->with('riwayatPendidikan');
+
+        if ($tahunLulus) {
+            $query->where('tahun_lulus', $tahunLulus);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('nis', 'like', "%{$search}%");
+            });
+        }
+
+        $alumni = $query->orderBy('tahun_lulus', 'desc')->orderBy('nama', 'asc')->paginate($perPage)->withQueryString();
+
+        $daftarTahunLulus = Siswa::alumni()
+            ->whereNotNull('tahun_lulus')
+            ->selectRaw('DISTINCT tahun_lulus')
+            ->orderBy('tahun_lulus', 'desc')
+            ->pluck('tahun_lulus');
+
+        return view('admin.alumni.index', compact('alumni', 'tahunLulus', 'search', 'perPage', 'daftarTahunLulus'));
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -360,6 +396,51 @@ class SiswaController extends Controller
             });
             fclose($file);
         }, 'data-siswa-'.date('Y-m-d').'.csv', [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    /**
+     * Export alumni data as CSV with alumni-specific columns.
+     */
+    public function alumniExport(Request $request)
+    {
+        $query = Siswa::alumni()->with('riwayatPendidikan');
+
+        if ($tahunLulus = $request->query('tahun_lulus')) {
+            $query->where('tahun_lulus', $tahunLulus);
+        }
+
+        return response()->streamDownload(function () use ($query) {
+            $file = fopen('php://output', 'w');
+            fwrite($file, "\xEF\xBB\xBF");
+            $aman = static function ($value) {
+                $value = (string) ($value ?? '');
+
+                return preg_match('/^[=+\-@]/', $value) ? "'".$value : $value;
+            };
+            fputcsv($file, [
+                'NIS', 'Nama', 'Jenis Kelamin', 'Tahun Masuk', 'Tahun Lulus', 'Pendidikan Lanjutan',
+            ]);
+
+            $query->orderBy('tahun_lulus', 'desc')->orderBy('nama')->chunk(500, function ($alumni) use ($file, $aman) {
+                foreach ($alumni as $siswa) {
+                    $pendidikan = $siswa->riwayatPendidikan
+                        ->map(fn ($p) => implode(' ', array_filter([$p->jenjang, $p->institusi, $p->jurusan ? "({$p->jurusan})" : ''])))
+                        ->join('; ');
+
+                    fputcsv($file, array_map($aman, [
+                        $siswa->nis,
+                        $siswa->nama,
+                        $siswa->jenis_kelamin,
+                        $siswa->tahun_masuk,
+                        $siswa->tahun_lulus,
+                        $pendidikan ?: '-',
+                    ]));
+                }
+            });
+            fclose($file);
+        }, 'data-alumni-'.date('Y-m-d').'.csv', [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
     }

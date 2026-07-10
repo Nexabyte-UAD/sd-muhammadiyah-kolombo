@@ -28,6 +28,10 @@
             <x-admin-icon name="students"/>
             <span>Data Siswa</span>
         </a>
+        <a href="{{ route('admin.alumni.index') }}" class="admin-nav-link {{ request()->routeIs('admin.alumni.*') ? 'active' : '' }}" data-tooltip="Data Alumni">
+            <x-admin-icon name="graduation"/>
+            <span>Data Alumni</span>
+        </a>
         <a href="{{ route('admin.kelas.index') }}" class="admin-nav-link {{ request()->routeIs('admin.kelas.*') ? 'active' : '' }}" data-tooltip="Data Kelas">
             <x-admin-icon name="classes"/>
             <span>Data Kelas</span>
@@ -47,12 +51,12 @@
             <span>Prestasi</span>
         </a>
         <a href="{{ route('admin.ekstrakurikuler.index') }}" class="admin-nav-link {{ request()->routeIs('admin.ekstrakurikuler.*') ? 'active' : '' }}" data-tooltip="Ekstrakurikuler">
-            <x-admin-icon name="pulse"/>
+            <x-admin-icon name="ekstrakurikuler"/>
             <span>Ekstrakurikuler</span>
         </a>
         <details class="admin-nav-group" @if(request()->routeIs('admin.guru-staff.*')) open @endif>
             <summary class="admin-nav-link {{ request()->routeIs('admin.guru-staff.*') ? 'active' : '' }}" data-tooltip="Guru & Staf">
-                <x-admin-icon name="users"/>
+                <x-admin-icon name="guru_staff"/>
                 <span>Guru & Staf</span>
                 <x-admin-icon name="arrow-right" size="15" class="nav-group-chevron"/>
             </summary>
@@ -81,18 +85,18 @@
             </div>
         </details>
 
-        <div class="admin-nav-label">Pengelolaan</div>
+        <div class="admin-nav-label">Sistem & Pesan</div>
         <a href="{{ route('admin.pesan.index') }}" class="admin-nav-link {{ request()->routeIs('admin.pesan.*') ? 'active' : '' }}" data-tooltip="Pesan Masuk">
             <x-admin-icon name="message"/>
             <span>Pesan Masuk</span>
         </a>
-        <a href="{{ route('admin.settings.edit') }}" class="admin-nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" data-tooltip="Pengaturan">
-            <x-admin-icon name="settings"/>
-            <span>Pengaturan</span>
-        </a>
         <a href="{{ route('admin.account.edit') }}" class="admin-nav-link {{ request()->routeIs('admin.account.*') ? 'active' : '' }}" data-tooltip="Akun Admin">
             <x-admin-icon name="users"/>
             <span>Akun Admin</span>
+        </a>
+        <a href="{{ route('admin.settings.edit') }}" class="admin-nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" data-tooltip="Pengaturan">
+            <x-admin-icon name="settings"/>
+            <span>Pengaturan</span>
         </a>
     </nav>
 

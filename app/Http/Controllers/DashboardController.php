@@ -20,6 +20,7 @@ class DashboardController extends Controller
             'countBerita' => Berita::count(),
             'countPesan' => Pesan::count(),
             'countSiswa' => Siswa::aktif()->count(),
+            'countAlumni' => Siswa::alumni()->count(),
             'latestBerita' => Berita::latest()->take(4)->get(),
             'latestPesan' => Pesan::latest()->take(3)->get(),
             'recentActivities' => ActivityLog::latest()->take(3)->get(),

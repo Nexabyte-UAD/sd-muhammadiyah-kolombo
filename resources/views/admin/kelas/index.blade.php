@@ -34,9 +34,9 @@
                 <option value="25" {{ $perPage == 25 ? 'selected' : '' }}>25 baris</option>
                 <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 baris</option>
             </select>
-            <label class="data-search">
+            <label class="data-search" for="search-input">
                 <i class="fas fa-search"></i>
-                <input type="search" name="search" value="{{ $search ?? '' }}" placeholder="Cari tingkat, jurusan, wali kelas...">
+                <input type="search" id="search-input" name="search" value="{{ $search ?? '' }}" placeholder="Cari tingkat, jurusan, wali kelas...">
             </label>
             <button type="submit" class="data-filter-submit">
                 <i class="fas fa-search"></i>

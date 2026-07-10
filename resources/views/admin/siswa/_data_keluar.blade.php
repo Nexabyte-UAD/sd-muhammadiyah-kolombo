@@ -1,6 +1,6 @@
 <div class="col-md-12" id="div-data-keluar" style="display:none;">
     <hr class="my-4">
-    <h5>Data Pindah / Keluar</h5>
+    <h5>Data Keluar</h5>
     <div class="row">
         <div class="col-md-4 form-group">
             <label class="form-label">Tanggal Keluar <span class="text-danger">*</span></label>

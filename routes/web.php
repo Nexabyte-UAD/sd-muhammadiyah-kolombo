@@ -59,6 +59,8 @@ Route::middleware(['auth', 'admin', 'admin.idle'])->group(function () {
     Route::get('admin/siswa-kenaikan-kelas', [\App\Http\Controllers\SiswaController::class, 'promotePage'])->name('admin.siswa.promote.page');
     Route::post('admin/siswa-kenaikan-kelas', [\App\Http\Controllers\SiswaController::class, 'promote'])->name('admin.siswa.promote');
     Route::patch('admin/siswa/{id}/pulihkan', [\App\Http\Controllers\SiswaController::class, 'restore'])->name('admin.siswa.restore');
+    Route::get('admin/alumni', [\App\Http\Controllers\SiswaController::class, 'alumniIndex'])->name('admin.alumni.index');
+    Route::get('admin/alumni-ekspor', [\App\Http\Controllers\SiswaController::class, 'alumniExport'])->name('admin.alumni.export');
     Route::get('admin/siswa-ekspor', [\App\Http\Controllers\SiswaController::class, 'export'])->name('admin.siswa.export');
     Route::resource('admin/kelas', \App\Http\Controllers\KelasController::class)
         ->except('show')

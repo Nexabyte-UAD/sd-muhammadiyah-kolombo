@@ -24,10 +24,23 @@
         <article class="stat-card">
             <div class="stat-card-top">
                 <div>
+                    <div class="stat-label">Total Alumni</div>
+                    <div class="stat-value">{{ number_format($countAlumni) }}</div>
+                </div>
+                <span class="stat-icon purple" style="color: #7c3aed; background: #f5f3ff;"><x-admin-icon name="graduation" size="21"/></span>
+            </div>
+            <a href="{{ route('admin.alumni.index') }}" class="stat-link">
+                Lihat data <x-admin-icon name="arrow-right" size="14"/>
+            </a>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-card-top">
+                <div>
                     <div class="stat-label">Guru & Staf</div>
                     <div class="stat-value">{{ number_format($countGuru) }}</div>
                 </div>
-                <span class="stat-icon green"><x-admin-icon name="users" size="21"/></span>
+                <span class="stat-icon green"><x-admin-icon name="guru_staff" size="21"/></span>
             </div>
             <a href="{{ route('admin.guru-staff.index') }}" class="stat-link">
                 Kelola data <x-admin-icon name="arrow-right" size="14"/>
@@ -192,7 +205,7 @@
                             </span>
                         </a>
                         <a href="{{ route('admin.guru-staff.index') }}" class="attention-item">
-                            <span class="attention-icon blue"><x-admin-icon name="users" size="19"/></span>
+                            <span class="attention-icon blue"><x-admin-icon name="guru_staff" size="19"/></span>
                             <span class="attention-copy">
                                 <strong>Data guru/staf belum lengkap</strong>
                                 <small>Periksa foto dan biodata utama.</small>
@@ -222,7 +235,7 @@
                             </span>
                         </a>
                         <a href="{{ route('admin.ekstrakurikuler.index') }}" class="attention-item">
-                            <span class="attention-icon purple" style="color: #7c3aed; background: #f5f3ff;"><x-admin-icon name="pulse" size="19"/></span>
+                            <span class="attention-icon purple" style="color: #7c3aed; background: #f5f3ff;"><x-admin-icon name="ekstrakurikuler" size="19"/></span>
                             <span class="attention-copy">
                                 <strong>Ekskul belum lengkap</strong>
                                 <small>Periksa pembina dan jadwal ekskul.</small>

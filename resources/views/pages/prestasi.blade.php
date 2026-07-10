@@ -31,9 +31,9 @@
                                 data-bs-target="#kategori-{{ $key }}"
                                 aria-expanded="false"
                                 aria-controls="kategori-{{ $key }}">
-                            <span class="d-flex align-items-center justify-content-center rounded-3 text-white flex-shrink-0"
-                                  style="width: 46px; height: 46px; background: #172554;">
-                                <i class="bi {{ $ikonKategori[$key] ?? 'bi-award-fill' }} fs-5"></i>
+                            <span class="d-flex align-items-center justify-content-center rounded-3 flex-shrink-0"
+                                  style="width: 46px; height: 46px; background: #f1f5f9; border: 1px solid #cbd5e1;">
+                                <img src="{{ asset('images/icon-prestasi.png') }}" alt="" style="width: 24px; height: 24px; object-fit: contain;">
                             </span>
                             <span>
                                 <span class="d-block fw-bold fs-5 text-dark">{{ $label }}</span>
@@ -60,8 +60,8 @@
                                                      alt="{{ $prestasi->judul }}">
                                             @else
                                                 <div class="d-flex align-items-center justify-content-center border-bottom bg-secondary bg-opacity-10"
-                                                     style="height: 230px;">
-                                                    <i class="bi bi-trophy text-secondary opacity-50" style="font-size: 3.5rem;"></i>
+                                                     style="height: 230px; padding: 20px;">
+                                                    <img src="{{ asset('images/icon-prestasi.png') }}" alt="Prestasi" style="height: 90px; width: 90px; object-fit: contain; opacity: 0.35;">
                                                 </div>
                                             @endif
 
@@ -101,10 +101,10 @@
                                     </div>
                                 @empty
                                     <div class="col-12">
-                                        <div class="text-center rounded-4 border py-5 px-3 bg-light">
-                                            <i class="bi {{ $ikonKategori[$key] ?? 'bi-award' }} fs-1 mb-3 opacity-25 d-block"></i>
-                                            <p class="text-secondary mb-0">Belum ada prestasi dalam kategori {{ strtolower($label) }}.</p>
-                                        </div>
+                                         <div class="text-center rounded-4 border py-5 px-3 bg-light">
+                                             <img src="{{ asset('images/icon-prestasi.png') }}" alt="Prestasi" style="height: 64px; width: 64px; object-fit: contain; opacity: 0.25;" class="mb-3 d-inline-block">
+                                             <p class="text-secondary mb-0">Belum ada prestasi dalam kategori {{ strtolower($label) }}.</p>
+                                         </div>
                                     </div>
                                 @endforelse
                             </div>

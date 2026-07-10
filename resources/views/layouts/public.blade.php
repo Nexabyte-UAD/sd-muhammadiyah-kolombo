@@ -3,9 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ $settings['meta_description'] ?? 'Portal resmi SD Muhammadiyah Komplek Kolombo Yogyakarta. Temukan informasi pendaftaran, kegiatan akademik, prestasi, guru, dan berita terbaru sekolah.' }}">
     <title>{{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Komplek Kolombo' }}</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo-sd-muhammadiyah-kolombo.png') }}">
     <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -205,7 +208,7 @@
             <small>Komplek Kolombo Yogyakarta</small>
           </span>
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Toggle navigasi">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
@@ -283,10 +286,10 @@
               <span class="text-light">{{ $settings['email'] ?? 'sdmuhkkolombo@gmail.com' }}</span>
             </div>
             <div class="d-flex gap-3">
-              @if(!empty($settings['facebook'])) <a href="{{ $settings['facebook'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;"><i class="bi bi-facebook"></i></a> @endif
-              @if(!empty($settings['instagram'])) <a href="{{ $settings['instagram'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;"><i class="bi bi-instagram"></i></a> @endif
-              @if(!empty($settings['tiktok'])) <a href="{{ $settings['tiktok'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;"><i class="bi bi-tiktok"></i></a> @endif
-              @if(!empty($settings['youtube'])) <a href="{{ $settings['youtube'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;"><i class="bi bi-youtube"></i></a> @endif
+              @if(!empty($settings['facebook'])) <a href="{{ $settings['facebook'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="Facebook SD Muhammadiyah Komplek Kolombo"><i class="bi bi-facebook"></i></a> @endif
+              @if(!empty($settings['instagram'])) <a href="{{ $settings['instagram'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="Instagram SD Muhammadiyah Komplek Kolombo"><i class="bi bi-instagram"></i></a> @endif
+              @if(!empty($settings['tiktok'])) <a href="{{ $settings['tiktok'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="TikTok SD Muhammadiyah Komplek Kolombo"><i class="bi bi-tiktok"></i></a> @endif
+              @if(!empty($settings['youtube'])) <a href="{{ $settings['youtube'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="YouTube SD Muhammadiyah Komplek Kolombo"><i class="bi bi-youtube"></i></a> @endif
             </div>
           </div>
           
@@ -308,8 +311,8 @@
             <h5 class="fw-bold text-white mb-4">Lokasi Kami</h5>
             <div class="position-relative rounded-4 overflow-hidden" style="transform: translateZ(0); border-radius: 16px;">
               <!-- Overlay link to open Google Maps directly in new tab -->
-              <a href="https://www.google.com/maps/search/?api=1&query=SD+Muhammadiyah+Komplek+Kolombo" target="_blank" class="position-absolute top-0 start-0 w-100 h-100 d-block" style="z-index: 10; background: rgba(0,0,0,0);" title="Buka di Google Maps"></a>
-              <iframe src="https://maps.google.com/maps?q=SD%20Muhammadiyah%20Komplek%20Kolombo&t=&z=17&ie=UTF8&iwloc=&output=embed" width="100%" height="200" style="border:0; border-radius: 16px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              <a href="https://www.google.com/maps/search/?api=1&query=SD+Muhammadiyah+Komplek+Kolombo" target="_blank" class="position-absolute top-0 start-0 w-100 h-100 d-block" style="z-index: 10; background: rgba(0,0,0,0);" title="Buka di Google Maps" aria-label="Buka Peta Lokasi di Google Maps"></a>
+              <iframe src="https://maps.google.com/maps?q=SD%20Muhammadiyah%20Komplek%20Kolombo&t=&z=17&ie=UTF8&iwloc=&output=embed" width="100%" height="200" style="border:0; border-radius: 16px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Peta Lokasi SD Muhammadiyah Komplek Kolombo"></iframe>
             </div>
           </div>
         </div>

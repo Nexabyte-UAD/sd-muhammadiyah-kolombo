@@ -876,9 +876,6 @@
                                         <i class="bi bi-activity text-secondary fs-1 opacity-50"></i>
                                     </div>
                                 @endif
-                                <div class="position-absolute top-0 start-0 m-3">
-                                    <span class="badge bg-primary p-2 fs-7 rounded-1 shadow-sm"><i class="bi bi-star-fill text-warning me-1"></i> Program Unggulan</span>
-                                </div>
                             </div>
                             <div class="card-body p-4">
                                 <h4 class="card-title fw-bold mb-3 lh-base" style="font-size: 1.15rem;">
@@ -933,11 +930,12 @@
                                     <span class="badge bg-primary rounded-pill px-3 py-2">Berita Utama</span>
                                     <span><i class="bi bi-calendar3 me-1"></i>{{ \Carbon\Carbon::parse($beritaUtama->tanggal)->translatedFormat('d F Y') }}</span>
                                 </div>
-                                <h4 class="fw-bold text-dark lh-sm mb-3">{{ Str::limit($beritaUtama->judul, 90) }}</h4>
-                                <p class="text-secondary mb-4">{{ Str::limit(strip_tags($beritaUtama->isi), 170) }}</p>
-                                <a href="{{ route('berita.detail', $beritaUtama->id) }}" class="text-primary fw-bold text-decoration-none stretched-link">
-                                    Baca Selengkapnya <i class="bi bi-arrow-right ms-1"></i>
-                                </a>
+                                <h4 class="fw-bold text-dark lh-sm mb-4">
+                                    <a href="{{ route('berita.detail', $beritaUtama->id) }}" class="text-dark text-decoration-none stretched-link">
+                                        {{ Str::limit($beritaUtama->judul, 90) }}
+                                    </a>
+                                </h4>
+                                <p class="text-secondary mb-0">{{ Str::limit(strip_tags($beritaUtama->isi), 170) }}</p>
                             </div>
                         </article>
                     </div>
@@ -1004,8 +1002,8 @@
                                     <img src="{{ asset('storage/' . $prestasi->gambar) }}" class="w-100 h-100"
                                         style="object-fit: cover;" alt="{{ $prestasi->judul }}">
                                 @else
-                                    <div class="w-100 h-100 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-trophy text-secondary opacity-50" style="font-size: 3.5rem;"></i>
+                                    <div class="w-100 h-100 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="padding: 20px;">
+                                        <img src="{{ asset('images/icon-prestasi.png') }}" alt="Prestasi" style="height: 80px; width: 80px; object-fit: contain; opacity: 0.35;">
                                     </div>
                                 @endif
                                 <div
@@ -1037,10 +1035,10 @@
                         </article>
                     </div>
                 @empty
-                    <div class="col-12 py-5 text-center text-muted">
-                        <i class="bi bi-trophy display-4 mb-3 d-block opacity-25"></i>
-                        Belum ada data prestasi yang ditambahkan.
-                    </div>
+                     <div class="col-12 py-5 text-center text-muted">
+                         <img src="{{ asset('images/icon-prestasi.png') }}" alt="Prestasi" style="height: 64px; width: 64px; object-fit: contain; opacity: 0.25;" class="mb-3 d-inline-block">
+                         <p class="mb-0">Belum ada data prestasi yang ditambahkan.</p>
+                     </div>
                 @endforelse
             </div>
         </div>

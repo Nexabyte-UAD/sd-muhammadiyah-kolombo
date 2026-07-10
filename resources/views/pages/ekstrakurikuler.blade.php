@@ -28,12 +28,6 @@
                                     <i class="bi bi-activity text-secondary opacity-50" style="font-size: 3.5rem;"></i>
                                 </div>
                             @endif
-
-                            <span class="position-absolute top-0 start-0 badge rounded-pill px-3 py-2 m-3 shadow-sm"
-                                  style="background: #172554;">
-                                <i class="bi bi-star-fill text-warning me-1"></i>
-                                Kegiatan Siswa
-                            </span>
                         </div>
 
                         <div class="card-body p-4 d-flex flex-column">

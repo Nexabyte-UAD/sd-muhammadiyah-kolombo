@@ -16,8 +16,8 @@
         description="Petunjuk pemrosesan kenaikan kelas, kelulusan, dan mutasi siswa."
         :items="[
             'Pilih Tahun Ajaran aktif dan Kelas Asal siswa yang ingin diproses.',
-            'Tentukan keputusan per siswa: Naik Kelas (pilih Kelas Tujuan), Tinggal Kelas, Lulus, atau Pindah/Keluar.',
-            'Bagi siswa yang pindah/keluar, tulis nama Sekolah Tujuan dan tanggal efektif mutasi.',
+            'Tentukan keputusan per siswa: Naik Kelas (pilih Kelas Tujuan), Tinggal Kelas, Lulus, atau Keluar.',
+            'Bagi siswa yang keluar, tulis nama Sekolah Tujuan dan tanggal efektif mutasi.',
             'Tekan tombol Tinjau dan Proses. Aksi ini akan dicatat permanen dalam riwayat akademik siswa.',
         ]"
     />
@@ -104,7 +104,7 @@
                                             <option value="naik" @selected($oldStatus === 'naik')>Naik Kelas</option>
                                             <option value="tinggal" @selected($oldStatus === 'tinggal')>Tinggal Kelas</option>
                                             <option value="lulus" @selected($oldStatus === 'lulus')>Lulus</option>
-                                            <option value="pindah" @selected($oldStatus === 'pindah')>Pindah / Keluar</option>
+                                            <option value="pindah" @selected($oldStatus === 'pindah')>Keluar</option>
                                         </select>
                                     </td>
                                     <td class="align-middle">
@@ -201,7 +201,7 @@
                                         'naik' => 'Naik Kelas',
                                         'tinggal' => 'Tinggal Kelas',
                                         'lulus' => 'Lulus',
-                                        default => 'Pindah / Keluar'
+                                        default => 'Keluar'
                                     } }}
                                 </span>
                             </td>
