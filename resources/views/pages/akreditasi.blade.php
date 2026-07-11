@@ -1,3 +1,8 @@
+{{--
+    Halaman Sertifikat Akreditasi Publik (pages/akreditasi.blade.php)
+    Menampilkan salinan/gambar sertifikat akreditasi resmi sekolah yang diunggah oleh admin,
+    lengkap dengan status fall-back jika gambar sertifikat belum tersedia.
+--}}
 @extends('layouts.public')
 
 @section('content')

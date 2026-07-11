@@ -1,3 +1,8 @@
+{{--
+    Halaman Daftar Berita & Artikel (admin/berita/index.blade.php)
+    Menampilkan daftar publikasi berita sekolah beserta status (terbit/draf), tanggal rilis,
+    pratinjau gambar, deskripsi ringkas, serta kontrol pencarian/filter baris dan aksi CRUD.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Berita')

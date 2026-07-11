@@ -1,3 +1,8 @@
+{{--
+    Halaman Sunting Akun Admin (admin/users/edit.blade.php)
+    Menyediakan formulir pembaruan data pengguna admin (nama, username, email).
+    Kolom password bersifat opsional (hanya diisi jika admin ingin memperbarui password saat ini).
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Edit User')

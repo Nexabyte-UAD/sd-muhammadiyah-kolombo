@@ -1,3 +1,8 @@
+{{--
+    Halaman Kotak Masuk Pesan Pengunjung (admin/pesan/index.blade.php)
+    Menampilkan daftar pesan masuk dari pengunjung web beserta kontak email pengirim,
+    status baca/belum dibaca, dan aksi untuk menandai sudah dibaca atau hapus pesan secara permanen.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Kotak Masuk')

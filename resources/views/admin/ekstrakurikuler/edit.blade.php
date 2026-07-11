@@ -1,4 +1,11 @@
+{{--
+    Halaman Sunting Program Ekstrakurikuler (admin/ekstrakurikuler/edit.blade.php)
+    Menyediakan formulir pembaruan data program ekstrakurikuler terdaftar beserta pratinjau gambar
+    yang tersimpan saat ini atau opsi menggantinya dengan foto baru.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Edit Ekstrakurikuler')
 @section('page_kicker', 'Konten website · Ekstrakurikuler')

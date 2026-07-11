@@ -1,3 +1,10 @@
+/*
+    Gaya CSS Panel Admin (public/css/admin-panel.css)
+    Mengatur seluruh komponen visual panel admin, termasuk variabel CSS kustom untuk warna tema
+    (terang dan gelap/dark mode), tata letak grid login, sidebar navigasi, header, tabel data,
+    tombol aksi, modal popup dialog, form input, indikator status, serta pengaturan responsif
+    untuk tablet dan perangkat seluler (mobile).
+*/
 :root {
     --admin-primary: #1d4ed8;
     --admin-primary-dark: #1e40af;
@@ -411,6 +418,7 @@ button, input, select, textarea { font: inherit; }
 }
 .admin-content { padding: 34px 30px 54px; }
 .admin-container { width: min(100%, 1320px); margin: 0 auto; }
+.admin-container-narrow { max-width: 980px !important; }
 .page-heading {
     display: flex;
     align-items: flex-end;

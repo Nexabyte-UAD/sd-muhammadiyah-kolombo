@@ -1,3 +1,8 @@
+{{--
+    Halaman Kata Sambutan Kepala Sekolah Publik (pages/sambutan.blade.php)
+    Menampilkan sambutan resmi tertulis dari kepala sekolah beserta foto beliau,
+    lengkap dengan status data fall-back jika konten/sambutan belum diisi di database.
+--}}
 @extends('layouts.public')
 
 @section('content')

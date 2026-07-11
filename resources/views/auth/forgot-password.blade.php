@@ -1,3 +1,8 @@
+{{--
+    Halaman Lupa Password (auth/forgot-password.blade.php)
+    Menyediakan formulir bagi admin yang lupa kata sandi untuk memasukkan email terdaftar.
+    Sistem akan memverifikasi email tersebut dan mengirimkan tautan reset kata sandi baru.
+--}}
 @extends('layouts.auth')
 
 @section('title', 'Lupa Password')

@@ -9,8 +9,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
+/**
+ * Controller BeritaController
+ * 
+ * Mengelola pembuatan dan publikasi berita/pengumuman sekolah,
+ * termasuk editor artikel HTML, upload cover gambar, status publikasi, dan log audit.
+ */
 class BeritaController extends Controller
 {
+    /**
+     * Menampilkan daftar berita sekolah di panel admin.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $search = trim((string) $request->query('search', ''));
@@ -21,6 +33,7 @@ class BeritaController extends Controller
 
         $query = Berita::query();
 
+        // Cari berdasarkan judul, konten isi berita, atau status publish/draft
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
                 $q->where('judul', 'like', "%{$search}%")
@@ -34,11 +47,23 @@ class BeritaController extends Controller
         return view('admin.berita.index', compact('beritas', 'search', 'perPage'));
     }
 
+    /**
+     * Menampilkan formulir tambah berita baru.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         return view('admin.berita.create');
     }
 
+    /**
+     * Menyimpan berita baru ke database.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request, IndonesianTextFormatter $formatter)
     {
         $request->validate([
@@ -50,9 +75,11 @@ class BeritaController extends Controller
         ]);
 
         $data = $request->only(['judul', 'isi', 'tanggal', 'status']);
+        // Format judul (Title Case) dan isi HTML berita agar rapi
         $data = $formatter->fields($data, ['judul' => 'title', 'isi' => 'html']);
         $data['user_id'] = auth()->id();
 
+        // Upload gambar sampul berita
         if ($request->hasFile('gambar')) {
             $path = $request->file('gambar')->store('berita', 'public');
             $data['gambar'] = $path;
@@ -70,11 +97,25 @@ class BeritaController extends Controller
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil ditambahkan');
     }
 
+    /**
+     * Menampilkan formulir edit berita.
+     * 
+     * @param  \App\Models\Berita  $berita
+     * @return \Illuminate\View\View
+     */
     public function edit(Berita $berita)
     {
         return view('admin.berita.edit', compact('berita'));
     }
 
+    /**
+     * Memperbarui data berita di database.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Berita  $berita
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Berita $berita, IndonesianTextFormatter $formatter)
     {
         $request->validate([
@@ -88,6 +129,7 @@ class BeritaController extends Controller
         $data = $request->only(['judul', 'isi', 'tanggal', 'status']);
         $data = $formatter->fields($data, ['judul' => 'title', 'isi' => 'html']);
 
+        // Upload gambar baru dan hapus gambar lama
         if ($request->hasFile('gambar')) {
             if ($berita->gambar && Storage::disk('public')->exists($berita->gambar)) {
                 Storage::disk('public')->delete($berita->gambar);
@@ -108,6 +150,12 @@ class BeritaController extends Controller
         return redirect()->route('admin.berita.index')->with('success', 'Berita berhasil diupdate');
     }
 
+    /**
+     * Menghapus berita beserta berkas gambar cover-nya dari penyimpanan.
+     * 
+     * @param  \App\Models\Berita  $berita
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Berita $berita)
     {
         if ($berita->gambar && Storage::disk('public')->exists($berita->gambar)) {

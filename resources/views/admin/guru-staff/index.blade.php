@@ -1,3 +1,9 @@
+{{--
+    Halaman Daftar Pegawai Guru & Staf (admin/guru-staff/index.blade.php)
+    Menampilkan data pegawai sekolah yang terbagi atas kategori tipe "guru" atau "staf",
+    lengkap dengan jabatan, NIP, foto profil, fitur pencarian, filter jumlah baris per halaman,
+    serta aksi tambah, edit, dan hapus pegawai.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Manajemen Pegawai')

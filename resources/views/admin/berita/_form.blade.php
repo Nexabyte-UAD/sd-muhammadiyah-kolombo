@@ -1,3 +1,9 @@
+{{--
+    Formulir Partial Berita (admin/berita/_form.blade.php)
+    Menampilkan kolom input berita (judul, tanggal rilis, status publikasi, isi, dan cover berita)
+    yang digunakan bersama oleh halaman tambah (create) dan sunting (edit) berita, serta
+    mengintegrasikan editor WYSIWYG CKEditor 5 dan skrip pratinjau gambar instant.
+--}}
 <x-auto-format-notice />
 
 <div class="form-grid">

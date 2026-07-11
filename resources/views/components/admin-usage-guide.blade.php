@@ -1,3 +1,8 @@
+{{--
+    Komponen Panduan Penggunaan Admin (components/admin-usage-guide.blade.php)
+    Menampilkan petunjuk/cara pengelolaan data admin (berbentuk accordion/details drop-down)
+    yang dinamis sesuai array petunjuk yang dipassing (items).
+--}}
 @props([
     'title' => 'Panduan Penggunaan',
     'description' => 'Buka untuk melihat cara mengelola data pada halaman ini.',

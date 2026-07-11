@@ -1,3 +1,8 @@
+{{--
+    Halaman Direktori Kelas Publik (pages/kelas.blade.php)
+    Menampilkan data kelompok kelas terdaftar beserta jurusan dan nama wali kelas masing-masing.
+    Dilengkapi pencarian interaktif sisi client (JavaScript) dan paginasi jumlah baris per halaman.
+--}}
 @extends('layouts.public')
 
 @section('content')

@@ -1,3 +1,10 @@
+{{--
+    Halaman Dasbor Panel Admin Utama (dashboard.blade.php)
+    Menampilkan visualisasi ringkasan statistik (siswa, alumni, guru, berita, pesan),
+    daftar berita terbaru, pesan pengunjung terbaru, log aktivitas teranyar,
+    serta kartu notifikasi peringatan jika ada data yang belum lengkap (seperti berita draf,
+    siswa tanpa kelas, guru tanpa foto, dll.).
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Dashboard')

@@ -1,3 +1,9 @@
+{{--
+    Halaman Manajemen Siswa (admin/siswa/index.blade.php)
+    Menampilkan interface pengelolaan (CRUD) data siswa. Mendukung penyaringan multi-status
+    (siswa aktif, alumni, keluar, arsip), filter per kelas, fitur pencarian terintegrasi,
+    ekspor data ke berkas CSV, serta aksi hapus permanen atau pemulihan (restore) data dari arsip.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Manajemen Siswa')

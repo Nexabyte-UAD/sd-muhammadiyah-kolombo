@@ -13,19 +13,37 @@ use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
+/**
+ * Controller HomeController
+ * 
+ * Mengelola seluruh rute halaman publik (frontend user) sekolah,
+ * seperti Beranda, Sambutan, Tentang, Visi & Misi, Akreditasi, daftar Guru,
+ * data Siswa aktif, info alumni (Tracer Study), daftar Prestasi, Ekstrakurikuler,
+ * artikel Berita, serta pengiriman Pesan/masukan dari pengunjung.
+ */
 class HomeController extends Controller
 {
+    /**
+     * Menampilkan halaman Beranda (Homepage) sekolah dengan data ringkasan dinamis.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
+        // Mengambil berita terbaru yang telah dipublikasikan
         $beritas = Berita::where('status', 'published')->orderBy('tanggal', 'desc')->take(4)->get();
         $tentang = ProfilSekolah::where('type', 'tentang')->first();
         $sambutan = ProfilSekolah::where('type', 'sambutan')->first();
+        
         $guru = GuruStaff::where('tipe', 'guru')->orderBy('nama')->get();
         $staf = GuruStaff::where('tipe', 'staf')->orderBy('nama')->get();
+        // Menyeimbangkan penyebaran guru & staf secara proporsional untuk ditampilkan di carousel
         $tenagaPendidik = $this->seimbangkanTenagaPendidik($guru, $staf);
+        
         $prestasis = Prestasi::orderBy('tanggal', 'desc')->take(4)->get();
         $ekstrakurikulers = Ekstrakurikuler::take(4)->get();
 
+        // Hitung total data untuk statistik sekolah di beranda
         $countTenagaPendidik = $tenagaPendidik->count();
         $countPesertaDidik = Siswa::aktif()->count();
         $countEkstra = Ekstrakurikuler::count();
@@ -35,7 +53,8 @@ class HomeController extends Controller
     }
 
     /**
-     * Sebarkan staf secara proporsional di antara guru tanpa mengubah desain card.
+     * Menyebarkan staf administrasi/pendukung secara merata/proporsional di antara
+     * baris/daftar guru agar tampilan card visual seimbang dan rapi.
      */
     private function seimbangkanTenagaPendidik(Collection $guru, Collection $staf): Collection
     {
@@ -52,12 +71,14 @@ class HomeController extends Controller
         $jumlahStaf = $staf->count();
         $stafPerPosisi = [];
 
+        // Hitung posisi penempatan staf di sela-sela guru
         foreach ($staf->values() as $index => $item) {
             $posisi = (int) round((($index + 1) * $jumlahGuru) / ($jumlahStaf + 1));
             $posisi = max(1, min($jumlahGuru - 1, $posisi));
             $stafPerPosisi[$posisi][] = $item;
         }
 
+        // Susun daftar gabungan
         foreach ($guru->values() as $index => $item) {
             $hasil->push($item);
             $posisi = $index + 1;
@@ -70,6 +91,9 @@ class HomeController extends Controller
         return $hasil;
     }
 
+    /**
+     * Menampilkan halaman Sambutan Kepala Sekolah.
+     */
     public function sambutan()
     {
         $profil = ProfilSekolah::where('type', 'sambutan')->first();
@@ -77,6 +101,9 @@ class HomeController extends Controller
         return view('pages.sambutan', compact('profil'));
     }
 
+    /**
+     * Menampilkan halaman Tentang Sekolah.
+     */
     public function tentang()
     {
         $profil = ProfilSekolah::where('type', 'tentang')->first();
@@ -84,6 +111,9 @@ class HomeController extends Controller
         return view('pages.tentang', compact('profil'));
     }
 
+    /**
+     * Menampilkan halaman Visi & Misi Sekolah.
+     */
     public function visiMisi()
     {
         $profil = ProfilSekolah::where('type', 'visi_misi')->first();
@@ -91,6 +121,9 @@ class HomeController extends Controller
         return view('pages.visimisi', compact('profil'));
     }
 
+    /**
+     * Menampilkan halaman Informasi Akreditasi Sekolah.
+     */
     public function akreditasi()
     {
         $totalGuru = GuruStaff::count();
@@ -99,6 +132,9 @@ class HomeController extends Controller
         return view('pages.akreditasi', compact('totalGuru', 'profil'));
     }
 
+    /**
+     * Menampilkan halaman daftar struktural Guru / Staf publik.
+     */
     public function guru(Request $request)
     {
         $tipe = $request->query('tipe', 'guru');
@@ -110,6 +146,9 @@ class HomeController extends Controller
         return view('pages.guru', compact('gurus', 'tipe'));
     }
 
+    /**
+     * Menampilkan daftar Siswa aktif sekolah dengan pencarian dan filter kelas.
+     */
     public function siswa(Request $request)
     {
         $kelas = $request->query('kelas');
@@ -136,6 +175,9 @@ class HomeController extends Controller
         return view('pages.siswa', compact('siswas', 'kelas', 'search'));
     }
 
+    /**
+     * Menampilkan halaman daftar kelas dan Wali Kelas.
+     */
     public function kelas()
     {
         $classes = Kelas::with('waliKelas')
@@ -154,10 +196,14 @@ class HomeController extends Controller
         return view('pages.kelas', compact('classes'));
     }
 
+    /**
+     * Menampilkan halaman Tracer Study / Alumni beserta riwayat pendidikan/pekerjaan lanjutan.
+     */
     public function alumni(Request $request)
     {
         $tahun = $request->query('tahun');
 
+        // Mendapatkan daftar tahun kelulusan unik
         $availableYears = Siswa::alumni()
             ->select('tahun_lulus')
             ->distinct()
@@ -177,6 +223,9 @@ class HomeController extends Controller
         return view('pages.alumni', compact('alumni', 'availableYears', 'tahun'));
     }
 
+    /**
+     * Menampilkan halaman daftar Prestasi yang diraih siswa.
+     */
     public function prestasi()
     {
         $prestasisPerKategori = Prestasi::orderBy('tanggal', 'desc')
@@ -187,6 +236,9 @@ class HomeController extends Controller
         return view('pages.prestasi', compact('prestasisPerKategori', 'kategoriPrestasi'));
     }
 
+    /**
+     * Menampilkan halaman daftar Ekstrakurikuler sekolah.
+     */
     public function ekstrakurikuler()
     {
         $ekstrakurikulers = Ekstrakurikuler::all();
@@ -194,6 +246,9 @@ class HomeController extends Controller
         return view('pages.ekstrakurikuler', compact('ekstrakurikulers'));
     }
 
+    /**
+     * Menampilkan halaman daftar Berita/Pengumuman dengan pagination.
+     */
     public function berita(Request $request)
     {
         $search = $request->query('search');
@@ -203,7 +258,7 @@ class HomeController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('judul', 'like', "%{$search}%")
-                  ->orWhere('konten', 'like', "%{$search}%");
+                  ->orWhere('isi', 'like', "%{$search}%");
             });
         }
 
@@ -212,8 +267,12 @@ class HomeController extends Controller
         return view('pages.berita', compact('beritas', 'search'));
     }
 
+    /**
+     * Menampilkan halaman detail isi Berita.
+     */
     public function detailBerita(Berita $berita)
     {
+        // Cegah akses jika berita masih berstatus draf, kecuali jika diakses oleh admin yang terautentikasi
         if ($berita->status !== 'published' && !auth()->check()) {
             abort(404);
         }
@@ -221,6 +280,10 @@ class HomeController extends Controller
         return view('pages.detail_berita', compact('berita'));
     }
 
+    /**
+     * Menyimpan Pesan, saran, atau masukan dari pengunjung web.
+     * Mendukung opsi Anonim jika nama/email dikosongkan.
+     */
     public function storePesan(Request $request)
     {
         $request->validate([
@@ -230,10 +293,10 @@ class HomeController extends Controller
         ]);
 
         $data = $request->only(['nama', 'email', 'pesan']);
-        $data['isi'] = $data['pesan']; // Map pesan to isi
+        $data['isi'] = $data['pesan']; 
         unset($data['pesan']);
 
-        // Handle Anonim
+        // Jika form kosong, tandai sebagai anonim secara otomatis
         if (empty($data['nama'])) {
             $data['nama'] = '*Anonim*';
         }

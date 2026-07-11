@@ -1,4 +1,11 @@
+{{--
+    Halaman Sunting Data Prestasi (admin/prestasi/edit.blade.php)
+    Menyediakan formulir pembaruan data prestasi siswa terdaftar, lengkap dengan pratinjau bukti foto
+    yang saat ini tersimpan di database serta opsi penggantian dengan berkas foto baru.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Edit Prestasi')
 @section('page_kicker', 'Konten website · Prestasi')

@@ -14,13 +14,25 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * Controller SiswaController
+ * 
+ * Mengelola seluruh fungsionalitas CRUD data siswa, pengelolaan alumni,
+ * proses ekspor laporan CSV, serta pemrosesan kenaikan/kelulusan siswa secara massal.
+ */
 class SiswaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar siswa untuk panel administrator.
+     * Mendukung pemfilteran status siswa (aktif, alumni, keluar, arsip/terhapus),
+     * filter berdasarkan kelas, pencarian teks (nama/NIS), dan pengaturan jumlah baris per halaman.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
     public function index(Request $request)
     {
+        // Mendapatkan filter status, kelas, pencarian, dan limit pagination dari request query
         $status = $request->query('status', 'aktif');
         $kelas = $request->query('kelas');
         $search = $request->query('search');
@@ -29,11 +41,13 @@ class SiswaController extends Controller
             $perPage = 10;
         }
 
+        // Tentukan query dasar apakah dari data terhapus (arsip) atau data normal
         $query = ($status === 'arsip' ? Siswa::onlyTrashed() : Siswa::query())
             ->with('kelasData');
 
+        // Menerapkan filter query berdasarkan status siswa
         if ($status === 'arsip') {
-            // Arsip mencakup seluruh status siswa yang pernah dihapus.
+            // Arsip mencakup seluruh status siswa yang pernah dihapus soft delete.
         } elseif ($status === 'alumni') {
             $query->alumni();
         } elseif ($status === 'keluar') {
@@ -43,10 +57,12 @@ class SiswaController extends Controller
             $query->aktif();
         }
 
+        // Filter berdasarkan tingkat kelas jika parameter disediakan
         if ($kelas && Kelas::where('tingkat', $kelas)->exists()) {
             $query->kelas($kelas);
         }
 
+        // Filter berdasarkan pencarian nama atau NIS siswa
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
@@ -54,15 +70,21 @@ class SiswaController extends Controller
             });
         }
 
+        // Dapatkan data siswa terurut abjad secara terpaginasi
         $siswas = $query->orderBy('nama', 'asc')->paginate($perPage)->withQueryString();
 
+        // Dapatkan daftar kelas untuk menu drop-down filter kelas
         $daftarKelas = $this->daftarKelas();
 
         return view('admin.siswa.index', compact('siswas', 'status', 'kelas', 'search', 'daftarKelas', 'perPage'));
     }
 
     /**
-     * Display a dedicated alumni listing page.
+     * Menampilkan daftar alumni secara terpisah di menu Tracer Study/Alumni.
+     * Mendukung pemfilteran berdasarkan tahun lulus, pencarian kata kunci, dan pagination.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
     public function alumniIndex(Request $request)
     {
@@ -73,6 +95,7 @@ class SiswaController extends Controller
             $perPage = 10;
         }
 
+        // Query khusus siswa berstatus alumni beserta riwayat pendidikan lanjutannya
         $query = Siswa::alumni()->with('riwayatPendidikan');
 
         if ($tahunLulus) {
@@ -88,6 +111,7 @@ class SiswaController extends Controller
 
         $alumni = $query->orderBy('tahun_lulus', 'desc')->orderBy('nama', 'asc')->paginate($perPage)->withQueryString();
 
+        // Mengambil daftar unik tahun lulus untuk dropdown filter tahun lulus
         $daftarTahunLulus = Siswa::alumni()
             ->whereNotNull('tahun_lulus')
             ->selectRaw('DISTINCT tahun_lulus')
@@ -98,7 +122,9 @@ class SiswaController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan halaman formulir tambah data siswa baru.
+     * 
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -109,10 +135,17 @@ class SiswaController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan data siswa baru ke database.
+     * Melakukan validasi input, auto-formatting input teks, pengecekan kapasitas kelas,
+     * penyimpanan file foto, sinkronisasi ekskul & riwayat alumni, dan pembuatan log audit.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, IndonesianTextFormatter $formatter)
     {
+        // Validasi input data siswa dan relasinya
         $request->validate([
             'nama' => 'required|string|max:255',
             'nis' => ['nullable', 'string', 'max:50', Rule::unique('siswas', 'nis')],
@@ -148,8 +181,11 @@ class SiswaController extends Controller
             'ekstrakurikuler_ids.*' => [Rule::exists('ekstrakurikulers', 'id')],
         ]);
 
+        // Memvalidasi kronologi tahun lahir terhadap tahun masuk sekolah atau selesai pendidikan alumni
         $this->validateKronologiRiwayat($request);
         $data = $request->except(['foto', 'ekstrakurikuler_ids', 'pendidikan', 'pekerjaan_alumni']);
+        
+        // Memformat penulisan nama, alamat, tempat lahir agar mengikuti kaidah standar Indonesia
         $data = $formatter->fields($data, [
             'nama' => 'name',
             'tempat_lahir' => 'title',
@@ -158,20 +194,23 @@ class SiswaController extends Controller
             'alasan_keluar' => 'sentence',
         ]);
 
-        // Clean up kelas if alumni
+        // Penyesuaian data atribut berdasarkan status siswa
         if ($data['status'] === 'alumni') {
             $data['kelas'] = null;
             $data['kelas_id'] = null;
             $data['tanggal_keluar'] = $data['sekolah_tujuan'] = $data['alasan_keluar'] = null;
         } elseif ($data['status'] === 'aktif') {
             $data['kelas_id'] = Kelas::where('tingkat', $data['kelas'])->value('id');
+            // Pastikan kapasitas kelas yang dituju belum penuh sebelum mendaftarkan siswa aktif
             $this->pastikanKapasitasKelas($data['kelas_id']);
             $data['tahun_lulus'] = null;
             $data['tanggal_keluar'] = $data['sekolah_tujuan'] = $data['alasan_keluar'] = null;
         } else {
+            // Status Keluar
             $data['kelas'] = $data['kelas_id'] = $data['tahun_lulus'] = null;
         }
 
+        // Upload foto baru jika ada
         $fotoBaru = $request->hasFile('foto')
             ? $request->file('foto')->store('siswa', 'public')
             : null;
@@ -180,11 +219,13 @@ class SiswaController extends Controller
         }
 
         try {
+            // Jalankan transaksi database agar konsistensi data terjaga
             DB::transaction(function () use ($data, $request, $formatter) {
                 $siswa = Siswa::create($data);
                 $siswa->ekstrakurikulers()->sync($request->input('ekstrakurikuler_ids', []));
                 $this->syncRiwayatAlumni($siswa, $request, $formatter);
 
+                // Mencatat aktivitas penambahan ke audit log
                 ActivityLog::create([
                     'user_id' => auth()->id(),
                     'action_type' => 'Tambah',
@@ -194,6 +235,7 @@ class SiswaController extends Controller
                 ]);
             });
         } catch (\Throwable $exception) {
+            // Hapus file foto yang baru diunggah jika transaksi gagal
             if ($fotoBaru) {
                 Storage::disk('public')->delete($fotoBaru);
             }
@@ -204,7 +246,10 @@ class SiswaController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Menampilkan halaman formulir edit data siswa.
+     * 
+     * @param  \App\Models\Siswa  $siswa
+     * @return \Illuminate\View\View
      */
     public function edit(Siswa $siswa)
     {
@@ -216,10 +261,16 @@ class SiswaController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui data siswa di database.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Siswa  $siswa
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, Siswa $siswa, IndonesianTextFormatter $formatter)
     {
+        // Validasi input data siswa dan relasinya
         $request->validate([
             'nama' => 'required|string|max:255',
             'nis' => [
@@ -270,17 +321,19 @@ class SiswaController extends Controller
             'alasan_keluar' => 'sentence',
         ]);
 
-        // Clean up kelas if alumni
+        // Penyesuaian data atribut berdasarkan status siswa
         if ($data['status'] === 'alumni') {
             $data['kelas'] = null;
             $data['kelas_id'] = null;
             $data['tanggal_keluar'] = $data['sekolah_tujuan'] = $data['alasan_keluar'] = null;
         } elseif ($data['status'] === 'aktif') {
             $data['kelas_id'] = Kelas::where('tingkat', $data['kelas'])->value('id');
+            // Pastikan kapasitas kelas tujuan mencukupi (mengabaikan kapasitas ID siswa yang sedang di-edit ini)
             $this->pastikanKapasitasKelas($data['kelas_id'], $siswa->id);
             $data['tahun_lulus'] = null;
             $data['tanggal_keluar'] = $data['sekolah_tujuan'] = $data['alasan_keluar'] = null;
         } else {
+            // Status Keluar
             $data['kelas'] = $data['kelas_id'] = $data['tahun_lulus'] = null;
         }
 
@@ -312,6 +365,7 @@ class SiswaController extends Controller
             throw $exception;
         }
 
+        // Hapus foto lama di storage jika upload foto baru sukses
         if ($fotoBaru && $fotoLama) {
             Storage::disk('public')->delete($fotoLama);
         }
@@ -320,7 +374,10 @@ class SiswaController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Mengarsipkan data siswa (Soft Delete) dari sistem ke daftar arsip.
+     * 
+     * @param  \App\Models\Siswa  $siswa
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Siswa $siswa)
     {
@@ -338,6 +395,12 @@ class SiswaController extends Controller
         return redirect()->route('admin.siswa.index', ['status' => $status])->with('success', 'Data siswa berhasil diarsipkan');
     }
 
+    /**
+     * Memulihkan data siswa yang sebelumnya diarsipkan (Restore Soft Delete).
+     * 
+     * @param  int  $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function restore(int $id)
     {
         $siswa = Siswa::onlyTrashed()->findOrFail($id);
@@ -354,6 +417,13 @@ class SiswaController extends Controller
             ->with('success', 'Data siswa berhasil dipulihkan.');
     }
 
+    /**
+     * Mengekspor data siswa berdasarkan filter status saat ini ke format berkas CSV.
+     * Dilengkapi mitigasi kerentanan CSV Injection.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
     public function export(Request $request)
     {
         $status = $request->query('status', 'aktif');
@@ -366,17 +436,22 @@ class SiswaController extends Controller
 
         return response()->streamDownload(function () use ($query) {
             $file = fopen('php://output', 'w');
+            // Menulis UTF-8 BOM untuk kompatibilitas karakter khusus di MS Excel
             fwrite($file, "\xEF\xBB\xBF");
+            // Fungsi penangkal CSV Injection dengan menambahkan tanda petik satu pada karakter khusus
             $aman = static function ($value) {
                 $value = (string) ($value ?? '');
 
                 return preg_match('/^[=+\-@]/', $value) ? "'".$value : $value;
             };
+            
+            // Header kolom CSV
             fputcsv($file, [
                 'NIS', 'Nama', 'Jenis Kelamin', 'Agama', 'Kelas', 'Status',
                 'Tahun Masuk', 'Tahun Lulus', 'Sekolah Tujuan/Pendidikan', 'Pekerjaan',
             ]);
 
+            // Tulis baris data per chunk 500 untuk menghindari kehabisan memori RAM
             $query->orderBy('nama')->chunk(500, function ($siswas) use ($file, $aman) {
                 foreach ($siswas as $siswa) {
                     fputcsv($file, array_map($aman, [
@@ -401,7 +476,10 @@ class SiswaController extends Controller
     }
 
     /**
-     * Export alumni data as CSV with alumni-specific columns.
+     * Mengekspor khusus data alumni ke format berkas CSV.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
      */
     public function alumniExport(Request $request)
     {
@@ -419,6 +497,8 @@ class SiswaController extends Controller
 
                 return preg_match('/^[=+\-@]/', $value) ? "'".$value : $value;
             };
+            
+            // Header kolom khusus alumni
             fputcsv($file, [
                 'NIS', 'Nama', 'Jenis Kelamin', 'Tahun Masuk', 'Tahun Lulus', 'Pendidikan Lanjutan',
             ]);
@@ -446,7 +526,10 @@ class SiswaController extends Controller
     }
 
     /**
-     * Show the promotion dashboard page.
+     * Menampilkan dasbor panel pemrosesan kenaikan kelas atau kelulusan siswa secara kolektif.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
      */
     public function promotePage(Request $request)
     {
@@ -455,12 +538,15 @@ class SiswaController extends Controller
         $tahunAjaran = $request->query('tahun_ajaran', $this->tahunAjaranAktif());
         $siswas = collect();
 
+        // Mengambil daftar siswa aktif berdasarkan kelas asal yang disaring
         if ($kelasAsal && $daftarKelas->contains('tingkat', $kelasAsal)) {
             $siswas = Siswa::aktif()
                 ->kelas($kelasAsal)
                 ->orderBy('nama')
                 ->get();
         }
+        
+        // Riwayat pemrosesan akademik 20 terakhir untuk tabel riwayat log di bagian bawah halaman
         $riwayat = RiwayatAkademik::with(['siswa', 'pemroses'])
             ->latest('tanggal_proses')
             ->take(20)
@@ -476,10 +562,16 @@ class SiswaController extends Controller
     }
 
     /**
-     * Process bulk promotion and graduation.
+     * Memproses keputusan kenaikan kelas, tinggal kelas, kelulusan, atau pindah sekolah siswa secara massal.
+     * Mencatat detail keputusan ke tabel Riwayat Akademik.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function promote(Request $request)
     {
+        // Validasi struktur array input keputusan
         $validated = $request->validate([
             'kelas_asal' => ['required', Rule::exists('kelas', 'tingkat')],
             'tahun_ajaran' => ['required', 'regex:/^\d{4}\/\d{4}$/'],
@@ -490,6 +582,8 @@ class SiswaController extends Controller
             'keputusan.*.sekolah_tujuan' => ['nullable', 'string', 'max:255'],
             'keputusan.*.tanggal_keluar' => ['nullable', 'date'],
         ]);
+        
+        // Memastikan format tahun ajaran berurutan (misal: 2024/2025)
         [$awalTahunAjaran, $akhirTahunAjaran] = array_map('intval', explode('/', $validated['tahun_ajaran']));
         if ($akhirTahunAjaran !== $awalTahunAjaran + 1) {
             throw ValidationException::withMessages([
@@ -510,6 +604,7 @@ class SiswaController extends Controller
             ]);
         }
 
+        // Validasi logika bisnis setiap keputusan siswa
         foreach ($validated['keputusan'] as $siswaId => $item) {
             if ($item['status'] === 'naik' && empty($item['kelas_tujuan'])) {
                 throw ValidationException::withMessages([
@@ -530,6 +625,7 @@ class SiswaController extends Controller
             }
         }
 
+        // Pengecekan kapasitas kelas tujuan agar tidak overload saat kenaikan kelas massal
         foreach (collect($validated['keputusan'])->where('status', 'naik')->groupBy('kelas_tujuan') as $tujuan => $items) {
             $kelasTujuan = Kelas::where('tingkat', $tujuan)->firstOrFail();
             if ($kelasTujuan->kapasitas && $kelasTujuan->siswas()->where('status', 'aktif')->count() + $items->count() > $kelasTujuan->kapasitas) {
@@ -539,6 +635,7 @@ class SiswaController extends Controller
             }
         }
 
+        // Proses perubahan massal di dalam Transaksi Database
         DB::transaction(function () use ($validated, $siswas) {
             foreach ($validated['keputusan'] as $siswaId => $item) {
                 $siswa = $siswas->get((int) $siswaId);
@@ -549,6 +646,7 @@ class SiswaController extends Controller
                     ? Kelas::where('tingkat', $kelasTujuan)->value('id')
                     : null;
 
+                // Catat perubahan ke riwayat akademik
                 RiwayatAkademik::updateOrCreate(
                     [
                         'siswa_id' => $siswa->id,
@@ -564,6 +662,7 @@ class SiswaController extends Controller
                     ]
                 );
 
+                // Perbarui biodata aktif siswa bersangkutan
                 $siswa->update(match ($item['status']) {
                     'naik' => [
                         'kelas' => $kelasTujuan,
@@ -609,16 +708,26 @@ class SiswaController extends Controller
             ->with('success', 'Status akhir tahun siswa berhasil diproses dan dicatat dalam riwayat.');
     }
 
+    /**
+     * Mendapatkan daftar kelas diurutkan berdasarkan urutan/tingkatan.
+     */
     private function daftarKelas()
     {
         return Kelas::orderByRaw('urutan IS NULL')->orderBy('urutan')->orderBy('tingkat')->get();
     }
 
+    /**
+     * Mendapatkan daftar seluruh ekstrakurikuler sekolah.
+     */
     private function daftarEkstrakurikuler()
     {
         return Ekstrakurikuler::orderBy('nama')->get();
     }
 
+    /**
+     * Mendapatkan string representasi tahun ajaran yang sedang aktif secara dinamis berdasarkan bulan saat ini.
+     * Bulan Juli ke atas masuk ke tahun ajaran baru.
+     */
     private function tahunAjaranAktif(): string
     {
         $tahun = (int) date('Y');
@@ -628,6 +737,9 @@ class SiswaController extends Controller
             : ($tahun - 1)."/{$tahun}";
     }
 
+    /**
+     * Menyinkronkan data riwayat pendidikan & pekerjaan alumni.
+     */
     private function syncRiwayatAlumni(
         Siswa $siswa,
         Request $request,
@@ -637,9 +749,11 @@ class SiswaController extends Controller
             return;
         }
 
+        // Bersihkan data riwayat lama agar tidak duplikat saat update
         $siswa->riwayatPendidikan()->delete();
         $siswa->riwayatPekerjaan()->delete();
 
+        // Simpan pendidikan alumni baru
         $pendidikan = collect($request->input('pendidikan', []))
             ->filter(fn ($item) => ! empty($item['jenjang']) && ! empty($item['institusi']))
             ->map(fn ($item) => $formatter->fields($item, [
@@ -648,6 +762,8 @@ class SiswaController extends Controller
                 'jurusan' => 'title',
             ]))
             ->values()->all();
+            
+        // Simpan pekerjaan alumni baru
         $pekerjaan = collect($request->input('pekerjaan_alumni', []))
             ->filter(fn ($item) => ! empty($item['pekerjaan']))
             ->map(fn ($item) => $formatter->fields($item, [
@@ -660,6 +776,9 @@ class SiswaController extends Controller
         $siswa->riwayatPekerjaan()->createMany($pekerjaan);
     }
 
+    /**
+     * Validasi logika bisnis kronologi tahun (tahun masuk sekolah tidak boleh mustahil terhadap tahun kelahiran).
+     */
     private function validateKronologiRiwayat(Request $request): void
     {
         if ($request->filled('tanggal_lahir') && $request->filled('tahun_masuk')) {
@@ -691,6 +810,9 @@ class SiswaController extends Controller
         }
     }
 
+    /**
+     * Memastikan kapasitas kelas belum penuh sebelum menambahkan siswa baru.
+     */
     private function pastikanKapasitasKelas(?int $kelasId, ?int $abaikanSiswaId = null): void
     {
         $kelas = Kelas::find($kelasId);

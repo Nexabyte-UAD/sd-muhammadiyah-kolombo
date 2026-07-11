@@ -1,3 +1,9 @@
+{{--
+    Halaman Galeri Berita & Artikel Publik (pages/berita.blade.php)
+    Menampilkan daftar seluruh berita/pengumuman sekolah yang sudah diterbitkan.
+    Dilengkapi form pencarian keyword berita, paginasi interaktif Bootstrap 5 berbentuk bulat minimalis,
+    serta kartu rangkuman isi berita dan cover gambar.
+--}}
 @extends('layouts.public')
 
 @section('content')

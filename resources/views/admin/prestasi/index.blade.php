@@ -1,3 +1,9 @@
+{{--
+    Halaman Daftar Prestasi (admin/prestasi/index.blade.php)
+    Menampilkan daftar catatan prestasi siswa (akademik, non-akademik, keagamaan),
+    lengkap dengan detail penyelenggara, peraih medali, foto dokumentasi lomba,
+    serta kontrol pencarian/filter kategori dan aksi CRUD.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Manajemen Prestasi')

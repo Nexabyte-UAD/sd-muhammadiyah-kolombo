@@ -1,4 +1,12 @@
+{{--
+    Halaman Catat Prestasi Baru (admin/prestasi/create.blade.php)
+    Menyediakan formulir pencatatan prestasi siswa, lengkap dengan relasi data siswa terdaftar,
+    kategori prestasi, peraih penghargaan, penyelenggara, deskripsi tingkat prestasi,
+    dan upload foto dokumentasi dengan pratinjau instan.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Tambah Prestasi')
 @section('page_kicker', 'Konten website · Prestasi')

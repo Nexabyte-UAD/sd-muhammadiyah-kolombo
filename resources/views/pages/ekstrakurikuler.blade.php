@@ -1,3 +1,8 @@
+{{--
+    Halaman Daftar Ekstrakurikuler Publik (pages/ekstrakurikuler.blade.php)
+    Menampilkan seluruh daftar kegiatan ekstrakurikuler sekolah beserta nama pembina,
+    jadwal latihan, dokumentasi foto, dan deskripsi tujuan kegiatan ekstrakurikuler.
+--}}
 @extends('layouts.public')
 
 @section('content')

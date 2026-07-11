@@ -1,3 +1,8 @@
+{{--
+    Halaman Pembuatan Akun Admin Baru (admin/users/create.blade.php)
+    Menyediakan formulir isian data untuk mendaftarkan akun administrator baru ke dalam database,
+    dengan sistem keamanan password wajib minimal 12 karakter yang dikombinasikan huruf, angka, dan simbol.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Tambah User Baru')

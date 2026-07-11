@@ -1,3 +1,8 @@
+{{--
+    Halaman Tentang Sekolah / Sejarah Publik (pages/tentang.blade.php)
+    Menampilkan profil umum sekolah dan sejarah berdirinya, dilengkapi dengan gambar pendukung
+    yang didesain secara visual sticky di sisi kiri halaman pada desktop screen.
+--}}
 @extends('layouts.public')
 
 @section('content')

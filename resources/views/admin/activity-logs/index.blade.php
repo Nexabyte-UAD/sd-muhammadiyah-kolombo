@@ -1,3 +1,8 @@
+{{--
+    Halaman Riwayat Aktivitas Audit Log (admin/activity-logs/index.blade.php)
+    Menampilkan daftar audit log dari tindakan administratif (Tambah, Update, Hapus data)
+    beserta detail perubahan dan waktu kejadian log tersebut dibuat.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Log Aktivitas')

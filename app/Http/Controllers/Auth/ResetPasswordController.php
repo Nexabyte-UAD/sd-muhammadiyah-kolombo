@@ -13,8 +13,21 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\View\View;
 
+/**
+ * Controller ResetPasswordController
+ * 
+ * Mengelola pemrosesan pembuatan password baru (Reset Password) bagi pengguna admin
+ * yang telah memverifikasi token reset password yang dikirim ke email mereka.
+ */
 class ResetPasswordController extends Controller
 {
+    /**
+     * Menampilkan halaman formulir setel ulang (reset) password baru.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  string  $token  Token verifikasi reset password
+     * @return \Illuminate\View\View
+     */
     public function create(Request $request, string $token): View
     {
         return view('auth.reset-password', [
@@ -23,6 +36,13 @@ class ResetPasswordController extends Controller
         ]);
     }
 
+    /**
+     * Memproses penggantian password baru setelah memvalidasi token reset dan email.
+     * Menggunakan aturan password kuat (minimal 12 karakter, huruf besar-kecil, angka, simbol).
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -35,6 +55,7 @@ class ResetPasswordController extends Controller
             ],
         ]);
 
+        // Eksekusi penggantian password menggunakan Laravel Password broker
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function (User $user, string $password): void {
@@ -47,6 +68,7 @@ class ResetPasswordController extends Controller
             }
         );
 
+        // Jika penggantian gagal karena token kedaluwarsa atau tidak cocok
         if ($status !== Password::PASSWORD_RESET) {
             return back()->withInput($request->only('email'))->withErrors([
                 'email' => 'Tautan reset password tidak valid atau sudah kedaluwarsa.',

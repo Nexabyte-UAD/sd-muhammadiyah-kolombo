@@ -1,4 +1,10 @@
+{{--
+    Halaman Edit Kelas (admin/kelas/edit.blade.php)
+    Menampilkan form pembaruan data kelas dengan menggunakan partial template _form.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Edit Kelas')
 @section('page_kicker', 'Akademik · Kelas')

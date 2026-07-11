@@ -9,10 +9,18 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
+/**
+ * Controller UserController
+ * 
+ * Mengelola pendaftaran dan CRUD akun pengguna administrator (Admin)
+ * yang memiliki hak akses masuk ke panel backend admin website sekolah.
+ */
 class UserController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar seluruh akun admin di sistem.
+     * 
+     * @return \Illuminate\View\View
      */
     public function index()
     {
@@ -22,7 +30,9 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Menampilkan formulir pendaftaran akun admin baru.
+     * 
+     * @return \Illuminate\View\View
      */
     public function create()
     {
@@ -30,10 +40,16 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Menyimpan akun admin baru ke database.
+     * Memiliki aturan pembuatan password yang aman (minimal 12 karakter, huruf besar-kecil, angka, simbol).
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, IndonesianTextFormatter $formatter)
     {
+        // Jika username tidak diisi, ambil nama depan email sebagai username default
         if (!$request->has('username') && $request->has('email')) {
             $request->merge(['username' => explode('@', $request->email)[0]]);
         }
@@ -58,7 +74,10 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Menampilkan formulir edit akun admin tertentu.
+     * 
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\View\View
      */
     public function edit(User $user)
     {
@@ -66,7 +85,13 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Memperbarui detail akun admin di database.
+     * Password bersifat opsional untuk diperbarui (hanya diproses jika diisi).
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, User $user, IndonesianTextFormatter $formatter)
     {
@@ -81,6 +106,7 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
         ];
 
+        // Validasi password baru jika kolom diisi
         if ($request->filled('password')) {
             $rules['password'] = ['required', 'confirmed', Password::min(12)->letters()->mixedCase()->numbers()->symbols()];
         }
@@ -104,7 +130,11 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus akun admin tertentu.
+     * Mencegah admin menghapus akunnya sendiri yang sedang aktif digunakan login.
+     * 
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(User $user)
     {

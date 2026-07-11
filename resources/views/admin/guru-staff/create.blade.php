@@ -1,4 +1,12 @@
+{{--
+    Halaman Tambah Pegawai Guru/Staf Baru (admin/guru-staff/create.blade.php)
+    Menyediakan formulir pendaftaran data guru/staf kependidikan baru, lengkap dengan input nama,
+    jenis kelamin, NIP, status kepegawaian, jabatan, pendidikan, agama, unggah foto profil,
+    dan skrip pratinjau gambar instant (client-side JS).
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Tambah Pegawai')
 @section('page_kicker', 'Akademik · Pegawai')

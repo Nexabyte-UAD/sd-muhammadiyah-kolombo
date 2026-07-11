@@ -1,3 +1,9 @@
+{{--
+    Halaman Direktori Alumni Admin (admin/alumni/index.blade.php)
+    Menampilkan data alumni lulusan sekolah yang terintegrasi dengan data tracer study
+    (pendidikan lanjutan), lengkap dengan filter angkatan/tahun kelulusan,
+    pencarian nama/NIS, ekspor data CSV, serta aksi edit data atau hapus alumni.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Data Alumni')

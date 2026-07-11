@@ -1,3 +1,9 @@
+{{--
+    Halaman Direktori Alumni / Tracer Study (pages/alumni.blade.php)
+    Menampilkan data alumni lulusan sekolah dengan fitur pencarian interaktif sisi client (JavaScript),
+    paginasi kustom di frontend, filter tahun lulus, dan pop-up modal rincian detail riwayat
+    pendidikan lanjutan & pekerjaan alumni.
+--}}
 @extends('layouts.public')
 
 @section('content')
@@ -76,7 +82,9 @@
                             <tr>
                                 <td class="py-2.5 td-no">{{ $index + 1 }}</td>
                                 <td class="py-2.5 text-start fw-semibold text-dark ps-4">
-                                    {{ $item->nama }}
+                                    <div style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $item->nama }}">
+                                        {{ $item->nama }}
+                                    </div>
                                     <span class="visually-hidden">
                                         {{ $item->riwayatPendidikan->pluck('institusi')->join(' ') }}
                                         {{ $item->riwayatPendidikan->pluck('jurusan')->join(' ') }}

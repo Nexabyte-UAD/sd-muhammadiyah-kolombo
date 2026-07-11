@@ -10,8 +10,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controller PrestasiController
+ * 
+ * Mengelola data prestasi/penghargaan siswa SD Muhammadiyah Komplek Kolombo,
+ * termasuk pencarian, filter kategori prestasi, upload gambar bukti medali, dan log audit.
+ */
 class PrestasiController extends Controller
 {
+    /**
+     * Menampilkan daftar prestasi siswa di panel admin.
+     * Mendukung pencarian teks dan pemfilteran kategori (akademik, nonakademik, keagamaan).
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $search = trim((string) $request->query('search', ''));
@@ -23,6 +36,7 @@ class PrestasiController extends Controller
 
         $query = Prestasi::query();
 
+        // Cari berdasarkan judul, nama siswa, medali, atau penyelenggara
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
                 $q->where('judul', 'like', "%{$search}%")
@@ -32,6 +46,7 @@ class PrestasiController extends Controller
             });
         }
 
+        // Filter berdasarkan kategori prestasi
         if (array_key_exists($kategori, Prestasi::KATEGORI)) {
             $query->where('kategori', $kategori);
         }
@@ -42,6 +57,11 @@ class PrestasiController extends Controller
         return view('admin.prestasi.index', compact('prestasis', 'kategoriPrestasi', 'search', 'kategori', 'perPage'));
     }
 
+    /**
+     * Menampilkan formulir tambah data prestasi baru.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $kategoriPrestasi = Prestasi::KATEGORI;
@@ -50,6 +70,13 @@ class PrestasiController extends Controller
         return view('admin.prestasi.create', compact('kategoriPrestasi', 'siswas'));
     }
 
+    /**
+     * Menyimpan data prestasi siswa baru ke database.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request, IndonesianTextFormatter $formatter)
     {
         $request->validate([
@@ -72,14 +99,18 @@ class PrestasiController extends Controller
             'deskripsi',
             'tanggal',
         ]);
+        
+        // Format teks input agar rapi
         $data = $formatter->fields($data, [
             'judul' => 'title',
             'prestasi_medali' => 'title',
             'penyelenggara' => 'title',
             'deskripsi' => 'sentence',
         ]);
+        // Salin nama siswa secara otomatis berdasarkan siswa_id terpilih
         $data['nama_siswa'] = Siswa::findOrFail($data['siswa_id'])->nama;
 
+        // Upload gambar piala/medali jika disertakan
         if ($request->hasFile('gambar')) {
             $data['gambar'] = $request->file('gambar')->store('prestasi', 'public');
         }
@@ -96,6 +127,12 @@ class PrestasiController extends Controller
         return redirect()->route('admin.prestasi.index')->with('success', 'Data Prestasi berhasil ditambahkan');
     }
 
+    /**
+     * Menampilkan formulir edit data prestasi.
+     * 
+     * @param  \App\Models\Prestasi  $prestasi
+     * @return \Illuminate\View\View
+     */
     public function edit(Prestasi $prestasi)
     {
         $kategoriPrestasi = Prestasi::KATEGORI;
@@ -104,6 +141,14 @@ class PrestasiController extends Controller
         return view('admin.prestasi.edit', compact('prestasi', 'kategoriPrestasi', 'siswas'));
     }
 
+    /**
+     * Memperbarui data prestasi siswa di database.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Prestasi  $prestasi
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Prestasi $prestasi, IndonesianTextFormatter $formatter)
     {
         $request->validate([
@@ -134,6 +179,7 @@ class PrestasiController extends Controller
         ]);
         $data['nama_siswa'] = Siswa::findOrFail($data['siswa_id'])->nama;
 
+        // Upload gambar piala baru dan hapus gambar lama
         if ($request->hasFile('gambar')) {
             if ($prestasi->gambar && Storage::disk('public')->exists($prestasi->gambar)) {
                 Storage::disk('public')->delete($prestasi->gambar);
@@ -153,6 +199,12 @@ class PrestasiController extends Controller
         return redirect()->route('admin.prestasi.index')->with('success', 'Data Prestasi berhasil diupdate');
     }
 
+    /**
+     * Menghapus data prestasi siswa beserta berkas gambarnya dari database.
+     * 
+     * @param  \App\Models\Prestasi  $prestasi
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Prestasi $prestasi)
     {
         if ($prestasi->gambar && Storage::disk('public')->exists($prestasi->gambar)) {

@@ -1,3 +1,8 @@
+{{--
+    Halaman Sunting Profil Akun Mandiri (admin/account/edit.blade.php)
+    Menyediakan interface bagi administrator yang sedang login untuk memperbarui nama lengkap,
+    username, alamat email, atau memperbarui kata sandi baru (memerlukan input kata sandi saat ini).
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Akun Admin')

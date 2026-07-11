@@ -1,3 +1,9 @@
+{{--
+    Halaman welcome.blade.php (Beranda Utama / Landing Page Publik)
+    Menampilkan slider hero kustom, informasi profil singkat sekolah, statistik peserta didik & pendidik,
+    kata sambutan kepala sekolah, profil guru & staf (slider swiper), daftar ekstrakurikuler, berita terbaru,
+    prestasi siswa, dan formulir pengiriman kritik & saran kontak (anonim/non-anonim).
+--}}
 @extends('layouts.public')
 
 @section('content')
@@ -596,9 +602,9 @@
         <div class="container position-relative z-2">
             <div class="row g-4 justify-content-center">
                 <!-- Stat 1 -->
-                <div class="col-12 col-sm-6 col-md-3">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(0,135,78,0.15) !important;">
-                        <div class="position-absolute top-0 end-0 p-2 opacity-10 transform-icon">
+                        <div class="transform-icon">
                             <i class="bi bi-person-badge-fill text-success" style="transform: rotate(15deg);"></i>
                         </div>
                         <div class="position-relative z-1">
@@ -613,9 +619,9 @@
                     </div>
                 </div>
                 <!-- Stat 2 -->
-                <div class="col-12 col-sm-6 col-md-3">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(254,241,2,0.3) !important;">
-                        <div class="position-absolute top-0 end-0 p-2 opacity-10 transform-icon">
+                        <div class="transform-icon">
                             <i class="bi bi-mortarboard-fill text-warning" style="transform: rotate(-10deg);"></i>
                         </div>
                         <div class="position-relative z-1">
@@ -631,9 +637,9 @@
                     </div>
                 </div>
                 <!-- Stat 3 -->
-                <div class="col-12 col-sm-6 col-md-3">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(124,58,237,0.18) !important;">
-                        <div class="position-absolute top-0 end-0 p-2 opacity-10 transform-icon">
+                        <div class="transform-icon">
                             <i class="bi bi-stars" style="color: #7c3aed; transform: rotate(15deg);"></i>
                         </div>
                         <div class="position-relative z-1">
@@ -649,9 +655,9 @@
                     </div>
                 </div>
                 <!-- Stat 4 -->
-                <div class="col-12 col-sm-6 col-md-3">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(220,53,69,0.15) !important;">
-                        <div class="position-absolute top-0 end-0 p-2 opacity-10 transform-icon">
+                        <div class="transform-icon">
                             <i class="bi bi-award-fill text-danger" style="transform: rotate(-15deg);"></i>
                         </div>
                         <div class="position-relative z-1">
@@ -683,8 +689,20 @@
             letter-spacing: -1px;
         }
 
+        .transform-icon {
+            position: absolute;
+            bottom: -15px;
+            right: -15px;
+            opacity: 0.06 !important;
+            pointer-events: none;
+            z-index: 0;
+            transition: opacity 0.4s ease;
+        }
+
         .transform-icon i {
-            font-size: 6rem;
+            font-size: 5.5rem;
+            display: inline-block;
+            transition: transform 0.5s ease;
         }
         
         .stat-geometric-card:hover {
@@ -692,27 +710,30 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08) !important;
         }
         
-        .transform-icon i {
-            display: inline-block;
-            transition: all 0.5s ease;
+        .stat-geometric-card:hover .transform-icon {
+            opacity: 0.15 !important;
         }
         
         .stat-geometric-card:hover .transform-icon i {
             transform: scale(1.1) rotate(0deg) !important;
-            opacity: 0.7;
         }
 
         @media (max-width: 575.98px) {
             .stat-geometric-card {
-                min-height: 145px;
+                min-height: 120px;
             }
 
             .stat-value {
                 font-size: 1.9rem;
             }
 
+            .transform-icon {
+                bottom: -10px;
+                right: -10px;
+            }
+
             .transform-icon i {
-                font-size: 4.5rem;
+                font-size: 4rem;
             }
         }
     </style>

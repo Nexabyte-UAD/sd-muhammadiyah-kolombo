@@ -1,3 +1,8 @@
+{{--
+    Halaman Login Admin (auth/login.blade.php)
+    Menyediakan form masukan kredensial (Username/Email dan Password) untuk autentikasi admin.
+    Dilengkapi fitur visual "tampilkan/sembunyikan password" menggunakan JavaScript murni.
+--}}
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>

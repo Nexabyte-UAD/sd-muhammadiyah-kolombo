@@ -1,3 +1,9 @@
+{{--
+    Halaman Direktori Siswa Aktif (pages/siswa.blade.php)
+    Menampilkan daftar siswa aktif berdasarkan filter kelas atau pencarian nama/NIS.
+    Dilengkapi fitur pencarian interaktif sisi client (JavaScript), paginasi kustom di frontend,
+    serta modal popup untuk melihat data detail siswa lengkap beserta foto profil dan riwayat prestasinya.
+--}}
 @extends('layouts.public')
 
 @section('content')
@@ -61,7 +67,11 @@
                             @forelse($siswas as $index => $item)
                             <tr>
                                 <td class="py-2.5 td-no">{{ $index + 1 }}</td>
-                                <td class="py-2.5 text-start fw-semibold text-dark ps-4">{{ $item->nama }}</td>
+                                <td class="py-2.5 text-start fw-semibold text-dark ps-4">
+                                    <div style="max-width: 220px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $item->nama }}">
+                                        {{ $item->nama }}
+                                    </div>
+                                </td>
                                 <td class="py-2.5 text-secondary">{{ $item->kelas }}</td>
                                 <td class="py-2.5">
                                     <button class="btn btn-sm btn-outline-primary rounded-3 px-3 py-1 btn-detail" 

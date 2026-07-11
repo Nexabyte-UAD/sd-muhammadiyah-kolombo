@@ -1,3 +1,8 @@
+{{--
+    Partial Templating Riwayat Pendidikan Alumni (admin/siswa/_riwayat_alumni.blade.php)
+    Menyediakan formulir dinamis untuk input / edit daftar riwayat pendidikan alumni sekolah.
+    Dilengkapi tombol "Tambah Pendidikan" dan "Hapus" baris riwayat berbasis DOM JavaScript.
+--}}
 @php
     $pendidikanRows = old('pendidikan', isset($siswa) ? $siswa->riwayatPendidikan->toArray() : [[]]);
     $pendidikanRows = count($pendidikanRows) ? $pendidikanRows : [[]];

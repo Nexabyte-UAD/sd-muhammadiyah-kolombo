@@ -1,3 +1,8 @@
+{{--
+    Halaman Daftar Ekstrakurikuler (admin/ekstrakurikuler/index.blade.php)
+    Menampilkan daftar program ekstrakurikuler sekolah, jadwal kegiatan, nama pembina,
+    foto dokumentasi, serta aksi CRUD untuk pengelolaan konten website.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Manajemen Ekstrakurikuler')

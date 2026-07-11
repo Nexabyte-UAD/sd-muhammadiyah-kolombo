@@ -1,4 +1,10 @@
+{{--
+    Halaman Tambah Kelas Baru (admin/kelas/create.blade.php)
+    Menampilkan form pembuatan data kelas baru dengan memanfaatkan partial template _form.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Tambah Kelas')
 @section('page_kicker', 'Akademik · Kelas')

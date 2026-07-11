@@ -1,4 +1,10 @@
+{{--
+    Halaman Tulis Berita Baru (admin/berita/create.blade.php)
+    Menyediakan interface untuk menulis berita/pengumuman sekolah baru dengan menyertakan partial _form.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Tambah Berita')
 @section('page_kicker', 'Konten website · Berita')

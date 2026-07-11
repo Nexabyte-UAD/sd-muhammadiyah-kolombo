@@ -1,3 +1,10 @@
+{{--
+    Layout Utama Admin (layouts/admin.blade.php)
+    Mengatur kerangka dasar tampilan dashboard/panel admin, termasuk sidebar, header,
+    perekaman state form dirty (apakah form diubah tapi belum disimpan), intercept modal
+    konfirmasi hapus/simpan/terbitkan berita/buang perubahan, serta sistem penanganan
+    Idle Session Timeout agar admin otomatis log out saat tidak aktif.
+--}}
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -29,7 +36,7 @@
             @include('layouts.admin.header')
 
             <main class="admin-content">
-                <div class="admin-container">
+                <div class="admin-container @yield('container_class')">
                     @if(trim($__env->yieldContent('content_header')) !== '' && trim($__env->yieldContent('page_title')) === '')
                         <div class="legacy-page-heading">
                             @yield('content_header')

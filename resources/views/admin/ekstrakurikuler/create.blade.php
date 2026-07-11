@@ -1,4 +1,11 @@
+{{--
+    Halaman Tambah Program Ekstrakurikuler Baru (admin/ekstrakurikuler/create.blade.php)
+    Menyediakan form pendaftaran program ekstrakurikuler sekolah baru, lengkap dengan input nama kegiatan,
+    nama pembina, jadwal rutin, deskripsi lengkap, serta upload foto kegiatan berpratinjau instan.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Tambah Ekstrakurikuler')
 @section('page_kicker', 'Konten website · Ekstrakurikuler')

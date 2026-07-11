@@ -1,3 +1,9 @@
+{{--
+    Halaman Pemrosesan Kenaikan Kelas & Kelulusan Massal (admin/siswa/promote.blade.php)
+    Menyediakan interface bagi admin untuk menyaring siswa berdasarkan kelas asal dan tahun ajaran,
+    kemudian menentukan status akhir tahun (naik kelas ke kelas tujuan, tinggal kelas, lulus, atau keluar)
+    secara massal dalam satu kali pengiriman form.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Status Akhir Tahun')

@@ -1,3 +1,8 @@
+{{--
+    Halaman Daftar Akun Pengguna Admin (admin/users/index.blade.php)
+    Menampilkan tabel data seluruh akun administrator terdaftar yang memiliki hak akses
+    untuk masuk dan mengelola panel backend website sekolah, dilengkapi tombol edit dan hapus akun.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Manajemen User')

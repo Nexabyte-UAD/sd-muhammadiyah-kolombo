@@ -1,3 +1,8 @@
+{{--
+    Komponen Modal Biodata Guru/Staf (components/guru-staff-modal.blade.php)
+    Menampilkan rincian biodata Guru atau Staf dalam bentuk pop-up modal Bootstrap (modal fade)
+    yang interaktif, lengkap dengan aksesibilitas keyboard (menekan Enter atau Spasi untuk men-trigger).
+--}}
 @props(['tenaga'])
 
 <div class="modal fade" id="biodataTenaga-{{ $tenaga->id }}" tabindex="-1"

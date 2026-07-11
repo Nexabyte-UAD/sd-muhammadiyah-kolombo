@@ -1,3 +1,8 @@
+{{--
+    Halaman Daftar Kelas (admin/kelas/index.blade.php)
+    Menampilkan data kelas-kelas terdaftar, kapasitas siswa, wali kelas, serta aksi CRUD.
+    Dilengkapi form pencarian terintegrasi dan petunjuk pengelolaan kelas.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Data Kelas')

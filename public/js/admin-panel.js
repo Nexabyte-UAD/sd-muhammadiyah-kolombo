@@ -1,3 +1,10 @@
+/**
+ * Script Interaktivitas Panel Admin (public/js/admin-panel.js)
+ * 
+ * Mengatur interaktivitas peniadaan/togle sidebar (sidebar collapsing) baik untuk desktop maupun mobile,
+ * penyimpanan preferensi togle di LocalStorage (persistence state), sistem togle Mode Gelap (dark mode),
+ * serta penanganan disabilitas tombol submit ganda saat form dikirimkan untuk mencegah duplikasi request.
+ */
 (() => {
     const body = document.body;
     const toggles = document.querySelectorAll('[data-sidebar-toggle]');

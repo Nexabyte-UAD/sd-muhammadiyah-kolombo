@@ -1,3 +1,8 @@
+{{--
+    Komponen Icon Admin (components/admin-icon.blade.php)
+    Menyediakan ikon SVG bawaan (feather icons style) dan ikon PNG kustom (untuk prestasi, guru, ekskul)
+    yang dapat dipanggil secara fleksibel dengan mempassing nama ikon dan ukuran (size).
+--}}
 @props(['name', 'size' => 20])
 
 @if($name === 'award')

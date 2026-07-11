@@ -1,3 +1,8 @@
+{{--
+    Halaman Direktori Struktural Guru & Staf Publik (pages/guru.blade.php)
+    Menampilkan daftar seluruh Guru atau Staf sekolah secara responsif berbentuk grid kartu,
+    dan memunculkan pop-up modal detail biodata lengkap (guru-staff-modal) ketika kartu diklik.
+--}}
 @extends('layouts.public')
 
 @section('content')

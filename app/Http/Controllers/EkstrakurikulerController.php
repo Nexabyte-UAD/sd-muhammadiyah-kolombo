@@ -8,8 +8,20 @@ use App\Services\IndonesianTextFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Controller EkstrakurikulerController
+ * 
+ * Mengelola kegiatan ekstrakurikuler SD Muhammadiyah Komplek Kolombo,
+ * termasuk pencarian kegiatan, jadwal latihan, pembina, upload dokumentasi foto, dan log audit.
+ */
 class EkstrakurikulerController extends Controller
 {
+    /**
+     * Menampilkan daftar kegiatan ekstrakurikuler di panel admin.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $perPage = (int) $request->query('per_page', 10);
@@ -21,6 +33,7 @@ class EkstrakurikulerController extends Controller
 
         $query = Ekstrakurikuler::query();
 
+        // Cari berdasarkan nama, deskripsi, pembina, atau jadwal
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
@@ -35,11 +48,23 @@ class EkstrakurikulerController extends Controller
         return view('admin.ekstrakurikuler.index', compact('ekstrakurikulers', 'perPage', 'search'));
     }
 
+    /**
+     * Menampilkan formulir tambah kegiatan ekstrakurikuler baru.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         return view('admin.ekstrakurikuler.create');
     }
 
+    /**
+     * Menyimpan data ekstrakurikuler baru ke database.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request, IndonesianTextFormatter $formatter)
     {
         $request->validate([
@@ -51,6 +76,7 @@ class EkstrakurikulerController extends Controller
         ]);
 
         $data = $request->only(['nama', 'deskripsi', 'pembina', 'jadwal']);
+        // Format teks input ekstrakurikuler
         $data = $formatter->fields($data, [
             'nama' => 'title',
             'deskripsi' => 'sentence',
@@ -58,6 +84,7 @@ class EkstrakurikulerController extends Controller
             'jadwal' => 'sentence',
         ]);
 
+        // Upload foto kegiatan
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('ekstrakurikuler', 'public');
         }
@@ -74,11 +101,25 @@ class EkstrakurikulerController extends Controller
         return redirect()->route('admin.ekstrakurikuler.index')->with('success', 'Data Ekstrakurikuler berhasil ditambahkan');
     }
 
+    /**
+     * Menampilkan formulir edit data ekstrakurikuler.
+     * 
+     * @param  \App\Models\Ekstrakurikuler  $ekstrakurikuler
+     * @return \Illuminate\View\View
+     */
     public function edit(Ekstrakurikuler $ekstrakurikuler)
     {
         return view('admin.ekstrakurikuler.edit', compact('ekstrakurikuler'));
     }
 
+    /**
+     * Memperbarui data ekstrakurikuler di database.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Ekstrakurikuler  $ekstrakurikuler
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, Ekstrakurikuler $ekstrakurikuler, IndonesianTextFormatter $formatter)
     {
         $request->validate([
@@ -97,6 +138,7 @@ class EkstrakurikulerController extends Controller
             'jadwal' => 'sentence',
         ]);
 
+        // Upload foto baru dan hapus foto lama
         if ($request->hasFile('foto')) {
             if ($ekstrakurikuler->foto && Storage::disk('public')->exists($ekstrakurikuler->foto)) {
                 Storage::disk('public')->delete($ekstrakurikuler->foto);
@@ -116,6 +158,12 @@ class EkstrakurikulerController extends Controller
         return redirect()->route('admin.ekstrakurikuler.index')->with('success', 'Data Ekstrakurikuler berhasil diupdate');
     }
 
+    /**
+     * Menghapus data ekstrakurikuler beserta foto dokumentasinya.
+     * 
+     * @param  \App\Models\Ekstrakurikuler  $ekstrakurikuler
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Ekstrakurikuler $ekstrakurikuler)
     {
         if ($ekstrakurikuler->foto && Storage::disk('public')->exists($ekstrakurikuler->foto)) {

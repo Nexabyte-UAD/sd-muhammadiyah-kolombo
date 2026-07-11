@@ -1,3 +1,8 @@
+{{--
+    Partial Templating Mutasi Keluar Siswa (admin/siswa/_data_keluar.blade.php)
+    Menampilkan kolom input tambahan (Tanggal Keluar, Sekolah Tujuan, Alasan Keluar)
+    ketika status siswa yang dipilih diubah menjadi "keluar" (pindah sekolah).
+--}}
 <div class="col-md-12" id="div-data-keluar" style="display:none;">
     <hr class="my-4">
     <h5>Data Keluar</h5>

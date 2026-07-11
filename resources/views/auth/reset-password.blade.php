@@ -1,3 +1,8 @@
+{{--
+    Halaman Setel Ulang Password Baru (auth/reset-password.blade.php)
+    Menyediakan formulir reset password baru setelah tautan verifikasi token diklik dari email.
+    Mengharuskan input password baru yang kuat beserta konfirmasi kecocokannya.
+--}}
 @extends('layouts.auth')
 
 @section('title', 'Reset Password')

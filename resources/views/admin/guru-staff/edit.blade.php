@@ -1,4 +1,11 @@
+{{--
+    Halaman Sunting Pegawai Guru/Staf (admin/guru-staff/edit.blade.php)
+    Menyediakan formulir pembaruan data guru/staf kependidikan terdaftar,
+    lengkap dengan pratinjau gambar foto profil saat ini atau gambar baru yang dipilih.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Edit Pegawai')
 @section('page_kicker', 'Akademik · Pegawai')

@@ -5,8 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\Pesan;
 use Illuminate\Http\Request;
 
+/**
+ * Controller PesanController
+ * 
+ * Mengelola daftar pesan/saran masuk dari formulir kontak publik (frontend),
+ * termasuk fitur menandai pesan dibaca dan penghapusan pesan.
+ */
 class PesanController extends Controller
 {
+    /**
+     * Menampilkan daftar pesan masuk dari pengunjung web di panel admin.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
         $perPage = (int) $request->query('per_page', 10);
@@ -18,6 +30,12 @@ class PesanController extends Controller
         return view('admin.pesan.index', compact('pesans', 'perPage'));
     }
 
+    /**
+     * Menandai pesan masuk tertentu sebagai sudah dibaca (read_at diisi waktu sekarang).
+     * 
+     * @param  \App\Models\Pesan  $pesan
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function markAsRead(Pesan $pesan)
     {
         if ($pesan->read_at === null) {
@@ -27,6 +45,12 @@ class PesanController extends Controller
         return redirect()->route('admin.pesan.index')->with('success', 'Pesan ditandai sudah dibaca.');
     }
 
+    /**
+     * Menghapus data pesan masuk tertentu dari database.
+     * 
+     * @param  \App\Models\Pesan  $pesan
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(Pesan $pesan)
     {
         $pesan->delete();

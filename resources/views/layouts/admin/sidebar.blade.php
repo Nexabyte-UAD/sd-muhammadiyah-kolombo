@@ -1,3 +1,9 @@
+{{--
+    Sidebar Panel Admin (layouts/admin/sidebar.blade.php)
+    Menampilkan sidebar menu navigasi panel admin untuk akses CRUD Siswa, Alumni, Kelas,
+    Kenaikan Kelas, Berita, Prestasi, Ekstrakurikuler, Guru & Staf, Profil Sekolah,
+    Pesan Masuk, Profil Akun Admin, Konfigurasi Sistem, dan tombol Keluar (Logout).
+--}}
 <aside class="admin-sidebar" id="adminSidebar" aria-label="Navigasi admin">
     <!-- Floating Arrow Toggle Button for Desktop -->
     <button type="button" class="sidebar-toggle-btn" data-sidebar-toggle aria-label="Toggle Sidebar">

@@ -1,3 +1,8 @@
+{{--
+    Layout Utama Autentikasi (layouts/auth.blade.php)
+    Mengatur struktur dasar halaman login, lupa password, dan reset password admin.
+    Dilengkapi logo sekolah, tautan kembali ke beranda publik, dan catatan keamanan akses.
+--}}
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>

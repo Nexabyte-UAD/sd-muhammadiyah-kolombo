@@ -1,3 +1,10 @@
+{{--
+    Layout Utama Publik (layouts/public.blade.php)
+    Mengatur kerangka dasar tampilan antarmuka pengunjung (frontend), termasuk top-bar
+    info kontak cepat, tulisan berjalan (running text), navbar navigasi bertingkat (dropdown),
+    konten utama halaman publik, peta lokasi Google Maps, link media sosial, serta penanggalan
+    otomatis terformat Bahasa Indonesia di bagian top-bar.
+--}}
 <!doctype html>
 <html lang="id">
   <head>

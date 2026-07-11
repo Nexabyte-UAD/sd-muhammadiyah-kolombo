@@ -1,3 +1,9 @@
+{{--
+    Halaman Visi & Misi Sekolah Publik (pages/visimisi.blade.php)
+    Menampilkan visi dan misi sekolah. Dilengkapi dengan skrip parsing teks semi-otomatis (PHP)
+    untuk memisahkan baris Visi dan poin-poin Misi apabila diinput berupa teks biasa (non-HTML),
+    serta menampilkan konten secara langsung (raw) apabila berupa format teks kaya (HTML).
+--}}
 @extends('layouts.public')
 
 @section('content')

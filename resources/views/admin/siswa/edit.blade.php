@@ -1,4 +1,11 @@
+{{--
+    Halaman Sunting Data Siswa (admin/siswa/edit.blade.php)
+    Menyediakan formulir pembaruan biodata siswa terdaftar, riwayat ekstrakurikuler, kelas,
+    serta integrasi riwayat pendidikan alumni jika status siswa tersebut diset ke alumni.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Edit Siswa')
 @section('page_kicker', 'Akademik · Siswa')
@@ -6,7 +13,7 @@
 @section('page_description', 'Perbarui biodata dan status siswa.')
 
 @section('page_actions')
-    <a href="{{ route('admin.siswa.index', ['status' => $siswa->status]) }}" class="btn-admin btn-admin-secondary btn-cancel">Kembali</a>
+    <a href="{{ $siswa->status === 'alumni' ? route('admin.alumni.index') : route('admin.siswa.index', ['status' => $siswa->trashed() ? 'arsip' : $siswa->status]) }}" class="btn-admin btn-admin-secondary btn-cancel">Kembali</a>
 @endsection
 
 @section('content')
@@ -176,7 +183,7 @@
             </div>
         </div>
         <div class="form-card-footer">
-            <a href="{{ route('admin.siswa.index', ['status' => $siswa->status]) }}" class="btn-admin btn-admin-secondary btn-cancel">Batal</a>
+            <a href="{{ $siswa->status === 'alumni' ? route('admin.alumni.index') : route('admin.siswa.index', ['status' => $siswa->trashed() ? 'arsip' : $siswa->status]) }}" class="btn-admin btn-admin-secondary btn-cancel">Batal</a>
             <button type="submit" class="btn-admin">Simpan Perubahan</button>
         </div>
     </form>

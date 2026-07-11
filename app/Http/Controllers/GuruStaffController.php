@@ -10,10 +10,24 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
+/**
+ * Controller GuruStaffController
+ * 
+ * Mengelola data kepegawaian Guru (Pendidik) dan Staf (Tenaga Kependidikan)
+ * di SD Muhammadiyah Komplek Kolombo, termasuk upload foto dan log audit.
+ */
 class GuruStaffController extends Controller
 {
+    /**
+     * Menampilkan daftar Guru atau Staf.
+     * Mendukung pencarian berdasarkan Nama, NIP, Jabatan, dan Bidang Tugas.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\View\View
+     */
     public function index(Request $request)
     {
+        // Tentukan tipe apakah guru atau staf
         $tipe = $request->query('tipe', 'guru');
         if (! in_array($tipe, ['guru', 'staf'], true)) {
             $tipe = 'guru';
@@ -25,8 +39,10 @@ class GuruStaffController extends Controller
 
         $search = $request->query('search');
 
+        // Query berdasarkan filter tipe pegawai
         $query = GuruStaff::where('tipe', $tipe);
 
+        // Filter pencarian teks
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('nama', 'like', "%{$search}%")
@@ -41,6 +57,11 @@ class GuruStaffController extends Controller
         return view('admin.guru-staff.index', compact('gurus', 'tipe', 'perPage', 'search'));
     }
 
+    /**
+     * Menampilkan halaman formulir tambah Guru/Staf baru.
+     * 
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $tipe = request()->query('tipe', 'guru');
@@ -57,6 +78,13 @@ class GuruStaffController extends Controller
         ]);
     }
 
+    /**
+     * Menyimpan data Guru/Staf baru ke database.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(Request $request, IndonesianTextFormatter $formatter)
     {
         $request->validate([
@@ -83,12 +111,15 @@ class GuruStaffController extends Controller
             'pendidikan_terakhir',
             'agama',
         ]);
+        
+        // Merapikan format nama dan jabatan guru
         $data = $formatter->fields($data, [
             'nama' => 'name',
             'jabatan' => 'title',
             'bidang_tugas' => 'title',
         ]);
 
+        // Proses upload foto profil guru/staf
         $fotoBaru = $request->hasFile('foto')
             ? $request->file('foto')->store('guru-staff', 'public')
             : null;
@@ -109,6 +140,7 @@ class GuruStaffController extends Controller
                 ]);
             });
         } catch (\Throwable $exception) {
+            // Hapus file yang terlanjur terupload jika insert gagal
             if ($fotoBaru) {
                 Storage::disk('public')->delete($fotoBaru);
             }
@@ -119,6 +151,12 @@ class GuruStaffController extends Controller
         return redirect()->route('admin.guru-staff.index', ['tipe' => $data['tipe']])->with('success', 'Data berhasil ditambahkan');
     }
 
+    /**
+     * Menampilkan halaman edit Guru/Staf.
+     * 
+     * @param  \App\Models\GuruStaff  $guruStaff
+     * @return \Illuminate\View\View
+     */
     public function edit(GuruStaff $guruStaff)
     {
         return view('admin.guru-staff.edit', [
@@ -130,6 +168,14 @@ class GuruStaffController extends Controller
         ]);
     }
 
+    /**
+     * Memperbarui data Guru/Staf di database.
+     * 
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\GuruStaff  $guruStaff
+     * @param  \App\Services\IndonesianTextFormatter  $formatter
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(Request $request, GuruStaff $guruStaff, IndonesianTextFormatter $formatter)
     {
         $request->validate([
@@ -195,6 +241,7 @@ class GuruStaffController extends Controller
             throw $exception;
         }
 
+        // Hapus foto lama jika upload foto baru sukses
         if ($fotoBaru && $fotoLama) {
             Storage::disk('public')->delete($fotoLama);
         }
@@ -202,6 +249,12 @@ class GuruStaffController extends Controller
         return redirect()->route('admin.guru-staff.index', ['tipe' => $data['tipe']])->with('success', 'Data berhasil diupdate');
     }
 
+    /**
+     * Menghapus data Guru/Staf dari database.
+     * 
+     * @param  \App\Models\GuruStaff  $guruStaff
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function destroy(GuruStaff $guruStaff)
     {
         $nama = $guruStaff->nama;
@@ -219,6 +272,7 @@ class GuruStaffController extends Controller
             ]);
         });
 
+        // Hapus berkas foto dari penyimpanan
         if ($foto) {
             Storage::disk('public')->delete($foto);
         }

@@ -1,3 +1,9 @@
+{{--
+    Halaman Prestasi Siswa Publik (pages/prestasi.blade.php)
+    Menampilkan daftar prestasi siswa yang dikelompokkan berdasarkan kategori (akademik, non-akademik, keagamaan)
+    dalam bentuk komponen Accordion Bootstrap. Dilengkapi navigasi scroll otomatis ke kategori
+    tertentu jika user mengunjungi halaman menggunakan target hash URL.
+--}}
 @extends('layouts.public')
 
 @section('content')

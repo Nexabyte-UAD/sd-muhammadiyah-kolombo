@@ -1,3 +1,8 @@
+{{--
+    Formulir Partial Kelas (admin/kelas/_form.blade.php)
+    Menampilkan kolom input kelas (tingkat, urutan, tahun ajaran, kapasitas, jurusan, wali kelas)
+    yang dipakai bersama oleh halaman tambah (create) dan sunting (edit) data kelas.
+--}}
 <div class="form-grid">
     <div class="form-field">
         <label for="tingkat" class="form-label">Kelas <span>*</span></label>

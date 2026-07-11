@@ -1,4 +1,12 @@
+{{--
+    Halaman Pendaftaran Siswa Baru (admin/siswa/create.blade.php)
+    Menyediakan formulir lengkap untuk mendaftarkan data siswa baru (identitas, jenis kelamin,
+    NIS, agama, tempat & tanggal lahir, alamat, pilihan ekstrakurikuler, kelas, tahun masuk,
+    dan upload foto profil), beserta integrasi form data keluar jika siswa berstatus keluar/pindah.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Tambah Siswa')
 @section('page_kicker', 'Akademik · Siswa')

@@ -1,3 +1,8 @@
+{{--
+    Halaman Detail Berita & Artikel Publik (pages/detail_berita.blade.php)
+    Menampilkan detail penuh konten berita tertentu, termasuk judul lengkap, cover gambar berita,
+    tanggal publikasi terformat lokal, serta tombol kembali ke daftar papan berita utama.
+--}}
 @extends('layouts.public')
 
 @section('content')

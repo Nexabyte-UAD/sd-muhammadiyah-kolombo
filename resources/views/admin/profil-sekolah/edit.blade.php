@@ -1,4 +1,12 @@
+{{--
+    Halaman Sunting Profil Sekolah (admin/profil-sekolah/edit.blade.php)
+    Menyediakan formulir pembaruan halaman profil statis sekolah (Tentang Sekolah, Kata Sambutan,
+    Visi & Misi, dan Akreditasi). Menampilkan field isian khusus (seperti hanya upload sertifikat
+    untuk tipe Akreditasi) atau field teks panjang (konten) dengan upload cover gambar pendukung.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', $profil->judul)
 @section('page_kicker', 'Konten website · Profil Sekolah')

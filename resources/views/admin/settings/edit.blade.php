@@ -1,3 +1,9 @@
+{{--
+    Halaman Pengaturan Sistem (admin/settings/edit.blade.php)
+    Menyediakan antar muka penyesuaian key-value konfigurasi dinamis (nama sekolah, kontak,
+    sosial media, dan gambar banner slider depan), terbagi atas tab navigasi Identitas, Beranda,
+    dan Kontak.
+--}}
 @extends('layouts.admin')
 
 @section('title', 'Pengaturan Sistem')

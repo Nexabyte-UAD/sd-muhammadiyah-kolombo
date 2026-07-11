@@ -1,4 +1,10 @@
+{{--
+    Halaman Sunting Berita (admin/berita/edit.blade.php)
+    Menyediakan interface untuk mengedit berita/pengumuman sekolah yang sudah ada dengan menyertakan partial _form.
+--}}
 @extends('layouts.admin')
+
+@section('container_class', 'admin-container-narrow')
 
 @section('title', 'Edit Berita')
 @section('page_kicker', 'Konten website · Berita')
