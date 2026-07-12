@@ -107,6 +107,12 @@
         @case('chevron-right')
             <path d="m9 18 6-6-6-6"/>
             @break
+        @case('sidebar-close')
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="var(--admin-white, #fff)"/><path d="M9 3v18"/><path d="m16 15-3-3 3-3"/>
+            @break
+        @case('sidebar-open')
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" fill="var(--admin-white, #fff)"/><path d="M9 3v18"/><path d="m12 9 3 3-3 3"/>
+            @break
         @case('save')
             <path d="M5 3h12l2 2v16H5z"/><path d="M8 3v6h8V3M8 21v-7h8v7"/>
             @break

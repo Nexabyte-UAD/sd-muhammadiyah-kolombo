@@ -5,11 +5,6 @@
     Pesan Masuk, Profil Akun Admin, Konfigurasi Sistem, dan tombol Keluar (Logout).
 --}}
 <aside class="admin-sidebar" id="adminSidebar" aria-label="Navigasi admin">
-    <!-- Floating Arrow Toggle Button for Desktop -->
-    <button type="button" class="sidebar-toggle-btn" data-sidebar-toggle aria-label="Toggle Sidebar">
-        <x-admin-icon name="chevron-left" size="11" class="sidebar-chevron-left"/>
-        <x-admin-icon name="chevron-right" size="11" class="sidebar-chevron-right"/>
-    </button>
 
     <div class="admin-brand-wrapper">
         <a href="{{ route('dashboard') }}" class="admin-brand">

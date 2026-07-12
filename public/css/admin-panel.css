@@ -1786,61 +1786,56 @@ textarea.form-control { min-height: 120px; resize: vertical; line-height: 1.6; }
 }
 
 /* Sidebar Toggle Visibility Logic */
+/* Default (Mobile): Show hamburger menu icon, hide panel-toggle icons */
+.sidebar-toggle .sidebar-menu-icon {
+    display: inline-block;
+}
+.sidebar-toggle .sidebar-chevron-left,
+.sidebar-toggle .sidebar-chevron-right {
+    display: none !important;
+}
+
 @media (max-width: 1023px) {
     body:not(.sidebar-open) .sidebar-toggle {
         display: inline-grid;
     }
 }
-@media (min-width: 1024px) {
-    .sidebar-toggle {
-        display: none !important;
-    }
-}
-
-/* Floating Sidebar Toggle Button (Desktop Only) */
-.sidebar-toggle-btn {
-    display: none;
-}
 
 @media (min-width: 1024px) {
-    .sidebar-toggle-btn {
-        display: flex;
-        position: absolute;
-        right: -12px;
-        top: 26px; /* Positioned centered on the right border, aligned with brand logo */
-        z-index: 50;
-        width: 24px;
-        height: 24px;
-        background: #fff;
-        border: 1px solid var(--admin-border);
-        border-radius: 50%;
-        box-shadow: 0 2px 4px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
-        align-items: center;
-        justify-content: center;
-        color: var(--admin-muted);
-        cursor: pointer;
-        outline: none;
-        transition: transform 0.25s ease, background 0.15s ease, color 0.15s ease;
-    }
-    .sidebar-toggle-btn:hover {
-        background: #f8fafc;
-        color: var(--admin-primary);
-        box-shadow: 0 3px 6px rgba(15, 23, 42, 0.12);
-    }
-    /* When expanded: show chevron left, hide chevron right */
-    body:not(.sidebar-collapsed) .sidebar-toggle-btn .sidebar-chevron-left {
-        display: inline-block;
-    }
-    body:not(.sidebar-collapsed) .sidebar-toggle-btn .sidebar-chevron-right {
-        display: none;
+    /* Bring the header closer to the sidebar boundary */
+    .admin-header {
+        padding-left: 12px;
     }
     
-    /* When collapsed: show chevron right, hide chevron left */
-    body.sidebar-collapsed .sidebar-toggle-btn .sidebar-chevron-left {
-        display: none;
+    /* Show sidebar toggle in the header on desktop */
+    .sidebar-toggle {
+        display: inline-grid !important;
     }
-    body.sidebar-collapsed .sidebar-toggle-btn .sidebar-chevron-right {
-        display: inline-block;
+    
+    /* Hide the menu icon on desktop */
+    .sidebar-toggle .sidebar-menu-icon {
+        display: none !important;
+    }
+    
+    /* When expanded: show close panel, hide open panel */
+    body:not(.sidebar-collapsed) .sidebar-toggle .sidebar-chevron-left {
+        display: inline-block !important;
+    }
+    body:not(.sidebar-collapsed) .sidebar-toggle .sidebar-chevron-right {
+        display: none !important;
+    }
+    
+    /* When collapsed: show open panel, hide close panel */
+    body.sidebar-collapsed .sidebar-toggle .sidebar-chevron-left {
+        display: none !important;
+    }
+    body.sidebar-collapsed .sidebar-toggle .sidebar-chevron-right {
+        display: inline-block !important;
+    }
+
+    /* Hide the floating boundary button completely */
+    .sidebar-toggle-btn {
+        display: none !important;
     }
 }
 
