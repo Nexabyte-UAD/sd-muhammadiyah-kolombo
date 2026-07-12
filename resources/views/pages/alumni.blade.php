@@ -111,7 +111,8 @@
                                             data-prestasi="{{ $item->prestasis->map(fn ($r) => trim($r->judul.' — '.$r->prestasi_medali))->toJson() }}"
                                             data-foto="{{ $item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto) ? asset('storage/' . $item->foto) : '' }}"
                                             data-huruf="{{ substr($item->nama, 0, 1) }}">
-                                        <i class="bi bi-eye-fill me-1"></i> Detail
+                                        <x-admin-icon name="eye" size="15" class="me-1"/>
+                                        Detail
                                     </button>
                                 </td>
                             </tr>

@@ -41,11 +41,11 @@
                     <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 baris</option>
                 </select>
                 <label class="data-search" for="search-input">
-                    <i class="fas fa-search"></i>
+                    <x-admin-icon name="search" size="15"/>
                     <input type="search" id="search-input" name="search" value="{{ $search }}" placeholder="Cari judul atau isi berita...">
                 </label>
                 <button type="submit" class="data-filter-submit">
-                    <i class="fas fa-search"></i>
+                    <x-admin-icon name="search" size="15"/>
                     <span>Cari</span>
                 </button>
                 @if($search !== '')
@@ -81,7 +81,7 @@
                                             <div>
                                                 <div class="content-title">
                                                     <a href="{{ route('berita.detail', $item) }}" target="_blank" style="text-decoration: none; color: inherit;" title="Pratinjau Berita">
-                                                        {{ $item->judul }} <i class="fas fa-external-link-alt text-muted" style="font-size: 10px; margin-left: 4px;"></i>
+                                                        {{ $item->judul }} <x-admin-icon name="external" size="12" class="text-muted" style="margin-left: 4px;"/>
                                                     </a>
                                                 </div>
                                                 <div class="content-meta">{{ Str::limit(strip_tags($item->isi), 78) }}</div>

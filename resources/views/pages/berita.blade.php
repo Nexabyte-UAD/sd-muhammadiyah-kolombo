@@ -22,12 +22,12 @@
                 <div class="input-group">
                     <input type="text" name="search" class="form-control border-secondary-subtle" placeholder="Cari berita..." value="{{ $search ?? '' }}">
                     <button class="btn btn-primary" type="submit">
-                        <i class="bi bi-search"></i>
+                        <x-admin-icon name="search" size="18"/>
                     </button>
                 </div>
                 @if(isset($search) && $search !== '')
                     <a href="{{ route('berita') }}" class="btn btn-outline-secondary" title="Reset Pencarian">
-                        <i class="bi bi-arrow-clockwise"></i>
+                        <x-admin-icon name="refresh" size="18"/>
                     </a>
                 @endif
             </form>
@@ -45,7 +45,7 @@
                         @else
                             <div class="d-flex align-items-center justify-content-center border-bottom bg-secondary bg-opacity-10"
                                  style="height: 230px;">
-                                <i class="bi bi-newspaper text-secondary opacity-50" style="font-size: 3.5rem;"></i>
+                                <x-admin-icon name="news" size="56" class="text-secondary opacity-50"/>
                             </div>
                         @endif
 
@@ -56,7 +56,7 @@
                                     Informasi
                                 </span>
                                 <span class="small text-secondary">
-                                    <i class="bi bi-calendar3 me-1"></i>
+                                    <x-admin-icon name="classes" size="14" class="me-1"/>
                                     {{ \Carbon\Carbon::parse($berita->tanggal)->translatedFormat('d F Y') }}
                                 </span>
                             </div>
@@ -78,7 +78,7 @@
             @empty
                 <div class="col-12">
                     <div class="text-center rounded-4 border py-5 px-3 bg-light">
-                        <i class="bi bi-newspaper fs-1 text-secondary opacity-25 d-block mb-3"></i>
+                        <x-admin-icon name="news" size="48" class="text-secondary opacity-25 mb-3"/>
                         @if(isset($search) && $search !== '')
                             <h5 class="fw-bold text-dark mb-2">Pencarian Tidak Ditemukan</h5>
                             <p class="text-secondary mb-3">Tidak ada berita yang cocok dengan kata kunci "{{ $search }}".</p>

@@ -40,11 +40,11 @@
                 <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 baris</option>
             </select>
             <label class="data-search" for="search-input">
-                <i class="fas fa-search"></i>
+                <x-admin-icon name="search" size="15"/>
                 <input type="search" id="search-input" name="search" value="{{ $search ?? '' }}" placeholder="Cari tingkat, jurusan, wali kelas...">
             </label>
             <button type="submit" class="data-filter-submit">
-                <i class="fas fa-search"></i>
+                <x-admin-icon name="search" size="15"/>
                 <span>Cari</span>
             </button>
             @if(isset($search) && $search !== '')

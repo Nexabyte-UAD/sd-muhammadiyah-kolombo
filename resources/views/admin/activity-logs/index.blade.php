@@ -9,6 +9,12 @@
 @section('page_title', 'Log Aktivitas')
 @section('page_description', 'Riwayat aktivitas admin, perubahan data, dan autentikasi yang tercatat di panel.')
 
+@section('page_actions')
+    <a href="{{ route('dashboard') }}" class="btn-admin btn-admin-secondary">
+        Kembali
+    </a>
+@endsection
+
 @section('content')
 <section class="data-table-panel">
     <div class="data-table-scroll">
@@ -45,7 +51,7 @@
                 @empty
                     <tr>
                         <td colspan="3" class="data-empty">
-                            <i class="fas fa-history"></i>
+                            <x-admin-icon name="activity" size="28"/>
                             <span>Belum ada aktivitas tercatat.</span>
                         </td>
                     </tr>

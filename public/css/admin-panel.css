@@ -24,6 +24,13 @@
 }
 
 * { box-sizing: border-box; }
+.sidebar-custom-icon {
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    vertical-align: -0.125em;
+}
 html { min-height: 100%; }
 body.admin-body {
     min-height: 100vh;
@@ -1820,24 +1827,19 @@ textarea.form-control { min-height: 120px; resize: vertical; line-height: 1.6; }
         color: var(--admin-primary);
         box-shadow: 0 3px 6px rgba(15, 23, 42, 0.12);
     }
-    .sidebar-toggle-btn i {
-        font-size: 9px;
-        line-height: 1;
-    }
-    
     /* When expanded: show chevron left, hide chevron right */
-    body:not(.sidebar-collapsed) .sidebar-toggle-btn .fa-chevron-left {
+    body:not(.sidebar-collapsed) .sidebar-toggle-btn .sidebar-chevron-left {
         display: inline-block;
     }
-    body:not(.sidebar-collapsed) .sidebar-toggle-btn .fa-chevron-right {
+    body:not(.sidebar-collapsed) .sidebar-toggle-btn .sidebar-chevron-right {
         display: none;
     }
     
     /* When collapsed: show chevron right, hide chevron left */
-    body.sidebar-collapsed .sidebar-toggle-btn .fa-chevron-left {
+    body.sidebar-collapsed .sidebar-toggle-btn .sidebar-chevron-left {
         display: none;
     }
-    body.sidebar-collapsed .sidebar-toggle-btn .fa-chevron-right {
+    body.sidebar-collapsed .sidebar-toggle-btn .sidebar-chevron-right {
         display: inline-block;
     }
 }
@@ -2295,22 +2297,3 @@ html.dark-mode .admin-usage-body ol {
 html.dark-mode .admin-usage-body li {
     color: var(--admin-text) !important;
 }
-
-/* Custom PNG Icon Styles in Sidebar & Dashboard Actions */
-.admin-icon-png-img {
-    filter: opacity(0.7) grayscale(100%);
-    transition: filter 0.25s ease;
-}
-.admin-nav-link:hover .admin-icon-png-img,
-.admin-nav-link.active .admin-icon-png-img {
-    filter: opacity(1) grayscale(0%);
-}
-html.dark-mode .admin-icon-png-img {
-    filter: invert(1) brightness(1.2) opacity(0.8);
-}
-html.dark-mode .admin-nav-link:hover .admin-icon-png-img,
-html.dark-mode .admin-nav-link.active .admin-icon-png-img {
-    filter: invert(1) brightness(1.2) opacity(1);
-}
-
-

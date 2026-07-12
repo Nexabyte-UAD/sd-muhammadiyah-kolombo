@@ -74,7 +74,17 @@
                         style="object-fit: cover; object-position: center;"
                         alt="{{ $heroSlides[0]['alt'] }}">
                 @else
-                    <div class="hero-default-bg w-100 h-100" role="img" aria-label="{{ $heroSlides[0]['alt'] }}"></div>
+                    <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-secondary" style="background: #f8fafc; min-height: 600px;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-3">
+                            <rect x="2" y="6" width="14" height="12" rx="1.5" fill="none" />
+                            <circle cx="6" cy="10" r="1.5" fill="none" />
+                            <path d="M2 17l4-4 3.5 3.5 3.5-4 3 3" />
+                            <circle cx="17" cy="8" r="4.5" fill="#f8fafc" />
+                            <circle cx="17" cy="8" r="4.5" fill="none" />
+                            <line x1="14" y1="11" x2="20" y2="5" />
+                        </svg>
+                        <span class="fw-bold" style="color: #64748b; font-size: 1.15rem; letter-spacing: 0.5px;">Gambar Belum Diunggah</span>
+                    </div>
                 @endif
             </div>
         @endif
@@ -532,12 +542,26 @@
                     <div class="welcome-image-container">
                         <div class="welcome-image-accent"></div>
                         <div class="welcome-img-wrapper">
-                            <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800&auto=format&fit=crop" alt="SD Muhammadiyah Komplek Kolombo Yogyakarta">
+                            @if(isset($settings['welcome_image']) && $settings['welcome_image'] && file_exists(public_path('storage/' . $settings['welcome_image'])))
+                                <img src="{{ asset('storage/' . $settings['welcome_image']) }}" alt="SD Muhammadiyah Komplek Kolombo Yogyakarta">
+                            @else
+                                <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-secondary bg-light border" style="height: 100%;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2 opacity-50" style="color: #475569;">
+                                        <rect x="2" y="6" width="14" height="12" rx="1.5" fill="none" />
+                                        <circle cx="6" cy="10" r="1.5" fill="none" />
+                                        <path d="M2 17l4-4 3.5 3.5 3.5-4 3 3" />
+                                        <circle cx="17" cy="8" r="4.5" fill="#f8fafc" />
+                                        <circle cx="17" cy="8" r="4.5" fill="none" />
+                                        <line x1="14" y1="11" x2="20" y2="5" />
+                                    </svg>
+                                    <span class="small fw-semibold text-muted" style="font-size: 0.85rem;">Gambar Belum Diunggah</span>
+                                </div>
+                            @endif
                         </div>
                         <div class="welcome-floating-badge">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="badge-icon-box bg-warning bg-opacity-10 text-warning">
-                                    <i class="bi bi-patch-check-fill"></i>
+                                    <x-admin-icon name="patch-check" size="20"/>
                                 </div>
                                 <div>
                                     <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;">Akreditasi A</h6>
@@ -565,25 +589,25 @@
                         <div class="row g-3 mb-4">
                             <div class="col-sm-6">
                                 <div class="welcome-feature-item">
-                                    <i class="bi bi-shield-fill-check welcome-feature-icon"></i>
+                                    <x-admin-icon name="shield-check" size="24" class="welcome-feature-icon"/>
                                     <span class="welcome-feature-text">Kurikulum Terpadu</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="welcome-feature-item">
-                                    <i class="bi bi-people-fill welcome-feature-icon"></i>
+                                    <x-admin-icon name="users" size="24" class="welcome-feature-icon"/>
                                     <span class="welcome-feature-text">Pengajar Profesional</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="welcome-feature-item">
-                                    <i class="bi bi-trophy-fill welcome-feature-icon"></i>
+                                    <x-admin-icon name="trophy" size="24" class="welcome-feature-icon"/>
                                     <span class="welcome-feature-text">Bakat & Minat Anak</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="welcome-feature-item">
-                                    <i class="bi bi-check-circle-fill welcome-feature-icon"></i>
+                                    <x-admin-icon name="check" size="24" class="welcome-feature-icon"/>
                                     <span class="welcome-feature-text">Fasilitas Lengkap</span>
                                 </div>
                             </div>
@@ -605,11 +629,11 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(0,135,78,0.15) !important;">
                         <div class="transform-icon">
-                            <i class="bi bi-person-badge-fill text-success" style="transform: rotate(15deg);"></i>
+                            <x-admin-icon name="person-badge" size="88" class="text-success" style="transform: rotate(15deg);"/>
                         </div>
                         <div class="position-relative z-1">
                             <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-2 bg-success bg-opacity-10 text-success" style="width: 40px; height: 40px;">
-                                <i class="bi bi-person-badge-fill" style="font-size: 1.25rem;"></i>
+                                <x-admin-icon name="person-badge" size="22"/>
                             </div>
                             <h2 class="fw-bolder text-dark mb-1 stat-value">
                                 {{ $countTenagaPendidik }}<span class="text-warning" style="font-size: 1.2rem; vertical-align: middle;">+</span>
@@ -622,11 +646,11 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(254,241,2,0.3) !important;">
                         <div class="transform-icon">
-                            <i class="bi bi-mortarboard-fill text-warning" style="transform: rotate(-10deg);"></i>
+                            <x-admin-icon name="students" size="88" class="text-warning" style="transform: rotate(-10deg);"/>
                         </div>
                         <div class="position-relative z-1">
                             <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-2 bg-warning bg-opacity-10 text-warning" style="width: 40px; height: 40px;">
-                                <i class="bi bi-mortarboard-fill" style="font-size: 1.25rem;"></i>
+                                <x-admin-icon name="students" size="22"/>
                             </div>
                             <h2 class="fw-bolder text-dark mb-1 stat-value">
                                 {{ $countPesertaDidik }}<span class="text-success" style="font-size: 1.2rem; vertical-align: middle;">+</span>
@@ -640,11 +664,11 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(124,58,237,0.18) !important;">
                         <div class="transform-icon">
-                            <i class="bi bi-stars" style="color: #7c3aed; transform: rotate(15deg);"></i>
+                            <x-admin-icon name="ekstrakurikuler" size="88" class="stat-extra-icon" style="transform: rotate(15deg);"/>
                         </div>
                         <div class="position-relative z-1">
                             <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-2" style="width: 40px; height: 40px; color: #7c3aed; background-color: rgba(124,58,237,0.10);">
-                                <i class="bi bi-stars" style="font-size: 1.25rem;"></i>
+                                <x-admin-icon name="ekstrakurikuler" size="22" class="stat-extra-icon"/>
                             </div>
                             <h2 class="fw-bolder text-dark mb-1 stat-value">
                                 {{ $countEkstra }}
@@ -658,11 +682,11 @@
                 <div class="col-12 col-sm-6 col-lg-3">
                     <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(220,53,69,0.15) !important;">
                         <div class="transform-icon">
-                            <i class="bi bi-award-fill text-danger" style="transform: rotate(-15deg);"></i>
+                            <x-admin-icon name="award" size="88" class="text-danger stat-award-icon" style="transform: rotate(-15deg);"/>
                         </div>
                         <div class="position-relative z-1">
                             <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-2 bg-danger bg-opacity-10 text-danger" style="width: 40px; height: 40px;">
-                                <i class="bi bi-award-fill" style="font-size: 1.25rem;"></i>
+                                <x-admin-icon name="award" size="22" class="stat-award-icon"/>
                             </div>
                             <h2 class="fw-bolder text-dark mb-1 stat-value">
                                 {{ $countPrestasi }}<span class="text-warning" style="font-size: 1.2rem; vertical-align: middle;">+</span>
@@ -699,10 +723,18 @@
             transition: opacity 0.4s ease;
         }
 
-        .transform-icon i {
-            font-size: 5.5rem;
+        .transform-icon svg,
+        .transform-icon img {
             display: inline-block;
             transition: transform 0.5s ease;
+        }
+
+        .stat-award-icon {
+            filter: invert(29%) sepia(79%) saturate(2150%) hue-rotate(334deg) brightness(91%) contrast(89%);
+        }
+
+        .stat-extra-icon {
+            filter: invert(28%) sepia(81%) saturate(2364%) hue-rotate(252deg) brightness(91%) contrast(91%);
         }
         
         .stat-geometric-card:hover {
@@ -714,7 +746,8 @@
             opacity: 0.15 !important;
         }
         
-        .stat-geometric-card:hover .transform-icon i {
+        .stat-geometric-card:hover .transform-icon svg,
+        .stat-geometric-card:hover .transform-icon img {
             transform: scale(1.1) rotate(0deg) !important;
         }
 
@@ -732,8 +765,10 @@
                 right: -10px;
             }
 
-            .transform-icon i {
-                font-size: 4rem;
+            .transform-icon svg,
+            .transform-icon img {
+                width: 4rem;
+                height: 4rem;
             }
         }
     </style>
@@ -746,8 +781,17 @@
                     @if(isset($tentang) && $tentang->gambar && file_exists(public_path('storage/' . $tentang->gambar)))
                         <img src="{{ asset('storage/' . $tentang->gambar) }}" class="w-100 h-100" alt="Foto Tentang Sekolah" style="object-fit: cover;">
                     @else
-                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=800&auto=format&fit=crop"
-                            class="w-100 h-100" alt="Foto Fasilitas Sekolah" style="object-fit: cover;">
+                        <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-secondary bg-light border" style="min-height: 380px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2 opacity-50" style="color: #475569;">
+                                <rect x="2" y="6" width="14" height="12" rx="1.5" fill="none" />
+                                <circle cx="6" cy="10" r="1.5" fill="none" />
+                                <path d="M2 17l4-4 3.5 3.5 3.5-4 3 3" />
+                                <circle cx="17" cy="8" r="4.5" fill="#f8fafc" />
+                                <circle cx="17" cy="8" r="4.5" fill="none" />
+                                <line x1="14" y1="11" x2="20" y2="5" />
+                            </svg>
+                            <span class="small fw-semibold text-muted" style="font-size: 0.85rem;">Gambar Belum Diunggah</span>
+                        </div>
                     @endif
                 </div>
                 <!-- Teks Penuh (Kanan) -->
@@ -791,7 +835,7 @@
                             alt="Foto {{ optional($sambutan)->judul ?? 'Kepala Sekolah' }}">
                     @else
                         <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
-                            <i class="bi bi-person text-secondary opacity-25" style="font-size: 6rem;"></i>
+                            <x-admin-icon name="user" size="96" class="text-secondary opacity-25"/>
                         </div>
                     @endif
                 </div>
@@ -830,7 +874,7 @@
                                             @else
                                                 <div
                                                     class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute">
-                                                    <i class="bi bi-person text-white opacity-50 display-1"></i>
+                                                    <x-admin-icon name="user" size="80" class="text-white opacity-50"/>
                                                 </div>
                                             @endif
                                         </div>
@@ -858,7 +902,7 @@
                                             <div class="guru-slide-img bg-blue-custom">
                                                 <div
                                                     class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute">
-                                                    <i class="bi bi-person text-white opacity-50 display-1"></i>
+                                                    <x-admin-icon name="user" size="80" class="text-white opacity-50"/>
                                                 </div>
                                             </div>
                                             <div class="guru-slide-info">
@@ -894,7 +938,7 @@
                                     <img src="{{ asset('storage/' . $ekstra->foto) }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ $ekstra->nama }}">
                                 @else
                                     <div class="w-100 h-100 bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-activity text-secondary fs-1 opacity-50"></i>
+                                        <x-admin-icon name="ekstrakurikuler" size="48" class="text-secondary opacity-50"/>
                                     </div>
                                 @endif
                             </div>
@@ -943,13 +987,13 @@
                                      alt="{{ $beritaUtama->judul }}">
                             @else
                                 <div class="home-news-main-image bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center">
-                                    <i class="bi bi-newspaper text-secondary opacity-50" style="font-size: 5rem;"></i>
+                                    <x-admin-icon name="news" size="80" class="text-secondary opacity-50"/>
                                 </div>
                             @endif
                             <div class="card-body p-4 p-lg-5 position-relative">
                                 <div class="d-flex flex-wrap align-items-center gap-3 text-secondary small mb-3">
                                     <span class="badge bg-primary rounded-pill px-3 py-2">Berita Utama</span>
-                                    <span><i class="bi bi-calendar3 me-1"></i>{{ \Carbon\Carbon::parse($beritaUtama->tanggal)->translatedFormat('d F Y') }}</span>
+                                    <span><x-admin-icon name="classes" size="14" class="me-1"/>{{ \Carbon\Carbon::parse($beritaUtama->tanggal)->translatedFormat('d F Y') }}</span>
                                 </div>
                                 <h4 class="fw-bold text-dark lh-sm mb-4">
                                     <a href="{{ route('berita.detail', $beritaUtama->id) }}" class="text-dark text-decoration-none stretched-link">
@@ -972,12 +1016,12 @@
                                                  alt="{{ $berita->judul }}">
                                         @else
                                             <div class="home-news-side-image flex-shrink-0 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center">
-                                                <i class="bi bi-newspaper text-secondary opacity-50 fs-1"></i>
+                                                <x-admin-icon name="news" size="42" class="text-secondary opacity-50"/>
                                             </div>
                                         @endif
                                         <div class="card-body p-3 p-md-4 d-flex flex-column justify-content-center">
                                             <p class="text-secondary small mb-2">
-                                                <i class="bi bi-calendar3 me-1"></i>{{ \Carbon\Carbon::parse($berita->tanggal)->translatedFormat('d M Y') }}
+                                                <x-admin-icon name="classes" size="14" class="me-1"/>{{ \Carbon\Carbon::parse($berita->tanggal)->translatedFormat('d M Y') }}
                                             </p>
                                             <h5 class="fw-bold lh-sm mb-2" style="font-size: 1rem;">
                                                 <a href="{{ route('berita.detail', $berita->id) }}" class="text-dark text-decoration-none stretched-link">
@@ -997,7 +1041,7 @@
                 </div>
             @else
                 <div class="bg-white rounded-4 shadow-sm p-5 text-center text-muted">
-                    <i class="bi bi-newspaper d-block fs-1 opacity-50 mb-3"></i>
+                    <x-admin-icon name="news" size="48" class="opacity-50 mb-3"/>
                     Belum ada berita terbaru.
                 </div>
             @endif
@@ -1024,7 +1068,7 @@
                                         style="object-fit: cover;" alt="{{ $prestasi->judul }}">
                                 @else
                                     <div class="w-100 h-100 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center" style="padding: 20px;">
-                                        <img src="{{ asset('images/icon-prestasi.png') }}" alt="Prestasi" style="height: 80px; width: 80px; object-fit: contain; opacity: 0.35;">
+                                        <x-admin-icon name="award" size="80" style="opacity: 0.35;"/>
                                     </div>
                                 @endif
                                 <div
@@ -1044,10 +1088,10 @@
                                     </a>
                                 </h5>
                                 <p class="text-dark small fw-semibold mb-1">
-                                    <i class="bi bi-person me-1 text-secondary"></i>{{ $prestasi->nama_siswa ?: 'Nama siswa belum diisi' }}
+                                    <x-admin-icon name="user" size="14" class="me-1 text-secondary"/>{{ $prestasi->nama_siswa ?: 'Nama siswa belum diisi' }}
                                 </p>
                                 <p class="small fw-bold mb-1" style="color: #172554;">
-                                    <i class="bi bi-award me-1"></i>{{ $prestasi->prestasi_medali ?: 'Prestasi belum diisi' }}
+                                    <x-admin-icon name="award" size="14" class="me-1"/>{{ $prestasi->prestasi_medali ?: 'Prestasi belum diisi' }}
                                 </p>
                                 <p class="text-secondary small mb-0">
                                     {{ $prestasi->penyelenggara ?: Str::limit($prestasi->deskripsi, 50) }}
@@ -1057,7 +1101,7 @@
                     </div>
                 @empty
                      <div class="col-12 py-5 text-center text-muted">
-                         <img src="{{ asset('images/icon-prestasi.png') }}" alt="Prestasi" style="height: 64px; width: 64px; object-fit: contain; opacity: 0.25;" class="mb-3 d-inline-block">
+                         <x-admin-icon name="award" size="64" class="mb-3" style="opacity: 0.25;"/>
                          <p class="mb-0">Belum ada data prestasi yang ditambahkan.</p>
                      </div>
                 @endforelse

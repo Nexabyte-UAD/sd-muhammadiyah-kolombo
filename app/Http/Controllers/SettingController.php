@@ -38,7 +38,7 @@ class SettingController extends Controller
     public function update(Request $request, IndonesianTextFormatter $formatter)
     {
         // Mendapatkan semua parameter input teks kecuali token, metode, dan berkas gambar
-        $data = $request->except(['_token', '_method', 'logo', 'hero_image', 'hero_image_2', 'hero_image_3']); 
+        $data = $request->except(['_token', '_method', 'logo', 'hero_image', 'hero_image_2', 'hero_image_3', 'welcome_image']); 
         
         // Bersihkan format input teks
         $data = $formatter->fields($data, [
@@ -105,6 +105,23 @@ class SettingController extends Controller
             }
 
             Setting::updateOrCreate(['key' => 'hero_image_3'], ['value' => $path]);
+        }
+
+        // Jalankan upload file Gambar Selamat Datang jika ada
+        if ($request->hasFile('welcome_image')) {
+            $request->validate([
+                'welcome_image' => 'image|mimes:jpeg,png,jpg,gif|max:4096',
+            ]);
+
+            $path = $request->file('welcome_image')->store('settings', 'public');
+
+            // Hapus gambar lama di disk
+            $oldImage = Setting::where('key', 'welcome_image')->first();
+            if ($oldImage && $oldImage->value) {
+                Storage::disk('public')->delete($oldImage->value);
+            }
+
+            Setting::updateOrCreate(['key' => 'welcome_image'], ['value' => $path]);
         }
 
         return redirect()->route('admin.settings.edit')->with('success', 'Konfigurasi Sistem berhasil diperbarui.');

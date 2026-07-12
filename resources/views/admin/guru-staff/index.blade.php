@@ -42,11 +42,11 @@
                 <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 baris</option>
             </select>
             <label class="data-search" for="search-input">
-                <i class="fas fa-search"></i>
+                <x-admin-icon name="search" size="15"/>
                 <input type="search" id="search-input" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama, NIP, jabatan...">
             </label>
             <button type="submit" class="data-filter-submit">
-                <i class="fas fa-search"></i>
+                <x-admin-icon name="search" size="15"/>
                 <span>Cari</span>
             </button>
             @if(isset($search) && $search !== '')
@@ -73,10 +73,7 @@
                                 <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
                             @else
                                 <div class="bg-light text-secondary d-flex align-items-center justify-content-center border" style="width: 50px; height: 50px; border-radius: 8px; background: #f8fafc; border-color: #cbd5e1;">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.65;">
-                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                                        <circle cx="12" cy="7" r="4"/>
-                                    </svg>
+                                    <x-admin-icon name="user" size="24" style="opacity: 0.65;"/>
                                 </div>
                             @endif
                         </td>
@@ -119,7 +116,7 @@
                                     <a href="{{ route('admin.guru-staff.index', ['tipe' => $tipe]) }}" class="btn-admin">Tampilkan Semua</a>
                                 </div>
                             @else
-                                <i class="fas fa-folder-open fa-3x d-block mb-3" style="color: #b4bdc9;"></i>
+                                <x-admin-icon name="folder-open" size="48" style="color: #b4bdc9; display: block; margin: 0 auto 12px;"/>
                                 Belum ada data pegawai.
                             @endif
                         </td>

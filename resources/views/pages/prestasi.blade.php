@@ -18,14 +18,6 @@
             </p>
         </div>
 
-        @php
-            $ikonKategori = [
-                'akademik' => 'bi-mortarboard-fill',
-                'nonakademik' => 'bi-trophy-fill',
-                'keagamaan' => 'bi-moon-stars-fill',
-            ];
-        @endphp
-
         <div class="accordion" id="accordionPrestasi">
             @foreach($kategoriPrestasi as $key => $label)
                 @php($items = $prestasisPerKategori->get($key, collect()))
@@ -39,7 +31,7 @@
                                 aria-controls="kategori-{{ $key }}">
                             <span class="d-flex align-items-center justify-content-center rounded-3 flex-shrink-0"
                                   style="width: 46px; height: 46px; background: #f1f5f9; border: 1px solid #cbd5e1;">
-                                <img src="{{ asset('images/icon-prestasi.png') }}" alt="" style="width: 24px; height: 24px; object-fit: contain;">
+                                <x-admin-icon name="award" size="24"/>
                             </span>
                             <span>
                                 <span class="d-block fw-bold fs-5 text-dark">{{ $label }}</span>
@@ -67,7 +59,7 @@
                                             @else
                                                 <div class="d-flex align-items-center justify-content-center border-bottom bg-secondary bg-opacity-10"
                                                      style="height: 230px; padding: 20px;">
-                                                    <img src="{{ asset('images/icon-prestasi.png') }}" alt="Prestasi" style="height: 90px; width: 90px; object-fit: contain; opacity: 0.35;">
+                                                    <x-admin-icon name="award" size="90" style="opacity: 0.35;"/>
                                                 </div>
                                             @endif
 
@@ -77,7 +69,7 @@
                                                         {{ $label }}
                                                     </span>
                                                     <span class="small text-secondary">
-                                                        <i class="bi bi-calendar3 me-1"></i>
+                                                        <x-admin-icon name="classes" size="14" class="me-1"/>
                                                         {{ $prestasi->tanggal->translatedFormat('d M Y') }}
                                                     </span>
                                                 </div>
@@ -108,7 +100,7 @@
                                 @empty
                                     <div class="col-12">
                                          <div class="text-center rounded-4 border py-5 px-3 bg-light">
-                                             <img src="{{ asset('images/icon-prestasi.png') }}" alt="Prestasi" style="height: 64px; width: 64px; object-fit: contain; opacity: 0.25;" class="mb-3 d-inline-block">
+                                             <x-admin-icon name="award" size="64" class="mb-3" style="opacity: 0.25;"/>
                                              <p class="text-secondary mb-0">Belum ada prestasi dalam kategori {{ strtolower($label) }}.</p>
                                          </div>
                                     </div>

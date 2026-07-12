@@ -17,7 +17,7 @@
                         <img src="{{ asset('storage/' . $profil->gambar) }}" class="img-fluid w-100" style="object-fit: cover; height: 400px;" alt="Kepala Sekolah">
                     @else
                         <div class="bg-light d-flex align-items-center justify-content-center text-secondary w-100" style="height: 400px;">
-                            <i class="bi bi-person-badge" style="font-size: 5rem;"></i>
+                            <x-admin-icon name="person-badge" size="80"/>
                         </div>
                     @endif
                 </div>

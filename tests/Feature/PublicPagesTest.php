@@ -202,7 +202,7 @@ class PublicPagesTest extends TestCase
             ->assertSee('Juara 1')
             ->assertSee('PCM Test')
             ->assertSee('Tingkat Kabupaten')
-            ->assertSee('icon-prestasi.png')
+            ->assertDontSee('icon-prestasi.png')
             ->assertDontSee('No Image')
             ->assertSee('kategori-keagamaan');
     }

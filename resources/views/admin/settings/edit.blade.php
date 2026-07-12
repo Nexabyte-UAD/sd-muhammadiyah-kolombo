@@ -95,7 +95,7 @@
                                         @if(isset($settings['hero_image']) && $settings['hero_image'])
                                             <img src="{{ asset('storage/' . $settings['hero_image']) }}" id="preview-el-hero_image" alt="Hero 1">
                                         @else
-                                            <i class="fas fa-image" id="preview-icon-hero_image"></i>
+                                            <x-admin-icon name="image" size="42" id="preview-icon-hero_image"/>
                                             <img src="#" id="preview-el-hero_image" alt="Hero 1" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                                         @endif
                                     </div>
@@ -109,7 +109,7 @@
                                         @if(isset($settings['hero_image_2']) && $settings['hero_image_2'])
                                             <img src="{{ asset('storage/' . $settings['hero_image_2']) }}" id="preview-el-hero_image_2" alt="Hero 2">
                                         @else
-                                            <i class="fas fa-image" id="preview-icon-hero_image_2"></i>
+                                            <x-admin-icon name="image" size="42" id="preview-icon-hero_image_2"/>
                                             <img src="#" id="preview-el-hero_image_2" alt="Hero 2" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                                         @endif
                                     </div>
@@ -123,7 +123,7 @@
                                         @if(isset($settings['hero_image_3']) && $settings['hero_image_3'])
                                             <img src="{{ asset('storage/' . $settings['hero_image_3']) }}" id="preview-el-hero_image_3" alt="Hero 3">
                                         @else
-                                            <i class="fas fa-image" id="preview-icon-hero_image_3"></i>
+                                            <x-admin-icon name="image" size="42" id="preview-icon-hero_image_3"/>
                                             <img src="#" id="preview-el-hero_image_3" alt="Hero 3" style="display: none; width: 100%; height: 100%; object-fit: cover;">
                                         @endif
                                     </div>
@@ -154,6 +154,20 @@
                                 <div class="settings-field">
                                     <label for="beranda_profil_teks" class="form-label">Deskripsi Ringkas Sekolah</label>
                                     <textarea class="form-control-admin" id="beranda_profil_teks" name="beranda_profil_teks" rows="4">{{ $settings['beranda_profil_teks'] ?? '' }}</textarea>
+                                </div>
+
+                                <div class="settings-field">
+                                    <label for="welcome_image" class="form-label">Gambar Selamat Datang</label>
+                                    <div class="settings-image-preview" id="preview-box-welcome_image" style="width: 100%; height: 180px; background: #f1f5f9; border: 1px solid var(--admin-border); border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; margin-bottom: 8px;">
+                                        @if(isset($settings['welcome_image']) && $settings['welcome_image'])
+                                            <img src="{{ asset('storage/' . $settings['welcome_image']) }}" id="preview-el-welcome_image" alt="Selamat Datang" style="width: 100%; height: 100%; object-fit: cover;">
+                                        @else
+                                            <x-admin-icon name="image" size="42" id="preview-icon-welcome_image" style="color: #94a3b8;"/>
+                                            <img src="#" id="preview-el-welcome_image" alt="Selamat Datang" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                                        @endif
+                                    </div>
+                                    <input type="file" class="form-control-admin form-file" name="welcome_image" id="welcome_image" accept="image/*">
+                                    <div class="form-help">Gambar default yang tampil di sebelah teks Selamat Datang beranda.</div>
                                 </div>
 
                                 <div class="settings-field">
@@ -268,6 +282,7 @@
             setupImagePreview('hero_image');
             setupImagePreview('hero_image_2');
             setupImagePreview('hero_image_3');
+            setupImagePreview('welcome_image');
         });
     </script>
 @endpush

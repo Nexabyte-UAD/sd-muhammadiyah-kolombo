@@ -14,7 +14,8 @@
         </div>
         <div class="col-sm-6 text-right">
             <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus mr-1"></i> Tambah User
+                <x-admin-icon name="plus" size="16" class="mr-1"/>
+                Tambah User
             </a>
         </div>
     </div>
@@ -56,13 +57,13 @@
                             </td>
                             <td class="align-middle text-right">
                                 <a href="{{ route('admin.users.edit', $item->id) }}" class="btn btn-sm btn-info" title="Edit">
-                                    <i class="fas fa-edit"></i>
+                                    <x-admin-icon name="edit" size="15"/>
                                 </a>
                                 <form action="{{ route('admin.users.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-danger" title="Hapus">
-                                        <i class="fas fa-trash"></i>
+                                        <x-admin-icon name="trash" size="15"/>
                                     </button>
                                 </form>
                             </td>
@@ -70,7 +71,7 @@
                         @empty
                         <tr>
                             <td colspan="4" class="text-center py-5 text-muted">
-                                <i class="fas fa-users-slash fa-3x d-block mb-3"></i>
+                                <x-admin-icon name="users-slash" size="48" style="display: block; margin: 0 auto 12px;"/>
                                 Belum ada data user.
                             </td>
                         </tr>

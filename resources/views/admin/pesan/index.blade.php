@@ -59,7 +59,8 @@
                         </td>
                         <td class="align-middle">
                             <a href="mailto:{{ $item->email }}" class="text-secondary" style="text-decoration: none;">
-                                <i class="fas fa-envelope mr-1" style="font-size: 12px;"></i> {{ $item->email }}
+                                <x-admin-icon name="envelope" size="13" class="mr-1"/>
+                                {{ $item->email }}
                             </a>
                         </td>
                         <td class="align-middle" style="white-space: normal; min-width: 250px;">
@@ -98,7 +99,7 @@
                 @empty
                     <tr>
                         <td colspan="5" class="text-center py-5 text-muted">
-                            <i class="fas fa-envelope-open-text fa-3x d-block mb-3" style="color: #b4bdc9;"></i>
+                            <x-admin-icon name="envelope-open" size="48" style="color: #b4bdc9; display: block; margin: 0 auto 12px;"/>
                             Kotak masuk kosong. Belum ada pesan.
                         </td>
                     </tr>

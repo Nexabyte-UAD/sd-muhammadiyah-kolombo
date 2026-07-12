@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Model ActivityLog
@@ -12,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class ActivityLog extends Model
 {
+    use Prunable;
     // Kolom-kolom yang dapat diisi secara massal
     protected $fillable = [
         'user_id',     // ID administrator yang melakukan aksi
@@ -27,5 +30,14 @@ class ActivityLog extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Tentukan kriteria data log yang akan dihapus secara otomatis (pruning).
+     * Menghapus log aktivitas yang usianya sudah lebih dari 6 bulan (180 hari).
+     */
+    public function prunable(): Builder
+    {
+        return $this->where('created_at', '<=', now()->subMonths(6));
     }
 }

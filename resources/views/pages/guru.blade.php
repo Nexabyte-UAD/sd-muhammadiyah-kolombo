@@ -33,7 +33,7 @@
                              alt="{{ $guru->nama }}">
                     @else
                         <div class="bg-light d-flex align-items-center justify-content-center text-secondary w-100 border-bottom structural-photo">
-                            <i class="bi bi-person opacity-25" style="font-size: 5rem;"></i>
+                            <x-admin-icon name="user" size="80" class="opacity-25"/>
                         </div>
                     @endif
                     <div class="card-body p-4">

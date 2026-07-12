@@ -13,10 +13,12 @@
 
 @section('page_actions')
     <a href="{{ route('admin.siswa.export', ['status' => $status]) }}" class="btn-admin btn-admin-secondary">
-        <i class="fas fa-file-csv mr-1"></i> Ekspor CSV
+        <x-admin-icon name="csv" size="18"/>
+        Ekspor CSV
     </a>
     <a href="{{ route('admin.siswa.promote.page') }}" class="btn-admin btn-admin-secondary">
-        <i class="fas fa-arrow-up mr-1"></i> Kenaikan Kelas
+        <x-admin-icon name="arrow-up" size="18"/>
+        Kenaikan Kelas
     </a>
     <a href="{{ route('admin.siswa.create') }}" class="btn-admin">
         <x-admin-icon name="plus" size="18"/>
@@ -67,11 +69,11 @@
                 @endif
 
                 <label class="data-search" for="search-input">
-                    <i class="fas fa-search"></i>
+                    <x-admin-icon name="search" size="15"/>
                     <input type="search" id="search-input" name="search" value="{{ $search }}" placeholder="Cari nama atau NIS...">
                 </label>
                 <button type="submit" class="data-filter-submit">
-                    <i class="fas fa-search"></i>
+                    <x-admin-icon name="search" size="15"/>
                     <span>Cari</span>
                 </button>
                 @if($search !== '' || $kelas !== '' || $status !== 'aktif' || $perPage != 10)
@@ -102,10 +104,7 @@
                                     <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto" style="width: 45px; height: 45px; object-fit: cover; border-radius: 8px;">
                                 @else
                                     <div class="bg-light text-secondary d-flex align-items-center justify-content-center border" style="width: 45px; height: 45px; border-radius: 8px; background: #f8fafc; border-color: #cbd5e1; display: inline-flex !important;">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.65;">
-                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
-                                            <circle cx="12" cy="7" r="4"/>
-                                        </svg>
+                                        <x-admin-icon name="user" size="20" style="opacity: 0.65;"/>
                                     </div>
                                 @endif
                             </td>
@@ -170,7 +169,7 @@
                     @empty
                         <tr>
                             <td colspan="8" class="text-center py-5 text-muted">
-                                <i class="fas fa-user-graduate fa-3x d-block mb-3" style="color: #b4bdc9;"></i>
+                                <x-admin-icon name="graduation" size="48" style="color: #b4bdc9; display: block; margin: 0 auto 12px;"/>
                                 Belum ada data siswa ditemukan.
                             </td>
                         </tr>

@@ -68,7 +68,8 @@
                             <button type="button" id="toggle-password" data-password-toggle="password"
                                     style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px; font-size: 15px; line-height: 1;"
                                     aria-label="Tampilkan password">
-                                <i class="fas fa-eye"></i>
+                                <x-admin-icon name="eye" size="18" class="password-icon-show"/>
+                                <x-admin-icon name="eye-off" size="18" class="password-icon-hide" style="display: none;"/>
                             </button>
                         </div>
                         @error('password')<div class="form-error" role="alert">{{ $message }}</div>@enderror
@@ -91,11 +92,10 @@
         btn.addEventListener('click', function () {
             const show = input.type === 'password';
             input.type = show ? 'text' : 'password';
-            btn.querySelector('i').className = show ? 'fas fa-eye-slash' : 'fas fa-eye';
+            btn.querySelector('.password-icon-show').style.display = show ? 'none' : 'inline-block';
+            btn.querySelector('.password-icon-hide').style.display = show ? 'inline-block' : 'none';
             btn.setAttribute('aria-label', show ? 'Sembunyikan password' : 'Tampilkan password');
         });
     </script>
 </body>
 </html>
-
-

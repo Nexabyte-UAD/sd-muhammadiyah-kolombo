@@ -46,7 +46,7 @@
                                 <img src="{{ asset('storage/' . $profil->gambar) }}" id="image-preview-element" alt="Sertifikat Akreditasi" style="max-height: 450px; width: auto; object-fit: contain; border-radius: 8px;">
                             @else
                                 <div id="image-placeholder" style="text-align: center; padding: 40px 0; color: #94a3b8;">
-                                    <i class="fas fa-file-image fa-4x mb-3"></i>
+                                    <x-admin-icon name="image" size="64" style="display: block; margin: 0 auto 12px;"/>
                                     <p class="mb-0">Belum ada file gambar sertifikat yang diunggah.</p>
                                 </div>
                                 <img src="#" id="image-preview-element" alt="Pratinjau Gambar" style="display: none; max-height: 450px; width: auto; object-fit: contain; border-radius: 8px;">
@@ -89,7 +89,7 @@
                             
                             @if(!$profil->gambar)
                                 <div id="image-placeholder" style="padding: 20px; background: #f8fafc; border: 1px solid var(--admin-border); border-radius: 8px; text-align: center; color: #94a3b8; margin-bottom: 12px;">
-                                    <i class="fas fa-camera-retro fa-3x mb-2"></i>
+                                    <x-admin-icon name="camera" size="48" style="display: block; margin: 0 auto 8px;"/>
                                     <p class="mb-0">Belum ada gambar yang diunggah.</p>
                                 </div>
                             @endif

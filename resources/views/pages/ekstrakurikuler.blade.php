@@ -30,7 +30,7 @@
                             @else
                                 <div class="d-flex align-items-center justify-content-center border-bottom bg-secondary bg-opacity-10"
                                      style="height: 230px;">
-                                    <i class="bi bi-activity text-secondary opacity-50" style="font-size: 3.5rem;"></i>
+                                    <x-admin-icon name="ekstrakurikuler" size="56" class="text-secondary opacity-50"/>
                                 </div>
                             @endif
                         </div>
@@ -42,12 +42,12 @@
 
                             <div class="small mb-3">
                                 <div class="d-flex align-items-start gap-2 mb-2 text-secondary">
-                                    <i class="bi bi-calendar3 mt-1" style="color: #172554;"></i>
+                                    <x-admin-icon name="classes" size="15" class="mt-1" style="color: #172554;"/>
                                     <span><span class="fw-semibold text-dark">Jadwal:</span> {{ $ekskul->jadwal }}</span>
                                 </div>
                                 @if($ekskul->pembina)
                                     <div class="d-flex align-items-start gap-2 text-secondary">
-                                        <i class="bi bi-person-badge mt-1" style="color: #172554;"></i>
+                                        <x-admin-icon name="person-badge" size="15" class="mt-1" style="color: #172554;"/>
                                         <span><span class="fw-semibold text-dark">Pembina:</span> {{ $ekskul->pembina }}</span>
                                     </div>
                                 @endif
@@ -62,7 +62,7 @@
             @empty
                 <div class="col-12">
                     <div class="text-center rounded-4 border py-5 px-3 bg-light">
-                        <i class="bi bi-activity fs-1 text-secondary opacity-25 d-block mb-3"></i>
+                        <x-admin-icon name="ekstrakurikuler" size="48" class="text-secondary opacity-25 mb-3"/>
                         <h5 class="fw-bold text-dark mb-2">Belum Ada Ekstrakurikuler</h5>
                         <p class="text-secondary mb-0">Program ekstrakurikuler akan ditampilkan di halaman ini.</p>
                     </div>

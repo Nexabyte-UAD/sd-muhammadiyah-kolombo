@@ -139,6 +139,27 @@ class AdminRoutesTest extends TestCase
         );
     }
 
+    public function test_old_activity_logs_are_prunable(): void
+    {
+        $oldLog = ActivityLog::create([
+            'action_type' => 'Update',
+            'module' => 'Berita',
+            'description' => 'Log lama',
+        ]);
+        $oldLog->forceFill(['created_at' => now()->subMonths(7)])->save();
+
+        $recentLog = ActivityLog::create([
+            'action_type' => 'Update',
+            'module' => 'Berita',
+            'description' => 'Log baru',
+        ]);
+
+        $prunableIds = (new ActivityLog())->prunable()->pluck('id')->all();
+
+        $this->assertContains($oldLog->id, $prunableIds);
+        $this->assertNotContains($recentLog->id, $prunableIds);
+    }
+
     public function test_admin_dashboard_uses_the_custom_panel_layout(): void
     {
         $user = User::create([

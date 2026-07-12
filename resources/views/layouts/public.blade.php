@@ -19,8 +19,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     
@@ -198,7 +196,8 @@
 
         <!-- Kontak Cepat (Kanan) -->
         <div class="d-none d-md-flex align-items-center gap-2 ps-3 border-start border-white border-opacity-25" style="white-space: nowrap; font-size: 0.85rem; font-weight: 500; color: white;">
-          <i class="bi bi-telephone-outbound text-warning me-1"></i> {{ $settings['telepon'] ?? '(0274) 585755' }}
+          <x-admin-icon name="phone-out" size="16" class="text-warning me-1"/>
+          {{ $settings['telepon'] ?? '(0274) 585755' }}
         </div>
 
       </div>
@@ -281,22 +280,22 @@
           <div class="col-lg-4 col-md-6">
             <h5 class="fw-bold text-white mb-4">Hubungi Kami</h5>
             <a href="https://www.google.com/maps/search/?api=1&query=SD+Muhammadiyah+Komplek+Kolombo" target="_blank" class="d-flex mb-3 text-decoration-none text-light hover-white align-items-start">
-              <i class="bi bi-geo-alt-fill text-warning me-3 fs-5"></i>
+              <x-admin-icon name="map-pin" size="22" class="text-warning me-3"/>
               <span>{{ $settings['alamat'] ?? 'Jl. Rajawali No. 10, Demangan Baru, Depok, Sleman, Yogyakarta' }}</span>
             </a>
             <div class="d-flex mb-3">
-              <i class="bi bi-telephone-fill text-warning me-3 fs-5"></i>
+              <x-admin-icon name="phone" size="22" class="text-warning me-3"/>
               <span class="text-light">{{ $settings['telepon'] ?? '(0274) 585755' }}</span>
             </div>
             <div class="d-flex mb-4">
-              <i class="bi bi-envelope-fill text-warning me-3 fs-5"></i>
+              <x-admin-icon name="envelope" size="22" class="text-warning me-3"/>
               <span class="text-light">{{ $settings['email'] ?? 'sdmuhkkolombo@gmail.com' }}</span>
             </div>
             <div class="d-flex gap-3">
-              @if(!empty($settings['facebook'])) <a href="{{ $settings['facebook'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="Facebook SD Muhammadiyah Komplek Kolombo"><i class="bi bi-facebook"></i></a> @endif
-              @if(!empty($settings['instagram'])) <a href="{{ $settings['instagram'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="Instagram SD Muhammadiyah Komplek Kolombo"><i class="bi bi-instagram"></i></a> @endif
-              @if(!empty($settings['tiktok'])) <a href="{{ $settings['tiktok'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="TikTok SD Muhammadiyah Komplek Kolombo"><i class="bi bi-tiktok"></i></a> @endif
-              @if(!empty($settings['youtube'])) <a href="{{ $settings['youtube'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="YouTube SD Muhammadiyah Komplek Kolombo"><i class="bi bi-youtube"></i></a> @endif
+              @if(!empty($settings['facebook'])) <a href="{{ $settings['facebook'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="Facebook SD Muhammadiyah Komplek Kolombo"><x-admin-icon name="facebook" size="19"/></a> @endif
+              @if(!empty($settings['instagram'])) <a href="{{ $settings['instagram'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="Instagram SD Muhammadiyah Komplek Kolombo"><x-admin-icon name="instagram" size="19"/></a> @endif
+              @if(!empty($settings['tiktok'])) <a href="{{ $settings['tiktok'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="TikTok SD Muhammadiyah Komplek Kolombo"><x-admin-icon name="tiktok" size="19"/></a> @endif
+              @if(!empty($settings['youtube'])) <a href="{{ $settings['youtube'] }}" target="_blank" class="text-white hover-white bg-white bg-opacity-10 p-2 rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; text-decoration: none;" aria-label="YouTube SD Muhammadiyah Komplek Kolombo"><x-admin-icon name="youtube" size="19"/></a> @endif
             </div>
           </div>
           
@@ -304,12 +303,12 @@
           <div class="col-lg-3 col-md-6">
             <h5 class="fw-bold text-white mb-4">Info Sekolah</h5>
             <ul class="list-unstyled">
-              <li class="mb-2"><a href="{{ route('home') }}" class="text-light text-decoration-none hover-white"><i class="bi bi-chevron-right text-warning small me-2"></i>Beranda</a></li>
-              <li class="mb-2"><a href="{{ route('tentang') }}" class="text-light text-decoration-none hover-white"><i class="bi bi-chevron-right text-warning small me-2"></i>Profil Sekolah</a></li>
-              <li class="mb-2"><a href="{{ route('prestasi') }}" class="text-light text-decoration-none hover-white"><i class="bi bi-chevron-right text-warning small me-2"></i>Prestasi Siswa</a></li>
-              <li class="mb-2"><a href="{{ route('guru', ['tipe' => 'guru']) }}" class="text-light text-decoration-none hover-white"><i class="bi bi-chevron-right text-warning small me-2"></i>Struktural Pengajar</a></li>
-              <li class="mb-2"><a href="{{ route('ekstrakurikuler') }}" class="text-light text-decoration-none hover-white"><i class="bi bi-chevron-right text-warning small me-2"></i>Ekstrakurikuler</a></li>
-              <li class="mb-2"><a href="{{ route('berita') }}" class="text-light text-decoration-none hover-white"><i class="bi bi-chevron-right text-warning small me-2"></i>Papan Berita</a></li>
+              <li class="mb-2"><a href="{{ route('home') }}" class="text-light text-decoration-none hover-white"><x-admin-icon name="chevron-right" size="14" class="text-warning me-2"/>Beranda</a></li>
+              <li class="mb-2"><a href="{{ route('tentang') }}" class="text-light text-decoration-none hover-white"><x-admin-icon name="chevron-right" size="14" class="text-warning me-2"/>Profil Sekolah</a></li>
+              <li class="mb-2"><a href="{{ route('prestasi') }}" class="text-light text-decoration-none hover-white"><x-admin-icon name="chevron-right" size="14" class="text-warning me-2"/>Prestasi Siswa</a></li>
+              <li class="mb-2"><a href="{{ route('guru', ['tipe' => 'guru']) }}" class="text-light text-decoration-none hover-white"><x-admin-icon name="chevron-right" size="14" class="text-warning me-2"/>Struktural Pengajar</a></li>
+              <li class="mb-2"><a href="{{ route('ekstrakurikuler') }}" class="text-light text-decoration-none hover-white"><x-admin-icon name="chevron-right" size="14" class="text-warning me-2"/>Ekstrakurikuler</a></li>
+              <li class="mb-2"><a href="{{ route('berita') }}" class="text-light text-decoration-none hover-white"><x-admin-icon name="chevron-right" size="14" class="text-warning me-2"/>Papan Berita</a></li>
             </ul>
           </div>
           

@@ -49,11 +49,11 @@
             </select>
 
             <label class="data-search" for="search-input">
-                <i class="fas fa-search"></i>
+                <x-admin-icon name="search" size="15"/>
                 <input type="search" id="search-input" name="search" value="{{ $search }}" placeholder="Cari prestasi, siswa, penyelenggara...">
             </label>
             <button type="submit" class="data-filter-submit">
-                <i class="fas fa-search"></i>
+                <x-admin-icon name="search" size="15"/>
                 <span>Cari</span>
             </button>
             @if($search !== '' || $kategori !== '' || $perPage != 10)
@@ -83,14 +83,15 @@
                                 @if($item->gambar)
                                     <img src="{{ asset('storage/' . $item->gambar) }}" alt="Foto {{ $item->judul }}">
                                 @else
-                                    <img src="{{ asset('images/icon-prestasi.png') }}" alt="" style="width: 26px; height: 26px; object-fit: contain; opacity: 0.5;">
+                                    <x-admin-icon name="award" size="26" style="opacity: 0.5;"/>
                                 @endif
                             </div>
                         </td>
                         <td class="align-middle">
                             <strong class="text-navy">{{ $item->judul }}</strong>
                             <div class="text-muted small mt-1">
-                                <i class="fas fa-user mr-1"></i> {{ $item->nama_siswa ?: '-' }}
+                                <x-admin-icon name="user" size="13" class="mr-1"/>
+                                {{ $item->nama_siswa ?: '-' }}
                             </div>
                         </td>
                         <td class="align-middle">
@@ -131,7 +132,7 @@
                 @empty
                     <tr>
                         <td colspan="7" class="text-center py-5 text-muted">
-                            <i class="fas fa-folder-open fa-3x d-block mb-3" style="color: #b4bdc9;"></i>
+                            <x-admin-icon name="folder-open" size="48" style="color: #b4bdc9; display: block; margin: 0 auto 12px;"/>
                             Belum ada data prestasi.
                         </td>
                     </tr>

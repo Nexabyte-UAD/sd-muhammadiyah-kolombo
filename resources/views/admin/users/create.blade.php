@@ -14,7 +14,8 @@
         </div>
         <div class="col-sm-6 text-right">
             <a href="{{ route('admin.users.index') }}" class="btn btn-default">
-                <i class="fas fa-arrow-left mr-1"></i> Kembali
+                <x-admin-icon name="arrow-left" size="16" class="mr-1"/>
+                Kembali
             </a>
         </div>
     </div>
@@ -70,7 +71,10 @@
                 </div>
                 <div class="card-footer text-right">
                     <button type="reset" class="btn btn-default mr-2">Reset</button>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Simpan User</button>
+                    <button type="submit" class="btn btn-primary">
+                        <x-admin-icon name="save" size="16" class="mr-1"/>
+                        Simpan User
+                    </button>
                 </div>
             </form>
         </div>

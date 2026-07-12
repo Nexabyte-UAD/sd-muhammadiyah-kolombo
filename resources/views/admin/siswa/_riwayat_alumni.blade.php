@@ -12,7 +12,8 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h6 class="font-weight-bold mb-0">Riwayat Pendidikan</h6>
         <button type="button" class="btn-admin btn-admin-secondary" id="tambah-pendidikan" style="min-height: 34px; padding: 6px 12px;">
-            <i class="fas fa-plus mr-1"></i> Tambah Pendidikan
+            <x-admin-icon name="plus" size="16"/>
+            Tambah Pendidikan
         </button>
     </div>
     <div id="daftar-pendidikan">
@@ -25,7 +26,7 @@
                         <div class="col-md-3 mb-2 mb-md-0"><input class="form-control-admin" name="pendidikan[{{ $index }}][jurusan]" value="{{ $row['jurusan'] ?? '' }}" placeholder="Jurusan / Program Studi"></div>
                         <div class="col-md-1 mb-2 mb-md-0"><input type="number" class="form-control-admin px-1" name="pendidikan[{{ $index }}][tahun_masuk]" value="{{ $row['tahun_masuk'] ?? '' }}" placeholder="Masuk"></div>
                         <div class="col-md-2 mb-2 mb-md-0"><input type="number" class="form-control-admin" name="pendidikan[{{ $index }}][tahun_selesai]" value="{{ $row['tahun_selesai'] ?? '' }}" placeholder="Tahun selesai"></div>
-                        <div class="col-md-1 d-flex align-items-center justify-content-center"><button type="button" class="action-button action-danger hapus-riwayat"><i class="fas fa-times"></i></button></div>
+                        <div class="col-md-1 d-flex align-items-center justify-content-center"><button type="button" class="action-button action-danger hapus-riwayat"><x-admin-icon name="x" size="16"/></button></div>
                     </div>
                 </div>
             </div>
@@ -35,10 +36,16 @@
 
 </div>
 
+<template id="riwayat-remove-icon-template">
+    <x-admin-icon name="x" size="16"/>
+</template>
+
 @once
 @push('scripts')
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    const removeIcon = document.getElementById('riwayat-remove-icon-template')?.innerHTML.trim() || 'x';
+
     function tambahRiwayat(container, prefix, fields) {
         const index = container.getAttribute('data-next-index') ?? container.querySelectorAll('.riwayat-item').length;
         container.setAttribute('data-next-index', parseInt(index) + 1);
@@ -48,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
         const wrapper = document.createElement('div');
         wrapper.className = 'card bg-light border riwayat-item mb-2';
-        wrapper.innerHTML = `<div class="card-body py-3"><div class="row">${columns}<div class="col-md-1 d-flex align-items-center justify-content-center"><button type="button" class="action-button action-danger hapus-riwayat"><i class="fas fa-times"></i></button></div></div></div></div>`;
+        wrapper.innerHTML = `<div class="card-body py-3"><div class="row">${columns}<div class="col-md-1 d-flex align-items-center justify-content-center"><button type="button" class="action-button action-danger hapus-riwayat">${removeIcon}</button></div></div></div></div>`;
         container.appendChild(wrapper);
     }
 

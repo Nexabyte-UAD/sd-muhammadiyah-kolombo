@@ -14,7 +14,8 @@
         </div>
         <div class="col-sm-6 text-right">
             <a href="{{ route('admin.users.index') }}" class="btn btn-default">
-                <i class="fas fa-arrow-left mr-1"></i> Kembali
+                <x-admin-icon name="arrow-left" size="16" class="mr-1"/>
+                Kembali
             </a>
         </div>
     </div>
@@ -57,7 +58,7 @@
                     </div>
 
                     <div class="alert alert-info mt-4">
-                        <h5><i class="icon fas fa-info"></i> Ubah Password</h5>
+                        <h5><x-admin-icon name="info" size="17" class="mr-1"/> Ubah Password</h5>
                         Biarkan kosong jika tidak ingin mengubah password saat ini.
                     </div>
 
@@ -75,7 +76,10 @@
                     </div>
                 </div>
                 <div class="card-footer text-right">
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-save mr-1"></i> Update User</button>
+                    <button type="submit" class="btn btn-primary">
+                        <x-admin-icon name="save" size="16" class="mr-1"/>
+                        Update User
+                    </button>
                 </div>
             </form>
         </div>

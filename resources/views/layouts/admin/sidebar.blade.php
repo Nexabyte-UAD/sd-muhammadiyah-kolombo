@@ -7,8 +7,8 @@
 <aside class="admin-sidebar" id="adminSidebar" aria-label="Navigasi admin">
     <!-- Floating Arrow Toggle Button for Desktop -->
     <button type="button" class="sidebar-toggle-btn" data-sidebar-toggle aria-label="Toggle Sidebar">
-        <i class="fas fa-chevron-left"></i>
-        <i class="fas fa-chevron-right"></i>
+        <x-admin-icon name="chevron-left" size="11" class="sidebar-chevron-left"/>
+        <x-admin-icon name="chevron-right" size="11" class="sidebar-chevron-right"/>
     </button>
 
     <div class="admin-brand-wrapper">
@@ -97,7 +97,7 @@
             <span>Pesan Masuk</span>
         </a>
         <a href="{{ route('admin.account.edit') }}" class="admin-nav-link {{ request()->routeIs('admin.account.*') ? 'active' : '' }}" data-tooltip="Akun Admin">
-            <x-admin-icon name="users"/>
+            <x-admin-icon name="user"/>
             <span>Akun Admin</span>
         </a>
         <a href="{{ route('admin.settings.edit') }}" class="admin-nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" data-tooltip="Pengaturan">

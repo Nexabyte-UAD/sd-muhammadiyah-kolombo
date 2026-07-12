@@ -40,11 +40,11 @@
                 <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 baris</option>
             </select>
             <label class="data-search" for="search-input">
-                <i class="fas fa-search"></i>
+                <x-admin-icon name="search" size="15"/>
                 <input type="search" id="search-input" name="search" value="{{ $search ?? '' }}" placeholder="Cari nama, pembina, jadwal...">
             </label>
             <button type="submit" class="data-filter-submit">
-                <i class="fas fa-search"></i>
+                <x-admin-icon name="search" size="15"/>
                 <span>Cari</span>
             </button>
             @if(isset($search) && $search !== '')
@@ -72,7 +72,7 @@
                                 @if($item->foto)
                                     <img src="{{ asset('storage/' . $item->foto) }}" alt="Foto">
                                 @else
-                                    <img src="{{ asset('images/icon-ekstrakurikuler.png') }}" alt="" style="width: 26px; height: 26px; object-fit: contain; opacity: 0.5;">
+                                    <x-admin-icon name="ekstrakurikuler" size="26" style="opacity: 0.5;"/>
                                 @endif
                             </div>
                         </td>
@@ -83,10 +83,12 @@
                             </div>
                         </td>
                         <td class="align-middle text-muted">
-                            <i class="fas fa-clock mr-1" style="font-size: 12px;"></i> {{ $item->jadwal }}
+                            <x-admin-icon name="clock" size="13" class="mr-1"/>
+                            {{ $item->jadwal }}
                         </td>
                         <td class="align-middle text-muted">
-                            <i class="fas fa-user mr-1" style="font-size: 12px;"></i> {{ $item->pembina ?? '-' }}
+                            <x-admin-icon name="user" size="13" class="mr-1"/>
+                            {{ $item->pembina ?? '-' }}
                         </td>
                         <td class="align-middle text-center">
                             <div class="table-actions">
@@ -113,7 +115,7 @@
                                     <a href="{{ route('admin.ekstrakurikuler.index') }}" class="btn-admin">Tampilkan Semua</a>
                                 </div>
                             @else
-                                <i class="fas fa-folder-open fa-3x d-block mb-3" style="color: #b4bdc9;"></i>
+                                <x-admin-icon name="folder-open" size="48" style="color: #b4bdc9; display: block; margin: 0 auto 12px;"/>
                                 Belum ada kegiatan ekstrakurikuler.
                             @endif
                         </td>

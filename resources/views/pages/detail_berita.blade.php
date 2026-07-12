@@ -16,8 +16,8 @@
                 
                 <div class="d-flex align-items-center mb-4 pb-3 border-bottom">
                     <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill fw-medium me-3">Informasi</span>
-                    <span class="text-secondary small fw-medium me-3"><i class="bi bi-calendar3 me-1"></i> {{ \Carbon\Carbon::parse($berita->tanggal)->translatedFormat('l, d F Y') }}</span>
-                    <span class="text-secondary small fw-medium"><i class="bi bi-person me-1"></i> Admin</span>
+                    <span class="text-secondary small fw-medium me-3"><x-admin-icon name="classes" size="14" class="me-1"/> {{ \Carbon\Carbon::parse($berita->tanggal)->translatedFormat('l, d F Y') }}</span>
+                    <span class="text-secondary small fw-medium"><x-admin-icon name="user" size="14" class="me-1"/> Admin</span>
                 </div>
                 
                 @if($berita->gambar)
@@ -36,7 +36,8 @@
                 
                 <div class="mt-5 pt-4 border-top">
                     <a href="{{ route('berita') }}" class="btn btn-outline-primary px-4">
-                        <i class="bi bi-arrow-left me-2"></i> Kembali
+                        <x-admin-icon name="arrow-left" size="16" class="me-2"/>
+                        Kembali
                     </a>
                 </div>
             </div>

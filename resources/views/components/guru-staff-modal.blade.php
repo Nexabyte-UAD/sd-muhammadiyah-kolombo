@@ -27,7 +27,7 @@
                                      style="object-fit: cover; object-position: center top;" alt="{{ $tenaga->nama }}">
                             @else
                                 <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-secondary">
-                                    <i class="bi bi-person fs-1 opacity-25 mb-2"></i>
+                                    <x-admin-icon name="user" size="42" class="opacity-25 mb-2"/>
                                     <span class="small opacity-50">No Image</span>
                                 </div>
                             @endif

@@ -16,7 +16,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/admin-panel.css') }}?v={{ time() }}">
     <script>
         (function() {
@@ -80,7 +79,7 @@
     <div id="confirm-delete-modal" class="admin-modal-overlay" style="display: none;">
         <div class="admin-modal-card">
             <div class="admin-modal-icon">
-                <i class="fas fa-exclamation-triangle"></i>
+                <x-admin-icon name="warning" size="28"/>
             </div>
             <h3 class="admin-modal-title">Konfirmasi Hapus</h3>
             <p class="admin-modal-message" id="confirm-modal-message">Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.</p>
@@ -95,7 +94,7 @@
     <div id="session-timeout-modal" class="admin-modal-overlay" style="display: none;">
         <div class="admin-modal-card">
             <div class="admin-modal-icon" style="background: #eff6ff; color: #3b82f6;">
-                <i class="fas fa-clock"></i>
+                <x-admin-icon name="clock" size="28"/>
             </div>
             <h3 class="admin-modal-title">Sesi Akan Berakhir</h3>
             <p class="admin-modal-message">Sesi Anda akan segera berakhir dalam <strong id="session-countdown-timer">02:00</strong> karena tidak ada aktivitas. Apakah Anda ingin memperpanjang sesi?</p>
@@ -106,12 +105,28 @@
         </div>
     </div>
 
+    <template id="admin-modal-icon-warning"><x-admin-icon name="warning" size="28"/></template>
+    <template id="admin-modal-icon-logout"><x-admin-icon name="logout" size="28"/></template>
+    <template id="admin-modal-icon-shield"><x-admin-icon name="user-shield" size="28"/></template>
+    <template id="admin-modal-icon-settings"><x-admin-icon name="settings" size="28"/></template>
+    <template id="admin-modal-icon-history"><x-admin-icon name="activity" size="28"/></template>
+    <template id="admin-modal-icon-bullhorn"><x-admin-icon name="bullhorn" size="28"/></template>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const confirmModal = document.getElementById('confirm-delete-modal');
             const modalMessage = document.getElementById('confirm-modal-message');
             const btnCancel = document.getElementById('confirm-modal-cancel');
             const btnSubmit = document.getElementById('confirm-modal-submit');
+            const adminModalIcons = {
+                warning: document.getElementById('admin-modal-icon-warning')?.innerHTML.trim() || '',
+                logout: document.getElementById('admin-modal-icon-logout')?.innerHTML.trim() || '',
+                shield: document.getElementById('admin-modal-icon-shield')?.innerHTML.trim() || '',
+                settings: document.getElementById('admin-modal-icon-settings')?.innerHTML.trim() || '',
+                history: document.getElementById('admin-modal-icon-history')?.innerHTML.trim() || '',
+                bullhorn: document.getElementById('admin-modal-icon-bullhorn')?.innerHTML.trim() || '',
+            };
+            adminModalIcons.discard = adminModalIcons.warning;
             let formToSubmit = null;
 
             // Track form dirty states
@@ -160,7 +175,7 @@
                                 modalTitle.textContent = 'Konfirmasi Keluar';
                                 modalMessage.textContent = msg;
                                 
-                                modalIcon.innerHTML = '<i class="fas fa-sign-out-alt"></i>';
+                                modalIcon.innerHTML = adminModalIcons.logout;
                                 modalIcon.style.background = '#fcebea';
                                 modalIcon.style.color = '#d63939';
                                 
@@ -170,7 +185,7 @@
                                 modalTitle.textContent = 'Perbarui Keamanan Akun';
                                 modalMessage.textContent = msg;
                                 
-                                modalIcon.innerHTML = '<i class="fas fa-user-shield"></i>';
+                                modalIcon.innerHTML = adminModalIcons.shield;
                                 modalIcon.style.background = '#eaf2fb';
                                 modalIcon.style.color = '#1d4ed8';
                                 
@@ -180,7 +195,7 @@
                                 modalTitle.textContent = 'Perbarui Pengaturan';
                                 modalMessage.textContent = msg;
                                 
-                                modalIcon.innerHTML = '<i class="fas fa-cog"></i>';
+                                modalIcon.innerHTML = adminModalIcons.settings;
                                 modalIcon.style.background = '#fff4d6';
                                 modalIcon.style.color = '#b57600';
                                 
@@ -190,7 +205,7 @@
                                 modalTitle.textContent = 'Pulihkan Siswa';
                                 modalMessage.textContent = msg;
                                 
-                                modalIcon.innerHTML = '<i class="fas fa-history"></i>';
+                                modalIcon.innerHTML = adminModalIcons.history;
                                 modalIcon.style.background = '#eaf7ec';
                                 modalIcon.style.color = '#2fb344';
                                 
@@ -200,7 +215,7 @@
                                 modalTitle.textContent = 'Konfirmasi Tindakan';
                                 modalMessage.textContent = msg;
                                 
-                                modalIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                                modalIcon.innerHTML = adminModalIcons.warning;
                                 modalIcon.style.background = '#fef2f2';
                                 modalIcon.style.color = '#ef4444';
                                 
@@ -238,7 +253,8 @@
                     modalTitle.textContent = 'Terbitkan Berita?';
                     modalMessage.textContent = 'Berita ini akan langsung diterbitkan secara publik di website utama sekolah. Lanjutkan?';
                     
-                    modalIcon.innerHTML = '<i class="fas fa-bullhorn" style="color: #206bc4;"></i>';
+                    modalIcon.innerHTML = adminModalIcons.bullhorn;
+                    modalIcon.style.color = '#206bc4';
                     modalIcon.style.background = '#eaf2fb';
                     
                     modalSubmit.textContent = 'Ya, Terbitkan';
@@ -263,8 +279,9 @@
                     const modalSubmit = document.getElementById('confirm-modal-submit');
                     
                     modalTitle.textContent = 'Konfirmasi Hapus';
-                    modalIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                    modalIcon.innerHTML = adminModalIcons.warning;
                     modalIcon.style.background = '#fef2f2';
+                    modalIcon.style.color = '#ef4444';
                     modalSubmit.textContent = 'Ya, Hapus';
                     modalSubmit.className = 'btn-modal btn-modal-danger';
                     
@@ -289,7 +306,8 @@
                     modalTitle.textContent = 'Buang Perubahan?';
                     modalMessage.textContent = 'Ada perubahan yang belum disimpan. Apakah Anda yakin ingin membatalkan dan membuang perubahan ini?';
                     
-                    modalIcon.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #d97706;"></i>';
+                    modalIcon.innerHTML = adminModalIcons.discard;
+                    modalIcon.style.color = '#d97706';
                     modalIcon.style.background = '#fef3c7';
                     
                     modalSubmit.textContent = 'Ya, Buang';

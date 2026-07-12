@@ -25,7 +25,7 @@
                     </div>
                 @else
                     <div class="py-5 bg-light rounded-4 border text-secondary mx-auto" style="max-width: 750px;">
-                        <i class="bi bi-file-earmark-image display-1 mb-3 opacity-50"></i>
+                        <x-admin-icon name="file-image" size="72" class="mb-3 opacity-50"/>
                         <h5>Belum Ada Foto Sertifikat</h5>
                     </div>
                 @endif
