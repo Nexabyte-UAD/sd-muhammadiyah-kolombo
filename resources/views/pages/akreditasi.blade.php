@@ -18,17 +18,14 @@
                     {{ optional($profil)->judul ?? 'Sertifikat Akreditasi' }}
                 </h2>
 
-                <!-- Foto Sertifikat -->
-                @if(isset($profil) && $profil->gambar)
-                    <div class="shadow-sm rounded-4 overflow-hidden border p-2 bg-light mx-auto" style="max-width: 750px;">
-                        <img src="{{ asset('storage/' . $profil->gambar) }}" class="img-fluid w-100 rounded-3" alt="Sertifikat Akreditasi SD Muhammadiyah Kolombo">
-                    </div>
-                @else
-                    <div class="py-5 bg-light rounded-4 border text-secondary mx-auto" style="max-width: 750px;">
-                        <x-admin-icon name="file-image" size="72" class="mb-3 opacity-50"/>
-                        <h5>Belum Ada Foto Sertifikat</h5>
-                    </div>
-                @endif
+                <!-- Grid Foto Sertifikat -->
+                <div class="rounded-4 border p-3 mx-auto" style="max-width: 750px; min-height: 420px; background: #f1f3f5; border-color: #dbe2e8 !important;">
+                    @if(isset($profil) && $profil->gambar && file_exists(public_path('storage/' . $profil->gambar)))
+                        <img src="{{ asset('storage/' . $profil->gambar) }}" class="d-block w-100 h-100 rounded-3 bg-white" style="max-height: 620px; object-fit: contain;" alt="Sertifikat Akreditasi SD Muhammadiyah Kolombo">
+                    @else
+                        <img src="{{ asset('assets/images/no-image-available.jpg') }}" class="d-block w-100 rounded-3" style="height: 388px; object-fit: contain; object-position: center; mix-blend-mode: multiply;" alt="Gambar tidak tersedia">
+                    @endif
+                </div>
                 
             </div>
         </div>

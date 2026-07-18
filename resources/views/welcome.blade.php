@@ -74,16 +74,8 @@
                         style="object-fit: cover; object-position: center;"
                         alt="{{ $heroSlides[0]['alt'] }}">
                 @else
-                    <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-secondary" style="background: #f8fafc; min-height: 600px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-3">
-                            <rect x="2" y="6" width="14" height="12" rx="1.5" fill="none" />
-                            <circle cx="6" cy="10" r="1.5" fill="none" />
-                            <path d="M2 17l4-4 3.5 3.5 3.5-4 3 3" />
-                            <circle cx="17" cy="8" r="4.5" fill="#f8fafc" />
-                            <circle cx="17" cy="8" r="4.5" fill="none" />
-                            <line x1="14" y1="11" x2="20" y2="5" />
-                        </svg>
-                        <span class="fw-bold" style="color: #64748b; font-size: 1.15rem; letter-spacing: 0.5px;">Gambar Belum Diunggah</span>
+                    <div class="w-100 h-100 border-bottom" style="background: #f1f3f5; border-color: #e2e8f0 !important;">
+                        <img src="{{ asset('assets/images/no-image-available.jpg') }}" class="d-block w-100 h-100" style="object-fit: contain; object-position: center; mix-blend-mode: multiply;" alt="Gambar tidak tersedia">
                     </div>
                 @endif
             </div>
@@ -545,17 +537,7 @@
                             @if(isset($settings['welcome_image']) && $settings['welcome_image'] && file_exists(public_path('storage/' . $settings['welcome_image'])))
                                 <img src="{{ asset('storage/' . $settings['welcome_image']) }}" alt="SD Muhammadiyah Komplek Kolombo Yogyakarta">
                             @else
-                                <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-secondary bg-light border" style="height: 100%;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2 opacity-50" style="color: #475569;">
-                                        <rect x="2" y="6" width="14" height="12" rx="1.5" fill="none" />
-                                        <circle cx="6" cy="10" r="1.5" fill="none" />
-                                        <path d="M2 17l4-4 3.5 3.5 3.5-4 3 3" />
-                                        <circle cx="17" cy="8" r="4.5" fill="#f8fafc" />
-                                        <circle cx="17" cy="8" r="4.5" fill="none" />
-                                        <line x1="14" y1="11" x2="20" y2="5" />
-                                    </svg>
-                                    <span class="small fw-semibold text-muted" style="font-size: 0.85rem;">Gambar Belum Diunggah</span>
-                                </div>
+                                <img src="{{ asset('assets/images/no-image-available.jpg') }}" class="w-100 h-100" style="object-fit: contain; object-position: center; transform: none;" alt="Gambar tidak tersedia">
                             @endif
                         </div>
                         <div class="welcome-floating-badge">
@@ -781,17 +763,7 @@
                     @if(isset($tentang) && $tentang->gambar && file_exists(public_path('storage/' . $tentang->gambar)))
                         <img src="{{ asset('storage/' . $tentang->gambar) }}" class="w-100 h-100" alt="Foto Tentang Sekolah" style="object-fit: cover;">
                     @else
-                        <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-secondary bg-light border" style="min-height: 380px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2 opacity-50" style="color: #475569;">
-                                <rect x="2" y="6" width="14" height="12" rx="1.5" fill="none" />
-                                <circle cx="6" cy="10" r="1.5" fill="none" />
-                                <path d="M2 17l4-4 3.5 3.5 3.5-4 3 3" />
-                                <circle cx="17" cy="8" r="4.5" fill="#f8fafc" />
-                                <circle cx="17" cy="8" r="4.5" fill="none" />
-                                <line x1="14" y1="11" x2="20" y2="5" />
-                            </svg>
-                            <span class="small fw-semibold text-muted" style="font-size: 0.85rem;">Gambar Belum Diunggah</span>
-                        </div>
+                        <img src="{{ asset('assets/images/no-image-available.jpg') }}" class="w-100 h-100 border" style="object-fit: cover; min-height: 380px;" alt="Gambar tidak tersedia">
                     @endif
                 </div>
                 <!-- Teks Penuh (Kanan) -->
@@ -823,7 +795,7 @@
     
 
     <!-- Sambutan & Daftar Guru Layour Kustom -->
-    <section class="py-5 bg-white">
+    <section class="py-5" style="background-color: #f8fafc;">
         <div class="container">
             <div class="seamless-grid-container">
 
@@ -868,7 +840,7 @@
                             @forelse($tenagaPendidik as $tenaga)
                                 <div class="swiper-slide">
                                     <div class="guru-slide-card">
-                                        <div class="guru-slide-img {{ $tenaga->tipe === 'guru' ? 'bg-blue-custom' : 'bg-red-custom' }}">
+                                        <div class="guru-slide-img {{ $loop->iteration % 2 === 1 ? 'bg-blue-custom' : 'bg-red-custom' }}">
                                             @if($tenaga->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($tenaga->foto))
                                                 <img src="{{ asset('storage/' . $tenaga->foto) }}" alt="{{ $tenaga->nama }}">
                                             @else
@@ -896,18 +868,26 @@
                                 </div>
                             @empty
                                 <!-- Placeholder jika data kosong -->
-                                @for($i = 1; $i <= 4; $i++)
+                                @for($i = 1; $i <= 6; $i++)
                                     <div class="swiper-slide">
                                         <div class="guru-slide-card">
-                                            <div class="guru-slide-img bg-blue-custom">
+                                            <div class="guru-slide-img {{ $i % 2 === 1 ? 'bg-blue-custom' : 'bg-red-custom' }}">
                                                 <div
                                                     class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute">
                                                     <x-admin-icon name="user" size="80" class="text-white opacity-50"/>
                                                 </div>
                                             </div>
                                             <div class="guru-slide-info">
-                                                <p class="text-dark opacity-75 mb-1" style="font-size: 0.85rem;">Jabatan</p>
-                                                <h6 class="text-dark fw-bold mb-0 lh-sm" style="font-size: 0.95rem;">Nama Staf/Guru
+                                                <div class="d-flex align-items-center gap-2 mb-1">
+                                                    <span class="badge {{ $i % 2 === 1 ? 'bg-primary' : 'bg-secondary' }} text-uppercase" style="font-size: 0.6rem;">
+                                                        {{ $i % 2 === 1 ? 'Guru' : 'Staf' }}
+                                                    </span>
+                                                    <span class="text-dark opacity-75 text-truncate" style="font-size: 0.8rem;">
+                                                        {{ $i % 2 === 1 ? 'Jabatan' : 'Staf Sekolah' }}
+                                                    </span>
+                                                </div>
+                                                <h6 class="text-dark fw-bold mb-0 lh-sm" style="font-size: 0.95rem;">
+                                                    {{ $i % 2 === 1 ? 'Nama Guru' : 'Nama Staf' }}
                                                 </h6>
                                             </div>
                                         </div>
@@ -953,14 +933,22 @@
                         </div>
                     </div>
                 @empty
-                    <div class="col-12 py-5 text-center text-muted">Belum ada program ekstrakurikuler.</div>
+                    <div class="col-12">
+                        <div class="home-empty-state">
+                            <div class="home-empty-state-icon">
+                                <x-admin-icon name="ekstrakurikuler" size="48"/>
+                            </div>
+                            <h4>Belum Ada Kegiatan</h4>
+                            <p>Program ekstrakurikuler akan ditampilkan di sini.</p>
+                        </div>
+                    </div>
                 @endforelse
             </div>
         </div>
     </section>
 
     <!-- Berita Terkini -->
-    <section class="py-5 bg-light">
+    <section class="py-5" style="background-color: #f8fafc;">
         <div class="container">
             <div class="d-flex justify-content-between align-items-end mb-4">
                 <div>
@@ -1040,9 +1028,12 @@
                     <a href="{{ route('berita') }}" class="btn btn-outline-primary fw-bold">Lihat Semua</a>
                 </div>
             @else
-                <div class="bg-white rounded-4 shadow-sm p-5 text-center text-muted">
-                    <x-admin-icon name="news" size="48" class="opacity-50 mb-3"/>
-                    Belum ada berita terbaru.
+                <div class="home-empty-state">
+                    <div class="home-empty-state-icon">
+                        <x-admin-icon name="news" size="48"/>
+                    </div>
+                    <h4>Belum Ada Berita Terbaru</h4>
+                    <p>Informasi terbaru dari sekolah akan ditampilkan di sini.</p>
                 </div>
             @endif
         </div>
@@ -1100,16 +1091,61 @@
                         </article>
                     </div>
                 @empty
-                     <div class="col-12 py-5 text-center text-muted">
-                         <x-admin-icon name="award" size="64" class="mb-3" style="opacity: 0.25;"/>
-                         <p class="mb-0">Belum ada data prestasi yang ditambahkan.</p>
-                     </div>
+                    <div class="col-12">
+                        <div class="home-empty-state">
+                            <div class="home-empty-state-icon">
+                                <x-admin-icon name="award" size="48"/>
+                            </div>
+                            <h4>Belum Ada Data Prestasi</h4>
+                            <p>Pencapaian terbaru siswa akan ditampilkan di sini.</p>
+                        </div>
+                    </div>
                 @endforelse
             </div>
         </div>
     </section>
 
     <style>
+        .home-empty-state {
+            min-height: 220px;
+            padding: 2.5rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        }
+
+        .home-empty-state-icon {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.72;
+        }
+
+        .home-empty-state h4 {
+            margin-bottom: 0.5rem;
+            color: #0f172a;
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .home-empty-state p {
+            margin-bottom: 0;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
         .hover-primary:hover {
             color: #1e3a8a !important;
         }
@@ -1150,7 +1186,7 @@
     </style>
 
     <!-- Masukan & Saran (Ultra Clean) -->
-    <section id="kontak" class="py-5 bg-white">
+    <section id="kontak" class="py-5" style="background-color: #f8fafc;">
         <div class="container">
             <div class="row justify-content-between align-items-center g-4">
                 <div class="col-lg-4">

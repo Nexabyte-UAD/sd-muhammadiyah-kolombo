@@ -10,14 +10,16 @@
 
 <section class="py-5 bg-white">
     <div class="container py-4">
-        <div class="row g-5">
+        <div class="row align-items-start g-5">
             <div class="col-lg-4 text-center">
-                <div class="rounded-4 overflow-hidden shadow-sm border mb-3">
-                    @if(isset($profil) && $profil->gambar)
-                        <img src="{{ asset('storage/' . $profil->gambar) }}" class="img-fluid w-100" style="object-fit: cover; height: 400px;" alt="Kepala Sekolah">
+                <div class="rounded-4 overflow-hidden border mb-3" style="height: 400px;">
+                    @if(isset($profil) && $profil->gambar && file_exists(public_path('storage/' . $profil->gambar)))
+                        <img src="{{ asset('storage/' . $profil->gambar) }}" class="d-block w-100 h-100" style="object-fit: cover; object-position: top center;" alt="Kepala Sekolah">
                     @else
-                        <div class="bg-light d-flex align-items-center justify-content-center text-secondary w-100" style="height: 400px;">
-                            <x-admin-icon name="person-badge" size="80"/>
+                        <div class="w-100 h-100 bg-light position-relative">
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute top-0 start-0">
+                                <x-admin-icon name="user" size="96" class="text-secondary opacity-25"/>
+                            </div>
                         </div>
                     @endif
                 </div>

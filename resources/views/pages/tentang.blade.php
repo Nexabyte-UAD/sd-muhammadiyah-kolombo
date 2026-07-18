@@ -1,7 +1,7 @@
 {{--
     Halaman Tentang Sekolah / Sejarah Publik (pages/tentang.blade.php)
-    Menampilkan profil umum sekolah dan sejarah berdirinya, dilengkapi dengan gambar pendukung
-    yang didesain secara visual sticky di sisi kiri halaman pada desktop screen.
+    Menampilkan profil umum sekolah dan sejarah berdirinya dengan gambar landscape
+    di bagian atas dan konten utama di bawahnya.
 --}}
 @extends('layouts.public')
 
@@ -10,20 +10,20 @@
 
 <section class="py-5 bg-white min-vh-100">
     <div class="container">
-        <div class="row align-items-start g-5">
-            <!-- Sisi Kiri: Gambar Sticky -->
-            <div class="col-lg-5 position-sticky" style="top: 130px;">
-                <div class="rounded-4 overflow-hidden shadow-sm border p-2 bg-light">
+        <div class="row justify-content-center g-4 g-lg-5">
+            <!-- Gambar landscape di bagian atas -->
+            <div class="col-12">
+                <div class="rounded-4 overflow-hidden shadow-sm border p-2" style="height: clamp(260px, 42vw, 480px); background: #f1f3f5; border-color: #e2e8f0 !important;">
                     @if(isset($profil) && $profil->gambar && file_exists(public_path('storage/' . $profil->gambar)))
-                        <img src="{{ asset('storage/' . $profil->gambar) }}" class="img-fluid w-100 rounded-3" style="object-fit: cover; max-height: 500px;" alt="Foto Tentang Sekolah">
+                        <img src="{{ asset('storage/' . $profil->gambar) }}" class="d-block w-100 h-100 rounded-3" style="object-fit: cover; object-position: center;" alt="Foto Tentang Sekolah">
                     @else
-                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1000&auto=format&fit=crop" class="img-fluid w-100 rounded-3" style="object-fit: cover; max-height: 500px;" alt="School Building">
+                        <img src="{{ asset('assets/images/no-image-available.jpg') }}" class="d-block w-100 h-100 rounded-3" style="object-fit: contain; object-position: center; mix-blend-mode: multiply;" alt="Gambar tidak tersedia">
                     @endif
                 </div>
             </div>
-            
-            <!-- Sisi Kanan: Teks Sejarah/Profil -->
-            <div class="col-lg-7">
+
+            <!-- Teks profil di bawah gambar -->
+            <div class="col-lg-10 col-xl-9">
                 <h6 class="text-uppercase fw-bold text-primary mb-2" style="font-size: 0.9rem; letter-spacing: 1.5px;">Tentang Sekolah</h6>
                 <h3 class="fw-bold text-dark mb-4 lh-sm" style="font-size: 1.8rem; letter-spacing: -0.5px;">
                     Membentuk Generasi <span class="text-primary">{{ optional($profil)->judul ?? 'Islami & Berprestasi' }}</span>
