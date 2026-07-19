@@ -520,11 +520,12 @@
             }
 
             .guru-slide-img img {
-                top: -40px;
-                height: calc(100% + 40px);
+                top: 0;
+                height: 100%;
                 object-fit: cover;
                 object-position: center top;
-                transform: none;
+                transform: scale(1.03);
+                transform-origin: center top;
             }
         }
     </style>

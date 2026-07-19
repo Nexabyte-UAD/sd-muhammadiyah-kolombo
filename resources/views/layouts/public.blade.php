@@ -229,6 +229,15 @@
           transition: none;
         }
       }
+
+      @media (max-width: 767.98px) {
+        .scroll-reveal,
+        .scroll-reveal.is-visible {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
+      }
       
       .dropdown-item.active, .dropdown-item:active {
         background-color: #172554;
