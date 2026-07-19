@@ -96,6 +96,20 @@ class PublicPagesTest extends TestCase
 
     }
 
+    public function test_homepage_does_not_duplicate_a_single_teacher(): void
+    {
+        GuruStaff::create([
+            'tipe' => 'guru',
+            'nama' => 'Guru Tunggal Beranda',
+            'jabatan' => 'Guru Kelas',
+        ]);
+
+        $content = $this->get('/')->assertOk()->getContent();
+
+        $this->assertSame(1, substr_count($content, 'Guru Tunggal Beranda'));
+        $this->assertStringContainsString('loop: false', $content);
+    }
+
     public function test_homepage_places_staf_between_balanced_groups_of_guru(): void
     {
         foreach (['Guru A', 'Guru B', 'Guru C', 'Guru D'] as $nama) {

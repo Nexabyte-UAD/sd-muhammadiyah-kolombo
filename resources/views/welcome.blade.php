@@ -1381,11 +1381,8 @@
                 var guruSwiper = new Swiper(".guruSwiper", {
                     slidesPerView: 1,
                     spaceBetween: 20, /* Jeda antar card guru disamakan dengan gap CSS grid */
-                    loop: true,
-                    autoplay: {
-                        delay: 3000,
-                        disableOnInteraction: false,
-                    },
+                    loop: {{ $tenagaPendidik->count() > 3 ? 'true' : 'false' }},
+                    autoplay: @json($tenagaPendidik->count() > 3 ? ['delay' => 3000, 'disableOnInteraction' => false] : false),
                     breakpoints: {
                         768: {
                             slidesPerView: 2,

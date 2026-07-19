@@ -40,14 +40,6 @@ class HomeController extends Controller
         // Menyeimbangkan penyebaran guru & staf secara proporsional untuk ditampilkan di carousel
         $tenagaPendidik = $this->seimbangkanTenagaPendidik($guru, $staf);
 
-        // Jika jumlah data sedikit (kurang dari 6), lakukan duplikasi/pad data agar Swiper autoplay/loop berjalan lancar
-        if ($tenagaPendidik->isNotEmpty() && $tenagaPendidik->count() < 6) {
-            $original = $tenagaPendidik;
-            while ($tenagaPendidik->count() < 6) {
-                $tenagaPendidik = $tenagaPendidik->concat($original);
-            }
-        }
-        
         $prestasis = Prestasi::orderBy('tanggal', 'desc')->take(4)->get();
         $ekstrakurikulers = Ekstrakurikuler::take(4)->get();
 
