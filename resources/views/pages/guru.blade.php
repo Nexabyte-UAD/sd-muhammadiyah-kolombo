@@ -90,8 +90,8 @@
         width: 38px;
         height: 38px;
         padding: 0;
-        border: 0;
-        border-radius: 50% !important;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px !important;
         color: #475569;
         background: transparent;
         font-weight: 600;
@@ -121,7 +121,7 @@
         .structural-pagination nav > div:first-child .page-link {
             width: auto;
             padding: 0 .9rem;
-            border-radius: 999px !important;
+            border-radius: 8px !important;
         }
     }
 </style>
