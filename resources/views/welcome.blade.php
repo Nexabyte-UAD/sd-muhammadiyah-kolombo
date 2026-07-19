@@ -472,10 +472,18 @@
         .guru-slide-info {
             background-color: #ffca28;
             padding: 1.2rem 1rem;
-            min-height: 110px;
+            height: 110px;
+            flex: 0 0 110px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+        }
+
+        .guru-slide-info h6 {
+            display: -webkit-box;
+            overflow: hidden;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
         }
 
         @media (max-width: 1199.98px) {
@@ -505,6 +513,18 @@
 
             .seamless-grid-item {
                 height: 350px;
+            }
+
+            .seamless-grid-span-3 {
+                height: 460px;
+            }
+
+            .guru-slide-img img {
+                top: -40px;
+                height: calc(100% + 40px);
+                object-fit: cover;
+                object-position: center top;
+                transform: none;
             }
         }
     </style>
@@ -880,7 +900,7 @@
 
                 <!-- Grid 3, 4, 5: Guru dan staf dari menu Struktural -->
                 <div class="seamless-grid-item seamless-grid-span-3">
-                    <div class="swiper guruSwiper h-100 w-100 bg-light">
+                    <div class="swiper guruSwiper h-100 w-100">
                         <div class="swiper-wrapper">
                             @forelse($tenagaPendidik as $tenaga)
                                 <div class="swiper-slide">
@@ -899,8 +919,8 @@
                                         </div>
                                         <div class="guru-slide-info">
                                             <div class="d-flex align-items-center gap-2 mb-1">
-                                                <span class="badge {{ $tenaga->tipe === 'guru' ? 'bg-primary' : 'bg-secondary' }} text-uppercase"
-                                                      style="font-size: 0.6rem;">
+                                                <span class="badge {{ $tenaga->tipe === 'guru' ? 'bg-primary' : '' }} text-uppercase"
+                                                      style="font-size: 0.6rem; {{ $tenaga->tipe === 'staf' ? 'background-color: #64748b;' : '' }}">
                                                     {{ $tenaga->tipe === 'guru' ? 'Guru' : 'Staf' }}
                                                 </span>
                                                 <span class="text-dark opacity-75 text-truncate" style="font-size: 0.8rem;">

@@ -110,6 +110,30 @@ class PublicPagesTest extends TestCase
         $this->assertStringContainsString('loop: false', $content);
     }
 
+    public function test_teacher_and_staff_pages_show_the_matching_input_data(): void
+    {
+        GuruStaff::create([
+            'tipe' => 'guru',
+            'nama' => 'Guru Halaman Publik',
+            'jabatan' => 'Guru Kelas',
+        ]);
+        GuruStaff::create([
+            'tipe' => 'staf',
+            'nama' => 'Staf Halaman Publik',
+            'jabatan' => 'Tata Usaha',
+        ]);
+
+        $this->get(route('guru', ['tipe' => 'guru']))
+            ->assertOk()
+            ->assertSee('Guru Halaman Publik')
+            ->assertDontSee('Staf Halaman Publik');
+
+        $this->get(route('guru', ['tipe' => 'staf']))
+            ->assertOk()
+            ->assertSee('Staf Halaman Publik')
+            ->assertDontSee('Guru Halaman Publik');
+    }
+
     public function test_homepage_places_staf_between_balanced_groups_of_guru(): void
     {
         foreach (['Guru A', 'Guru B', 'Guru C', 'Guru D'] as $nama) {
