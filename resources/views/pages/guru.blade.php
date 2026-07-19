@@ -53,11 +53,12 @@
             @endforelse
         </div>
 
-        @foreach($gurus as $guru)
-            <x-guru-staff-modal :tenaga="$guru" />
-        @endforeach
     </div>
 </section>
+
+@foreach($gurus as $guru)
+    <x-guru-staff-modal :tenaga="$guru" />
+@endforeach
 @endsection
 
 @push('styles')
