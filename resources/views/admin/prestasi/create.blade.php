@@ -83,11 +83,12 @@
                 <div class="form-field form-field-full">
                     <label for="gambar" class="form-label">Foto / Bukti (Opsional)</label>
                     
-                    <div class="current-image" id="image-preview-box" style="display: none;">
+                    <div class="current-image" id="image-preview-box">
+                        <span class="current-image-placeholder"><x-admin-icon name="award" size="30"/></span>
                         <img src="#" id="image-preview-element" alt="Pratinjau Gambar">
                         <div>
                             <strong id="image-preview-title">Pratinjau gambar baru</strong>
-                            <small id="image-preview-help">Gambar terpilih (belum disimpan).</small>
+                            <small id="image-preview-help">Belum ada gambar yang dipilih.</small>
                         </div>
                     </div>
 

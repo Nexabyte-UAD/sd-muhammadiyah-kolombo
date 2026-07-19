@@ -30,6 +30,19 @@
         padding-top: 108px; /* Top bar 36px + navbar 72px */
         font-size: 0.95rem; /* Slightly larger than 0.9rem for readability, but proportional */
         line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      img, svg, video, iframe {
+        max-width: 100%;
+      }
+
+      main, section, .container, .container-fluid, .row, [class*="col-"] {
+        min-width: 0;
+      }
+
+      p, h1, h2, h3, h4, h5, h6, a, td, th {
+        overflow-wrap: anywhere;
       }
       
       @media (max-width: 991.98px) {
@@ -38,6 +51,69 @@
       
       @media (max-width: 767.98px) {
         body { padding-top: 108px; }
+
+        .navbar-collapse {
+          max-height: calc(100vh - 108px);
+          overflow-y: auto;
+          overscroll-behavior: contain;
+          padding: .75rem 0 1rem;
+        }
+
+        .navbar-nav .dropdown-menu {
+          margin-left: .75rem;
+          box-shadow: none !important;
+        }
+
+        main > section,
+        main > .py-5 {
+          scroll-margin-top: 108px;
+        }
+
+        footer iframe {
+          min-height: 260px;
+        }
+      }
+
+      @media (max-width: 374.98px) {
+        .container {
+          --bs-gutter-x: 1.5rem;
+        }
+
+        .navbar-brand {
+          min-width: 0;
+          max-width: calc(100% - 52px);
+          margin-right: 0;
+          gap: .4rem !important;
+        }
+
+        .navbar-brand img {
+          width: 42px !important;
+          height: 42px !important;
+        }
+
+        .navbar-brand-title {
+          min-width: 0;
+        }
+
+        .navbar-brand-title strong {
+          overflow: hidden;
+          font-size: .72rem;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .navbar-brand-title small {
+          display: none;
+        }
+
+        .navbar-toggler {
+          flex: 0 0 auto;
+          padding: .25rem .45rem;
+        }
+
+        .btn {
+          white-space: normal;
+        }
       }
       
       /* Global Premium Colors & Consistency */
@@ -130,7 +206,27 @@
       }
 
       .nav-link:hover, .nav-link.active {
-        color: #172554 !important; /* Blue Primary */
+        color: #172554 !important;
+      }
+
+      .scroll-reveal {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 650ms ease, transform 650ms cubic-bezier(.22, 1, .36, 1);
+      }
+
+      .scroll-reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .scroll-reveal,
+        .scroll-reveal.is-visible {
+          opacity: 1;
+          transform: none;
+          transition: none;
+        }
       }
       
       .dropdown-item.active, .dropdown-item:active {
@@ -155,6 +251,13 @@
       .card:hover {
         transform: translateY(-5px);
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+
+      @media (hover: none), (pointer: coarse) {
+        .card:hover {
+          transform: none;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
       }
 
       .btn-primary {
@@ -355,6 +458,26 @@
           // Translate English weekday to Indonesian if necessary, but locle 'id-ID' handles it
           topbarDateElement.innerHTML = todayDate.toLocaleDateString('id-ID', options);
         }
+
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const revealTargets = document.querySelectorAll('main section:not(.hero-wrapper) > .container');
+
+        if (!reduceMotion && 'IntersectionObserver' in window) {
+          const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.12, rootMargin: '0px 0px -45px' });
+
+          revealTargets.forEach((target) => {
+            target.classList.add('scroll-reveal');
+            revealObserver.observe(target);
+          });
+        }
+
       });
     </script>
     <!-- Swiper JS -->

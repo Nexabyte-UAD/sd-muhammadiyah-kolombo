@@ -18,7 +18,9 @@
                     @else
                         <div class="w-100 h-100 bg-light position-relative">
                             <div class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute top-0 start-0">
-                                <x-admin-icon name="user" size="96" class="text-secondary opacity-25"/>
+                                <svg width="96" height="96" viewBox="0 0 16 16" fill="currentColor" class="text-secondary opacity-25" aria-hidden="true">
+                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                </svg>
                             </div>
                         </div>
                     @endif

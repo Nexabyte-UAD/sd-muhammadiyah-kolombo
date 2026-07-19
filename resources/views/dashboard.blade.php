@@ -1,6 +1,6 @@
 {{--
     Halaman Dasbor Panel Admin Utama (dashboard.blade.php)
-    Menampilkan visualisasi ringkasan statistik (siswa, alumni, guru, berita, pesan),
+    Menampilkan visualisasi ringkasan statistik (siswa, alumni, guru, pesan),
     daftar berita terbaru, pesan pengunjung terbaru, log aktivitas teranyar,
     serta kartu notifikasi peringatan jika ada data yang belum lengkap (seperti berita draf,
     siswa tanpa kelas, guru tanpa foto, dll.).
@@ -57,19 +57,6 @@
         <article class="stat-card">
             <div class="stat-card-top">
                 <div>
-                    <div class="stat-label">Berita Terbit</div>
-                    <div class="stat-value">{{ number_format($countBerita) }}</div>
-                </div>
-                <span class="stat-icon yellow"><x-admin-icon name="news" size="21"/></span>
-            </div>
-            <a href="{{ route('admin.berita.index') }}" class="stat-link">
-                Lihat berita <x-admin-icon name="arrow-right" size="14"/>
-            </a>
-        </article>
-
-        <article class="stat-card">
-            <div class="stat-card-top">
-                <div>
                     <div class="stat-label">Pesan Masuk</div>
                     <div class="stat-value">{{ number_format($countPesan) }}</div>
                 </div>
@@ -86,6 +73,7 @@
             <section class="admin-card">
                 <header class="admin-card-header">
                     <h2 class="admin-card-title">Berita Terbaru</h2>
+                    <a href="{{ route('admin.berita.index') }}" class="admin-card-link">Lihat semua</a>
                 </header>
                 <div class="admin-card-body flush">
                     @if($latestBerita->isNotEmpty())

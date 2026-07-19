@@ -83,7 +83,8 @@
                 <div class="form-field form-field-full">
                     <label for="gambar" class="form-label">Foto / Bukti</label>
                     
-                    <div class="current-image" id="image-preview-box" style="display: {{ $prestasi->gambar ? 'flex' : 'none' }}">
+                    <div class="current-image" id="image-preview-box">
+                        <span class="current-image-placeholder"><x-admin-icon name="award" size="30"/></span>
                         <img src="{{ $prestasi->gambar ? asset('storage/' . $prestasi->gambar) : '#' }}" id="image-preview-element" alt="Pratinjau Gambar">
                         <div>
                             <strong id="image-preview-title">{{ $prestasi->gambar ? 'Foto saat ini' : 'Pratinjau gambar baru' }}</strong>

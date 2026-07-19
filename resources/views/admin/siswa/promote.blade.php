@@ -22,7 +22,9 @@
         description="Petunjuk pemrosesan kenaikan kelas, kelulusan, dan mutasi siswa."
         :items="[
             'Pilih Tahun Ajaran aktif dan Kelas Asal siswa yang ingin diproses.',
+            'Proses kelas dari tingkat paling tinggi ke tingkat paling rendah agar perpindahan kapasitas tercatat berurutan.',
             'Tentukan keputusan per siswa: Naik Kelas (pilih Kelas Tujuan), Tinggal Kelas, Lulus, atau Keluar.',
+            'Pilihan Lulus hanya tersedia untuk kelas tingkat akhir dan kelas tujuan naik dibatasi satu tingkat di atasnya.',
             'Bagi siswa yang keluar, tulis nama Sekolah Tujuan dan tanggal efektif mutasi.',
             'Tekan tombol Tinjau dan Proses. Aksi ini akan dicatat permanen dalam riwayat akademik siswa.',
         ]"
@@ -71,6 +73,12 @@
     </section>
 
     @if($kelasAsal)
+        @if($kelasTujuanNaik->isEmpty() && ! $kelasAsalTerakhir)
+            <div class="admin-alert admin-alert-danger" role="alert">
+                Kelas satu tingkat di atas {{ $kelasAsal }} belum tersedia. Lengkapi data kelas sebelum memproses kenaikan.
+            </div>
+        @endif
+
         <form method="POST" action="{{ route('admin.siswa.promote') }}" id="form-status-akhir">
             @csrf
             <input type="hidden" name="kelas_asal" value="{{ $kelasAsal }}">
@@ -96,7 +104,7 @@
                         </thead>
                         <tbody>
                             @forelse($siswas as $siswa)
-                                @php($oldStatus = old("keputusan.{$siswa->id}.status", 'naik'))
+                                @php($oldStatus = old("keputusan.{$siswa->id}.status", ''))
                                 <tr>
                                     <td class="align-middle text-center">{{ $loop->iteration }}</td>
                                     <td class="align-middle">
@@ -105,11 +113,16 @@
                                     </td>
                                     <td class="align-middle">
                                         <select name="keputusan[{{ $siswa->id }}][status]"
-                                                class="form-control-admin keputusan-status"
-                                                data-siswa="{{ $siswa->id }}" required>
-                                            <option value="naik" @selected($oldStatus === 'naik')>Naik Kelas</option>
+                                            class="form-control-admin keputusan-status"
+                                            data-siswa="{{ $siswa->id }}" required>
+                                            <option value="">-- Tentukan Keputusan --</option>
+                                            @if($kelasTujuanNaik->isNotEmpty())
+                                                <option value="naik" @selected($oldStatus === 'naik')>Naik Kelas</option>
+                                            @endif
                                             <option value="tinggal" @selected($oldStatus === 'tinggal')>Tinggal Kelas</option>
-                                            <option value="lulus" @selected($oldStatus === 'lulus')>Lulus</option>
+                                            @if($kelasAsalTerakhir)
+                                                <option value="lulus" @selected($oldStatus === 'lulus')>Lulus</option>
+                                            @endif
                                             <option value="pindah" @selected($oldStatus === 'pindah')>Keluar</option>
                                         </select>
                                     </td>
@@ -118,7 +131,7 @@
                                                 id="kelas-tujuan-{{ $siswa->id }}"
                                                 class="form-control-admin kelas-tujuan @error("keputusan.{$siswa->id}.kelas_tujuan") is-invalid @enderror">
                                             <option value="">-- Pilih Tujuan --</option>
-                                            @foreach($daftarKelas->where('tingkat', '!=', $kelasAsal) as $kelasTujuan)
+                                            @foreach($kelasTujuanNaik as $kelasTujuan)
                                                 <option value="{{ $kelasTujuan->tingkat }}"
                                                     @selected(old("keputusan.{$siswa->id}.kelas_tujuan") === $kelasTujuan->tingkat)>
                                                     {{ $kelasTujuan->tingkat }}
@@ -264,7 +277,27 @@
             const form = document.getElementById('form-status-akhir');
             if (form) {
                 form.addEventListener('submit', function (event) {
-                    if (!confirm('Proses keputusan akhir tahun untuk seluruh siswa yang ditampilkan? Data akan dicatat dalam riwayat akademik.')) {
+                    const ringkasan = { naik: 0, tinggal: 0, lulus: 0, pindah: 0 };
+                    form.querySelectorAll('.keputusan-status').forEach(function (select) {
+                        if (Object.prototype.hasOwnProperty.call(ringkasan, select.value)) {
+                            ringkasan[select.value]++;
+                        }
+                    });
+
+                    const total = Object.values(ringkasan).reduce((jumlah, nilai) => jumlah + nilai, 0);
+                    const pesan = [
+                        'Tinjau keputusan akhir tahun:',
+                        '',
+                        'Naik Kelas: ' + ringkasan.naik,
+                        'Tinggal Kelas: ' + ringkasan.tinggal,
+                        'Lulus: ' + ringkasan.lulus,
+                        'Keluar: ' + ringkasan.pindah,
+                        'Total: ' + total,
+                        '',
+                        'Lanjutkan proses final? Riwayat tidak dapat ditimpa.'
+                    ].join('\n');
+
+                    if (!confirm(pesan)) {
                         event.preventDefault();
                         return;
                     }

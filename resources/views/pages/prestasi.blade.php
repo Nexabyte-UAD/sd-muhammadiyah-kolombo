@@ -20,7 +20,15 @@
 
         <div class="accordion" id="accordionPrestasi">
             @foreach($kategoriPrestasi as $key => $label)
-                @php($items = $prestasisPerKategori->get($key, collect()))
+                @php
+                    $items = $prestasisPerKategori->get($key, collect());
+                    $iconKategori = match ($key) {
+                        'akademik' => 'journal',
+                        'nonakademik' => 'palette',
+                        'keagamaan' => 'moon',
+                        default => 'award',
+                    };
+                @endphp
                 <div class="accordion-item border-0 rounded-4 shadow-sm mb-3 overflow-hidden">
                     <h2 class="accordion-header" id="heading-{{ $key }}">
                         <button class="accordion-button collapsed gap-3 px-4 py-4"
@@ -31,7 +39,7 @@
                                 aria-controls="kategori-{{ $key }}">
                             <span class="d-flex align-items-center justify-content-center rounded-3 flex-shrink-0"
                                   style="width: 46px; height: 46px; background: #f1f5f9; border: 1px solid #cbd5e1;">
-                                <x-admin-icon name="award" size="24"/>
+                                <x-admin-icon :name="$iconKategori" size="24"/>
                             </span>
                             <span>
                                 <span class="d-block fw-bold fs-5 text-dark">{{ $label }}</span>
@@ -59,7 +67,7 @@
                                             @else
                                                 <div class="d-flex align-items-center justify-content-center border-bottom bg-secondary bg-opacity-10"
                                                      style="height: 230px; padding: 20px;">
-                                                    <x-admin-icon name="award" size="90" style="opacity: 0.35;"/>
+                                                    <x-admin-icon :name="$iconKategori" size="90" style="opacity: 0.35;"/>
                                                 </div>
                                             @endif
 
@@ -100,7 +108,7 @@
                                 @empty
                                     <div class="col-12">
                                          <div class="text-center rounded-4 border py-5 px-3 bg-light">
-                                             <x-admin-icon name="award" size="64" class="mb-3" style="opacity: 0.25;"/>
+                                             <x-admin-icon :name="$iconKategori" size="64" class="mb-3" style="opacity: 0.25;"/>
                                              <p class="text-secondary mb-0">Belum ada prestasi dalam kategori {{ strtolower($label) }}.</p>
                                          </div>
                                     </div>
@@ -140,6 +148,28 @@
 <style>
     .accordion-item {
         scroll-margin-top: 130px;
+    }
+
+    .accordion-collapse.collapsing {
+        transition: height 450ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .accordion-collapse .accordion-body {
+        opacity: 0;
+        transform: translateY(-8px);
+        transition: opacity 280ms ease, transform 380ms cubic-bezier(.22, 1, .36, 1);
+    }
+
+    .accordion-collapse.show .accordion-body {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .accordion-collapse.collapsing,
+        .accordion-collapse .accordion-body {
+            transition: none;
+        }
     }
 </style>
 @endpush

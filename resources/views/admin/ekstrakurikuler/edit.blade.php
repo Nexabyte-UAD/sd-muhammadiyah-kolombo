@@ -54,7 +54,8 @@
                 <div class="form-field form-field-full">
                     <label for="foto" class="form-label">Foto Kegiatan</label>
                     
-                    <div class="current-image" id="image-preview-box" style="display: {{ $ekstrakurikuler->foto ? 'flex' : 'none' }}">
+                    <div class="current-image" id="image-preview-box">
+                        <span class="current-image-placeholder"><x-admin-icon name="ekstrakurikuler" size="30"/></span>
                         <img src="{{ $ekstrakurikuler->foto ? asset('storage/' . $ekstrakurikuler->foto) : '#' }}" id="image-preview-element" alt="Pratinjau Gambar">
                         <div>
                             <strong id="image-preview-title">{{ $ekstrakurikuler->foto ? 'Foto saat ini' : 'Pratinjau gambar baru' }}</strong>

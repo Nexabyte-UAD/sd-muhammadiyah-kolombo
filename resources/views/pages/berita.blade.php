@@ -18,17 +18,11 @@
                     Kumpulan informasi, pengumuman, dan artikel terbaru dari SD Muhammadiyah Komplek Kolombo.
                 </p>
             </div>
-            <form action="{{ route('berita') }}" method="GET" class="d-flex align-items-center gap-2" style="max-width: 380px; width: 100%;">
-                <div class="input-group">
-                    <input type="text" name="search" class="form-control border-secondary-subtle" placeholder="Cari berita..." value="{{ $search ?? '' }}">
-                    <button class="btn btn-primary" type="submit">
-                        <x-admin-icon name="search" size="18"/>
-                    </button>
-                </div>
+            <form action="{{ route('berita') }}" method="GET" class="d-flex align-items-center gap-2" style="max-width: 420px; width: 100%;">
+                <input type="text" name="search" class="form-control" placeholder="Cari berita..." value="{{ $search ?? '' }}">
+                <button class="btn btn-primary px-4" type="submit">Cari</button>
                 @if(isset($search) && $search !== '')
-                    <a href="{{ route('berita') }}" class="btn btn-outline-secondary" title="Reset Pencarian">
-                        <x-admin-icon name="refresh" size="18"/>
-                    </a>
+                    <a href="{{ route('berita') }}" class="btn btn-outline-secondary">Reset</a>
                 @endif
             </form>
         </div>

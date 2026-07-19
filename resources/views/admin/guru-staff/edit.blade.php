@@ -101,7 +101,8 @@
                 <div class="form-field form-field-full">
                     <label for="foto" class="form-label">Foto Profil</label>
                     
-                    <div class="current-image" id="image-preview-box" style="display: {{ $guru->foto ? 'flex' : 'none' }}">
+                    <div class="current-image" id="image-preview-box">
+                        <span class="current-image-placeholder"><x-admin-icon name="person-circle" size="30"/></span>
                         <img src="{{ $guru->foto ? asset('storage/' . $guru->foto) : '#' }}" id="image-preview-element" alt="Pratinjau Gambar">
                         <div>
                             <strong id="image-preview-title">{{ $guru->foto ? 'Foto saat ini' : 'Pratinjau gambar baru' }}</strong>

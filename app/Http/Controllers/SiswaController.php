@@ -270,6 +270,12 @@ class SiswaController extends Controller
      */
     public function update(Request $request, Siswa $siswa, IndonesianTextFormatter $formatter)
     {
+        if ($siswa->status === 'aktif' && $request->input('status') === 'alumni') {
+            throw ValidationException::withMessages([
+                'status' => 'Kelulusan siswa aktif harus diproses melalui menu Kenaikan Kelas agar riwayat akademik tercatat.',
+            ]);
+        }
+
         // Validasi input data siswa dan relasinya
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -537,9 +543,21 @@ class SiswaController extends Controller
         $kelasAsal = $request->query('kelas');
         $tahunAjaran = $request->query('tahun_ajaran', $this->tahunAjaranAktif());
         $siswas = collect();
+        $kelasTujuanNaik = collect();
+        $kelasAsalTerakhir = false;
 
         // Mengambil daftar siswa aktif berdasarkan kelas asal yang disaring
         if ($kelasAsal && $daftarKelas->contains('tingkat', $kelasAsal)) {
+            $kelasAsalModel = $daftarKelas->firstWhere('tingkat', $kelasAsal);
+            $tingkatBerikutnya = $this->tingkatBerikutnya($kelasAsalModel, $daftarKelas);
+            $kelasTujuanNaik = $tingkatBerikutnya === null
+                ? collect()
+                : $daftarKelas->filter(
+                    fn (Kelas $kelas) => $this->peringkatKelas($kelas) === $tingkatBerikutnya
+                )->values();
+            $kelasAsalTerakhir = $tingkatBerikutnya === null
+                && $this->peringkatKelas($kelasAsalModel) === 6;
+
             $siswas = Siswa::aktif()
                 ->kelas($kelasAsal)
                 ->orderBy('nama')
@@ -557,7 +575,9 @@ class SiswaController extends Controller
             'kelasAsal',
             'tahunAjaran',
             'siswas',
-            'riwayat'
+            'riwayat',
+            'kelasTujuanNaik',
+            'kelasAsalTerakhir'
         ));
     }
 
@@ -592,6 +612,21 @@ class SiswaController extends Controller
         }
 
         $studentIds = array_map('intval', array_keys($validated['keputusan']));
+        $kelasAsalModel = Kelas::where('tingkat', $validated['kelas_asal'])->firstOrFail();
+        $daftarKelas = $this->daftarKelas();
+        $peringkatKelasAsal = $this->peringkatKelas($kelasAsalModel);
+        if ($peringkatKelasAsal === null) {
+            throw ValidationException::withMessages([
+                'kelas_asal' => 'Urutan kelas asal belum dapat dikenali. Isi kolom Urutan Kelas terlebih dahulu.',
+            ]);
+        }
+        $tingkatBerikutnya = $this->tingkatBerikutnya($kelasAsalModel, $daftarKelas);
+        $kelasTujuanValid = $tingkatBerikutnya === null
+            ? collect()
+            : $daftarKelas->filter(
+                fn (Kelas $kelas) => $this->peringkatKelas($kelas) === $tingkatBerikutnya
+            )->pluck('tingkat');
+
         $siswas = Siswa::aktif()
             ->where('kelas', $validated['kelas_asal'])
             ->whereIn('id', $studentIds)
@@ -604,6 +639,27 @@ class SiswaController extends Controller
             ]);
         }
 
+        $seluruhSiswaIds = Siswa::aktif()
+            ->where('kelas', $validated['kelas_asal'])
+            ->pluck('id')
+            ->map(fn ($id) => (int) $id)
+            ->sort()
+            ->values();
+
+        if ($seluruhSiswaIds->all() !== collect($studentIds)->sort()->values()->all()) {
+            throw ValidationException::withMessages([
+                'keputusan' => 'Keputusan harus ditentukan untuk seluruh siswa aktif di kelas asal.',
+            ]);
+        }
+
+        if (RiwayatAkademik::where('tahun_ajaran', $validated['tahun_ajaran'])
+            ->whereIn('siswa_id', $studentIds)
+            ->exists()) {
+            throw ValidationException::withMessages([
+                'keputusan' => 'Sebagian siswa sudah diproses pada tahun ajaran ini. Riwayat tidak boleh ditimpa.',
+            ]);
+        }
+
         // Validasi logika bisnis setiap keputusan siswa
         foreach ($validated['keputusan'] as $siswaId => $item) {
             if ($item['status'] === 'naik' && empty($item['kelas_tujuan'])) {
@@ -612,9 +668,23 @@ class SiswaController extends Controller
                 ]);
             }
 
-            if ($item['status'] === 'naik' && $item['kelas_tujuan'] === $validated['kelas_asal']) {
+            if ($item['status'] === 'naik' && $tingkatBerikutnya === null) {
                 throw ValidationException::withMessages([
-                    "keputusan.{$siswaId}.kelas_tujuan" => 'Kelas tujuan harus berbeda dari kelas asal.',
+                    "keputusan.{$siswaId}.status" => $peringkatKelasAsal === 6
+                        ? 'Siswa kelas tingkat akhir tidak dapat dinaikkan lagi. Pilih Lulus, Tinggal Kelas, atau Keluar.'
+                        : 'Kelas satu tingkat di atas belum tersedia. Lengkapi data kelas terlebih dahulu.',
+                ]);
+            }
+
+            if ($item['status'] === 'naik' && ! $kelasTujuanValid->contains($item['kelas_tujuan'])) {
+                throw ValidationException::withMessages([
+                    "keputusan.{$siswaId}.kelas_tujuan" => 'Kelas tujuan harus berada tepat satu tingkat di atas kelas asal.',
+                ]);
+            }
+
+            if ($item['status'] === 'lulus' && ($peringkatKelasAsal !== 6 || $tingkatBerikutnya !== null)) {
+                throw ValidationException::withMessages([
+                    "keputusan.{$siswaId}.status" => 'Kelulusan hanya dapat dipilih untuk siswa kelas tingkat akhir.',
                 ]);
             }
 
@@ -628,6 +698,18 @@ class SiswaController extends Controller
         // Pengecekan kapasitas kelas tujuan agar tidak overload saat kenaikan kelas massal
         foreach (collect($validated['keputusan'])->where('status', 'naik')->groupBy('kelas_tujuan') as $tujuan => $items) {
             $kelasTujuan = Kelas::where('tingkat', $tujuan)->firstOrFail();
+            $masihBelumDiproses = Siswa::aktif()
+                ->kelas($tujuan)
+                ->whereDoesntHave('riwayatAkademik', fn ($query) => $query
+                    ->where('tahun_ajaran', $validated['tahun_ajaran']))
+                ->exists();
+
+            if ($masihBelumDiproses) {
+                throw ValidationException::withMessages([
+                    'keputusan' => "Proses status akhir tahun {$tujuan} terlebih dahulu sebelum menaikkan siswa ke kelas tersebut.",
+                ]);
+            }
+
             if ($kelasTujuan->kapasitas && $kelasTujuan->siswas()->where('status', 'aktif')->count() + $items->count() > $kelasTujuan->kapasitas) {
                 throw ValidationException::withMessages([
                     'keputusan' => "Kapasitas {$kelasTujuan->tingkat} tidak mencukupi.",
@@ -647,20 +729,16 @@ class SiswaController extends Controller
                     : null;
 
                 // Catat perubahan ke riwayat akademik
-                RiwayatAkademik::updateOrCreate(
-                    [
+                RiwayatAkademik::create([
                         'siswa_id' => $siswa->id,
                         'tahun_ajaran' => $validated['tahun_ajaran'],
-                    ],
-                    [
                         'kelas_asal' => $validated['kelas_asal'],
                         'kelas_tujuan' => $kelasTujuan,
                         'keputusan' => $item['status'],
                         'catatan' => $item['catatan'] ?? null,
                         'diproses_oleh' => auth()->id(),
                         'tanggal_proses' => now(),
-                    ]
-                );
+                ]);
 
                 // Perbarui biodata aktif siswa bersangkutan
                 $siswa->update(match ($item['status']) {
@@ -714,6 +792,38 @@ class SiswaController extends Controller
     private function daftarKelas()
     {
         return Kelas::orderByRaw('urutan IS NULL')->orderBy('urutan')->orderBy('tingkat')->get();
+    }
+
+    /**
+     * Menentukan tingkat akademik dari angka pada label kelas atau urutan sebagai cadangan.
+     */
+    private function peringkatKelas(Kelas $kelas): ?int
+    {
+        if (preg_match('/\d+/', $kelas->tingkat, $match)) {
+            return (int) $match[0];
+        }
+
+        return $kelas->urutan !== null ? (int) $kelas->urutan : null;
+    }
+
+    /**
+     * Mengambil tepat satu tingkat di atas kelas asal jika sudah dikonfigurasi.
+     */
+    private function tingkatBerikutnya(Kelas $kelasAsal, $daftarKelas): ?int
+    {
+        $peringkatAsal = $this->peringkatKelas($kelasAsal);
+
+        if ($peringkatAsal === null) {
+            return null;
+        }
+
+        $tingkatTujuan = $peringkatAsal + 1;
+
+        return $daftarKelas
+            ->map(fn (Kelas $kelas) => $this->peringkatKelas($kelas))
+            ->contains($tingkatTujuan)
+                ? $tingkatTujuan
+                : null;
     }
 
     /**

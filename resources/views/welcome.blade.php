@@ -152,6 +152,13 @@
             padding-bottom: 1.5rem;
         }
 
+        .welcome-image-container[data-tilt] {
+            transform-style: preserve-3d;
+            transform-origin: center;
+            transition: transform 180ms ease-out;
+            will-change: transform;
+        }
+
         .welcome-image-accent {
             position: absolute;
             top: -15px;
@@ -315,6 +322,13 @@
             }
             .welcome-poster-section {
                 padding: 4.5rem 0;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {
+            .welcome-image-container[data-tilt] {
+                transform: none !important;
+                transition: none;
             }
         }
 
@@ -513,6 +527,19 @@
             /* Soft shadow */
         }
 
+        .profil-grid-item[data-parallax] img {
+            transform: translate3d(0, var(--profil-parallax-y, 0), 0) scale(1.06);
+            transition: transform 120ms linear;
+            will-change: transform;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .profil-grid-item[data-parallax] img {
+                transform: none;
+                transition: none;
+            }
+        }
+
         @media (max-width: 991.98px) {
             .profil-grid-container {
                 grid-template-columns: 1fr;
@@ -531,7 +558,7 @@
                 
                 <!-- Left Column: Visual Image Composition -->
                 <div class="col-lg-6">
-                    <div class="welcome-image-container">
+                    <div class="welcome-image-container" data-tilt>
                         <div class="welcome-image-accent"></div>
                         <div class="welcome-img-wrapper">
                             @if(isset($settings['welcome_image']) && $settings['welcome_image'] && file_exists(public_path('storage/' . $settings['welcome_image'])))
@@ -543,7 +570,9 @@
                         <div class="welcome-floating-badge">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="badge-icon-box bg-warning bg-opacity-10 text-warning">
-                                    <x-admin-icon name="patch-check" size="20"/>
+                                    <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                        <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+                                    </svg>
                                 </div>
                                 <div>
                                     <h6 class="fw-bold mb-0 text-dark" style="font-size: 0.9rem;">Akreditasi A</h6>
@@ -571,25 +600,33 @@
                         <div class="row g-3 mb-4">
                             <div class="col-sm-6">
                                 <div class="welcome-feature-item">
-                                    <x-admin-icon name="shield-check" size="24" class="welcome-feature-icon"/>
+                                    <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor" class="welcome-feature-icon" aria-hidden="true">
+                                        <path d="M5.338 1.59a61 61 0 0 0-2.837.856.48.48 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.7 10.7 0 0 0 2.287 2.233c.346.244.652.42.893.533q.18.085.293.118a1 1 0 0 0 .101.025 1 1 0 0 0 .1-.025q.114-.034.294-.118c.24-.113.547-.29.893-.533a10.7 10.7 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.8 11.8 0 0 1-2.517 2.453 7 7 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7 7 0 0 1-1.048-.625 11.8 11.8 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 63 63 0 0 1 5.072.56"/>
+                                        <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0"/>
+                                    </svg>
                                     <span class="welcome-feature-text">Kurikulum Terpadu</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="welcome-feature-item">
-                                    <x-admin-icon name="users" size="24" class="welcome-feature-icon"/>
+                                    <x-admin-icon name="people" size="24" class="welcome-feature-icon"/>
                                     <span class="welcome-feature-text">Pengajar Profesional</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="welcome-feature-item">
-                                    <x-admin-icon name="trophy" size="24" class="welcome-feature-icon"/>
+                                    <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor" class="welcome-feature-icon" aria-hidden="true">
+                                        <path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5q0 .807-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33 33 0 0 1 2.5.5m.099 2.54a2 2 0 0 0 .72 3.935c-.333-1.05-.588-2.346-.72-3.935m10.083 3.935a2 2 0 0 0 .72-3.935c-.133 1.59-.388 2.885-.72 3.935M3.504 1q.01.775.056 1.469c.13 2.028.457 3.546.87 4.667C5.294 9.48 6.484 10 7 10a.5.5 0 0 1 .5.5v2.61a1 1 0 0 1-.757.97l-1.426.356a.5.5 0 0 0-.179.085L4.5 15h7l-.638-.479a.5.5 0 0 0-.18-.085l-1.425-.356a1 1 0 0 1-.757-.97V10.5A.5.5 0 0 1 9 10c.516 0 1.706-.52 2.57-2.864.413-1.12.74-2.64.87-4.667q.045-.694.056-1.469z"/>
+                                    </svg>
                                     <span class="welcome-feature-text">Bakat & Minat Anak</span>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="welcome-feature-item">
-                                    <x-admin-icon name="check" size="24" class="welcome-feature-icon"/>
+                                    <svg width="24" height="24" viewBox="0 0 16 16" fill="currentColor" class="welcome-feature-icon" aria-hidden="true">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                        <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>
+                                    </svg>
                                     <span class="welcome-feature-text">Fasilitas Lengkap</span>
                                 </div>
                             </div>
@@ -609,13 +646,19 @@
             <div class="row g-4 justify-content-center">
                 <!-- Stat 1 -->
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(0,135,78,0.15) !important;">
+                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card">
                         <div class="transform-icon">
-                            <x-admin-icon name="person-badge" size="88" class="text-success" style="transform: rotate(15deg);"/>
+                            <svg width="88" height="88" viewBox="0 0 16 16" fill="currentColor" class="text-success" style="transform: rotate(15deg);" aria-hidden="true">
+                                <path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                <path d="M4.5 0A2.5 2.5 0 0 0 2 2.5V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2.5A2.5 2.5 0 0 0 11.5 0zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v10.795a4.2 4.2 0 0 0-.776-.492C11.392 12.387 10.063 12 8 12s-3.392.387-4.224.803a4.2 4.2 0 0 0-.776.492z"/>
+                            </svg>
                         </div>
                         <div class="position-relative z-1">
                             <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-2 bg-success bg-opacity-10 text-success" style="width: 40px; height: 40px;">
-                                <x-admin-icon name="person-badge" size="22"/>
+                                <svg width="22" height="22" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                    <path d="M6.5 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1zM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                                    <path d="M4.5 0A2.5 2.5 0 0 0 2 2.5V14a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2.5A2.5 2.5 0 0 0 11.5 0zM3 2.5A1.5 1.5 0 0 1 4.5 1h7A1.5 1.5 0 0 1 13 2.5v10.795a4.2 4.2 0 0 0-.776-.492C11.392 12.387 10.063 12 8 12s-3.392.387-4.224.803a4.2 4.2 0 0 0-.776.492z"/>
+                                </svg>
                             </div>
                             <h2 class="fw-bolder text-dark mb-1 stat-value">
                                 {{ $countTenagaPendidik }}<span class="text-warning" style="font-size: 1.2rem; vertical-align: middle;">+</span>
@@ -626,13 +669,13 @@
                 </div>
                 <!-- Stat 2 -->
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(254,241,2,0.3) !important;">
+                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card">
                         <div class="transform-icon">
-                            <x-admin-icon name="students" size="88" class="text-warning" style="transform: rotate(-10deg);"/>
+                            <x-admin-icon name="people" size="88" class="text-warning" style="transform: rotate(-10deg);"/>
                         </div>
                         <div class="position-relative z-1">
                             <div class="d-inline-flex align-items-center justify-content-center rounded-3 mb-2 bg-warning bg-opacity-10 text-warning" style="width: 40px; height: 40px;">
-                                <x-admin-icon name="students" size="22"/>
+                                <x-admin-icon name="people" size="22"/>
                             </div>
                             <h2 class="fw-bolder text-dark mb-1 stat-value">
                                 {{ $countPesertaDidik }}<span class="text-success" style="font-size: 1.2rem; vertical-align: middle;">+</span>
@@ -644,7 +687,7 @@
                 </div>
                 <!-- Stat 3 -->
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(124,58,237,0.18) !important;">
+                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card">
                         <div class="transform-icon">
                             <x-admin-icon name="ekstrakurikuler" size="88" class="stat-extra-icon" style="transform: rotate(15deg);"/>
                         </div>
@@ -662,7 +705,7 @@
                 </div>
                 <!-- Stat 4 -->
                 <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card border" style="border-color: rgba(220,53,69,0.15) !important;">
+                    <div class="p-3 p-lg-4 rounded-4 shadow-sm h-100 position-relative overflow-hidden stat-geometric-card">
                         <div class="transform-icon">
                             <x-admin-icon name="award" size="88" class="text-danger stat-award-icon" style="transform: rotate(-15deg);"/>
                         </div>
@@ -759,7 +802,7 @@
         <div class="container">
             <div class="profil-grid-container">
                 <!-- Foto Tunggal (Kiri) -->
-                <div class="profil-grid-item">
+                <div class="profil-grid-item" data-parallax>
                     @if(isset($tentang) && $tentang->gambar && file_exists(public_path('storage/' . $tentang->gambar)))
                         <img src="{{ asset('storage/' . $tentang->gambar) }}" class="w-100 h-100" alt="Foto Tentang Sekolah" style="object-fit: cover;">
                     @else
@@ -807,7 +850,9 @@
                             alt="Foto {{ optional($sambutan)->judul ?? 'Kepala Sekolah' }}">
                     @else
                         <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
-                            <x-admin-icon name="user" size="96" class="text-secondary opacity-25"/>
+                            <svg width="96" height="96" viewBox="0 0 16 16" fill="currentColor" class="text-secondary opacity-25" aria-hidden="true">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                            </svg>
                         </div>
                     @endif
                 </div>
@@ -846,7 +891,9 @@
                                             @else
                                                 <div
                                                     class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute">
-                                                    <x-admin-icon name="user" size="80" class="text-white opacity-50"/>
+                                                    <svg width="80" height="80" viewBox="0 0 16 16" fill="currentColor" class="text-white opacity-50" aria-hidden="true">
+                                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                                    </svg>
                                                 </div>
                                             @endif
                                         </div>
@@ -874,7 +921,9 @@
                                             <div class="guru-slide-img {{ $i % 2 === 1 ? 'bg-blue-custom' : 'bg-red-custom' }}">
                                                 <div
                                                     class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute">
-                                                    <x-admin-icon name="user" size="80" class="text-white opacity-50"/>
+                                                    <svg width="80" height="80" viewBox="0 0 16 16" fill="currentColor" class="text-white opacity-50" aria-hidden="true">
+                                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                                    </svg>
                                                 </div>
                                             </div>
                                             <div class="guru-slide-info">
@@ -1121,15 +1170,8 @@
         }
 
         .home-empty-state-icon {
-            width: 64px;
-            height: 64px;
             margin-bottom: 1rem;
-            border-radius: 50%;
-            background: #f1f5f9;
             color: #64748b;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             opacity: 0.72;
         }
 
@@ -1289,6 +1331,53 @@
     @push('scripts')
         <script>
             document.addEventListener("DOMContentLoaded", function () {
+                const welcomeImage = document.querySelector('.welcome-image-container[data-tilt]');
+                const canTilt = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+                    && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                if (welcomeImage && canTilt) {
+                    let tiltFrame;
+
+                    welcomeImage.addEventListener('pointermove', function (event) {
+                        const bounds = welcomeImage.getBoundingClientRect();
+                        const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+                        const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+
+                        cancelAnimationFrame(tiltFrame);
+                        tiltFrame = requestAnimationFrame(function () {
+                            welcomeImage.style.transform = `perspective(1000px) rotateX(${-y * 7}deg) rotateY(${x * 7}deg) scale3d(1.01, 1.01, 1.01)`;
+                        });
+                    });
+
+                    welcomeImage.addEventListener('pointerleave', function () {
+                        cancelAnimationFrame(tiltFrame);
+                        welcomeImage.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                    });
+                }
+
+                const aboutImage = document.querySelector('.profil-grid-item[data-parallax]');
+
+                if (aboutImage && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    let parallaxFrame;
+
+                    const updateAboutParallax = function () {
+                        const bounds = aboutImage.getBoundingClientRect();
+                        const viewportCenter = window.innerHeight / 2;
+                        const elementCenter = bounds.top + bounds.height / 2;
+                        const progress = Math.max(-1, Math.min(1, (viewportCenter - elementCenter) / window.innerHeight));
+                        aboutImage.style.setProperty('--profil-parallax-y', `${progress * 14}px`);
+                    };
+
+                    const requestAboutParallax = function () {
+                        cancelAnimationFrame(parallaxFrame);
+                        parallaxFrame = requestAnimationFrame(updateAboutParallax);
+                    };
+
+                    window.addEventListener('scroll', requestAboutParallax, { passive: true });
+                    window.addEventListener('resize', requestAboutParallax);
+                    requestAboutParallax();
+                }
+
                 var guruSwiper = new Swiper(".guruSwiper", {
                     slidesPerView: 1,
                     spaceBetween: 20, /* Jeda antar card guru disamakan dengan gap CSS grid */

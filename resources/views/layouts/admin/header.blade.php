@@ -13,8 +13,8 @@
     <div class="admin-header-spacer"></div>
 
     <button type="button" class="icon-button theme-toggle-btn" id="theme-toggle" aria-label="Ganti tema" style="margin-right: 14px;">
-        <x-admin-icon name="sun" size="18" class="theme-icon-light" style="display: none;"/>
-        <x-admin-icon name="moon" size="18" class="theme-icon-dark"/>
+        <x-admin-icon name="toggle-on" size="22" class="theme-icon-light" style="display: none;"/>
+        <x-admin-icon name="toggle-off" size="22" class="theme-icon-dark"/>
     </button>
 
     <a href="{{ route('home') }}" target="_blank" rel="noopener" class="header-site-link">

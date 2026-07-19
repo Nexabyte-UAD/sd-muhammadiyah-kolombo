@@ -16,6 +16,10 @@
                 <small>Komplek Kolombo</small>
             </span>
         </a>
+        <button type="button" class="icon-button sidebar-rail-toggle" data-sidebar-toggle
+                aria-controls="adminSidebar" aria-expanded="false" aria-label="Buka sidebar">
+            <x-admin-icon name="sidebar-open" size="22"/>
+        </button>
     </div>
 
     <nav class="admin-nav">
@@ -38,7 +42,7 @@
             <span>Data Kelas</span>
         </a>
         <a href="{{ route('admin.siswa.promote.page') }}" class="admin-nav-link {{ request()->routeIs('admin.siswa.promote.*') ? 'active' : '' }}" data-tooltip="Kenaikan Kelas">
-            <x-admin-icon name="activity"/>
+            <x-admin-icon name="class-promotion"/>
             <span>Kenaikan Kelas</span>
         </a>
 
@@ -59,7 +63,8 @@
             <summary class="admin-nav-link {{ request()->routeIs('admin.guru-staff.*') ? 'active' : '' }}" data-tooltip="Guru & Staf">
                 <x-admin-icon name="guru_staff"/>
                 <span>Guru & Staf</span>
-                <x-admin-icon name="arrow-right" size="15" class="nav-group-chevron"/>
+                <x-admin-icon name="chevron-left" size="15" class="nav-group-chevron nav-group-chevron-closed"/>
+                <x-admin-icon name="chevron-down" size="15" class="nav-group-chevron nav-group-chevron-open"/>
             </summary>
             <div class="admin-nav-children">
                 <a href="{{ route('admin.guru-staff.index', ['tipe' => 'guru']) }}"
@@ -72,7 +77,8 @@
             <summary class="admin-nav-link {{ request()->routeIs('admin.profil-sekolah.*') ? 'active' : '' }}" data-tooltip="Profil Sekolah">
                 <x-admin-icon name="school"/>
                 <span>Profil Sekolah</span>
-                <x-admin-icon name="arrow-right" size="15" class="nav-group-chevron"/>
+                <x-admin-icon name="chevron-left" size="15" class="nav-group-chevron nav-group-chevron-closed"/>
+                <x-admin-icon name="chevron-down" size="15" class="nav-group-chevron nav-group-chevron-open"/>
             </summary>
             <div class="admin-nav-children">
                 <a href="{{ route('admin.profil-sekolah.editType', 'tentang') }}"
@@ -103,7 +109,9 @@
 
     <div class="admin-sidebar-footer">
         <a href="{{ route('admin.account.edit') }}" class="admin-sidebar-account" data-tooltip="Akun Admin">
-            <div class="admin-avatar">{{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 1)) }}</div>
+            <div class="admin-avatar">
+                <x-admin-icon name="person-circle" size="26"/>
+            </div>
             <div class="admin-account-copy">
                 <strong>{{ auth()->user()->name ?? 'Administrator' }}</strong>
                 <small>Administrator</small>

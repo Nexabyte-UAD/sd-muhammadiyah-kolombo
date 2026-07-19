@@ -605,6 +605,127 @@ class AdminRoutesTest extends TestCase
         $this->assertSame(2, RiwayatAkademik::count());
     }
 
+    public function test_end_of_year_flow_rejects_skipped_classes_and_early_graduation(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Validasi Akademik',
+            'email' => 'validasi-akademik@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        Kelas::create(['tingkat' => 'Kelas 1A', 'urutan' => 1]);
+        Kelas::create(['tingkat' => 'Kelas 2A', 'urutan' => 2]);
+        Kelas::create(['tingkat' => 'Kelas 3A', 'urutan' => 3]);
+
+        $siswa = Siswa::create([
+            'nama' => 'Siswa Validasi',
+            'jenis_kelamin' => 'L',
+            'agama' => 'Islam',
+            'kelas' => 'Kelas 1A',
+            'status' => 'aktif',
+            'tahun_masuk' => 2025,
+        ]);
+
+        $this->actingAs($user)->post(route('admin.siswa.promote'), [
+            'kelas_asal' => 'Kelas 1A',
+            'tahun_ajaran' => '2025/2026',
+            'keputusan' => [
+                $siswa->id => ['status' => 'naik', 'kelas_tujuan' => 'Kelas 3A'],
+            ],
+        ])->assertSessionHasErrors("keputusan.{$siswa->id}.kelas_tujuan");
+
+        $this->actingAs($user)->post(route('admin.siswa.promote'), [
+            'kelas_asal' => 'Kelas 1A',
+            'tahun_ajaran' => '2025/2026',
+            'keputusan' => [
+                $siswa->id => ['status' => 'lulus'],
+            ],
+        ])->assertSessionHasErrors("keputusan.{$siswa->id}.status");
+
+        $this->assertSame('aktif', $siswa->fresh()->status);
+        $this->assertSame('Kelas 1A', $siswa->fresh()->kelas);
+        $this->assertSame(0, RiwayatAkademik::count());
+    }
+
+    public function test_final_class_graduation_creates_alumni_and_cannot_be_reprocessed(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Kelulusan',
+            'email' => 'kelulusan@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        Kelas::create(['tingkat' => 'Kelas 6A', 'urutan' => 6]);
+
+        $siswa = Siswa::create([
+            'nama' => 'Siswa Lulus',
+            'jenis_kelamin' => 'P',
+            'agama' => 'Islam',
+            'kelas' => 'Kelas 6A',
+            'status' => 'aktif',
+            'tahun_masuk' => 2020,
+        ]);
+
+        $payload = [
+            'kelas_asal' => 'Kelas 6A',
+            'tahun_ajaran' => '2025/2026',
+            'keputusan' => [
+                $siswa->id => ['status' => 'lulus'],
+            ],
+        ];
+
+        $this->actingAs($user)->post(route('admin.siswa.promote'), $payload)
+            ->assertSessionHasNoErrors();
+
+        $siswa->refresh();
+        $this->assertSame('alumni', $siswa->status);
+        $this->assertSame(2026, $siswa->tahun_lulus);
+        $this->assertNull($siswa->kelas);
+        $this->assertDatabaseHas('riwayat_akademik', [
+            'siswa_id' => $siswa->id,
+            'tahun_ajaran' => '2025/2026',
+            'keputusan' => 'lulus',
+        ]);
+
+        $siswa->update(['status' => 'aktif', 'kelas' => 'Kelas 6A']);
+
+        $this->actingAs($user)->post(route('admin.siswa.promote'), $payload)
+            ->assertSessionHasErrors('keputusan');
+
+        $this->assertSame(1, RiwayatAkademik::count());
+    }
+
+    public function test_active_student_cannot_be_manually_changed_to_alumni(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Status',
+            'email' => 'admin-status@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        $kelas = Kelas::create(['tingkat' => 'Kelas 6B', 'urutan' => 6]);
+        $siswa = Siswa::create([
+            'nama' => 'Siswa Aktif',
+            'jenis_kelamin' => 'L',
+            'agama' => 'Islam',
+            'kelas' => $kelas->tingkat,
+            'kelas_id' => $kelas->id,
+            'status' => 'aktif',
+            'tahun_masuk' => 2020,
+        ]);
+
+        $this->actingAs($user)->put(route('admin.siswa.update', $siswa), [
+            'nama' => $siswa->nama,
+            'jenis_kelamin' => $siswa->jenis_kelamin,
+            'agama' => $siswa->agama,
+            'status' => 'alumni',
+            'tahun_lulus' => 2026,
+            'tahun_masuk' => $siswa->tahun_masuk,
+        ])->assertSessionHasErrors('status');
+
+        $this->assertSame('aktif', $siswa->fresh()->status);
+    }
+
     public function test_student_nis_must_be_unique_but_can_be_kept_when_editing(): void
     {
         $user = User::create([

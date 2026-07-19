@@ -49,7 +49,8 @@
     <div class="form-field form-field-full">
         <label for="gambar" class="form-label">{{ isset($berita) ? 'Ganti Gambar' : 'Gambar Berita' }}</label>
         
-        <div class="current-image" id="image-preview-box" style="display: {{ (isset($berita) && $berita->gambar) ? 'flex' : 'none' }}">
+        <div class="current-image" id="image-preview-box">
+            <span class="current-image-placeholder"><x-admin-icon name="image" size="30"/></span>
             <img src="{{ (isset($berita) && $berita->gambar) ? asset('storage/' . $berita->gambar) : '#' }}" id="image-preview-element" alt="Pratinjau Gambar">
             <div>
                 <strong id="image-preview-title">{{ isset($berita) ? 'Gambar saat ini' : 'Pratinjau gambar baru' }}</strong>

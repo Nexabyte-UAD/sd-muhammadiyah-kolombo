@@ -168,7 +168,8 @@
                 <div class="col-md-6 mb-3">
                     <label for="foto" class="form-label">Foto Siswa</label>
                     
-                    <div class="current-image" id="image-preview-box" style="display: {{ $siswa->foto ? 'flex' : 'none' }}">
+                    <div class="current-image" id="image-preview-box">
+                        <span class="current-image-placeholder"><x-admin-icon name="person-circle" size="30"/></span>
                         <img src="{{ $siswa->foto ? asset('storage/' . $siswa->foto) : '#' }}" id="image-preview-element" alt="Pratinjau Foto">
                         <div>
                             <strong id="image-preview-title">{{ $siswa->foto ? 'Foto saat ini' : 'Pratinjau gambar baru' }}</strong>

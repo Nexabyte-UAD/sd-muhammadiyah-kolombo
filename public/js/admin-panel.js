@@ -16,8 +16,8 @@
             localStorage.setItem('sidebar-collapsed', !open ? 'true' : 'false');
         } else {
             body.classList.toggle('sidebar-open', open);
-            toggles.forEach(t => t.setAttribute('aria-expanded', open ? 'true' : 'false'));
         }
+        toggles.forEach(t => t.setAttribute('aria-expanded', open ? 'true' : 'false'));
     };
 
     // Load persisted state on desktop
@@ -26,6 +26,7 @@
         if (isCollapsed) {
             body.classList.add('sidebar-collapsed');
         }
+        toggles.forEach(t => t.setAttribute('aria-expanded', isCollapsed ? 'false' : 'true'));
     }
 
     toggles.forEach(toggle => {
