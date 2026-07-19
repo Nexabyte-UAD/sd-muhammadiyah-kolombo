@@ -13,7 +13,7 @@
         <div class="row align-items-start g-5">
             <div class="col-lg-4 text-center">
                 <div class="rounded-4 overflow-hidden border mb-3" style="height: 400px;">
-                    @if(isset($profil) && $profil->gambar && file_exists(public_path('storage/' . $profil->gambar)))
+                    @if(isset($profil) && $profil->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($profil->gambar))
                         <img src="{{ asset('storage/' . $profil->gambar) }}" class="d-block w-100 h-100" style="object-fit: cover; object-position: top center;" alt="Kepala Sekolah">
                     @else
                         <div class="w-100 h-100 bg-light position-relative">

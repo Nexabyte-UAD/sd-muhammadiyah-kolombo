@@ -20,7 +20,7 @@
 
                 <!-- Grid Foto Sertifikat -->
                 <div class="rounded-4 border p-3 mx-auto" style="max-width: 750px; min-height: 420px; background: #f1f3f5; border-color: #dbe2e8 !important;">
-                    @if(isset($profil) && $profil->gambar && file_exists(public_path('storage/' . $profil->gambar)))
+                    @if(isset($profil) && $profil->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($profil->gambar))
                         <img src="{{ asset('storage/' . $profil->gambar) }}" class="d-block w-100 h-100 rounded-3 bg-white" style="max-height: 620px; object-fit: contain;" alt="Sertifikat Akreditasi SD Muhammadiyah Kolombo">
                     @else
                         <img src="{{ asset('assets/images/no-image-available.jpg') }}" class="d-block w-100 rounded-3" style="height: 388px; object-fit: contain; object-position: center; mix-blend-mode: multiply;" alt="Gambar tidak tersedia">

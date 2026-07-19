@@ -14,7 +14,7 @@
             <!-- Gambar landscape di bagian atas -->
             <div class="col-12">
                 <div class="rounded-4 overflow-hidden shadow-sm border p-2" style="height: clamp(260px, 42vw, 480px); background: #f1f3f5; border-color: #e2e8f0 !important;">
-                    @if(isset($profil) && $profil->gambar && file_exists(public_path('storage/' . $profil->gambar)))
+                    @if(isset($profil) && $profil->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($profil->gambar))
                         <img src="{{ asset('storage/' . $profil->gambar) }}" class="d-block w-100 h-100 rounded-3" style="object-fit: cover; object-position: center;" alt="Foto Tentang Sekolah">
                     @else
                         <img src="{{ asset('assets/images/no-image-available.jpg') }}" class="d-block w-100 h-100 rounded-3" style="object-fit: contain; object-position: center; mix-blend-mode: multiply;" alt="Gambar tidak tersedia">
