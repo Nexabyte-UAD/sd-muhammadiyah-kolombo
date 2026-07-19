@@ -803,7 +803,7 @@
             <div class="profil-grid-container">
                 <!-- Foto Tunggal (Kiri) -->
                 <div class="profil-grid-item" data-parallax>
-                    @if(isset($tentang) && $tentang->gambar && file_exists(public_path('storage/' . $tentang->gambar)))
+                    @if(isset($tentang) && $tentang->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($tentang->gambar))
                         <img src="{{ asset('storage/' . $tentang->gambar) }}" class="w-100 h-100" alt="Foto Tentang Sekolah" style="object-fit: cover;">
                     @else
                         <img src="{{ asset('assets/images/no-image-available.jpg') }}" class="w-100 h-100 border" style="object-fit: cover; min-height: 380px;" alt="Gambar tidak tersedia">
@@ -844,7 +844,7 @@
 
                 <!-- Grid 1: Foto Kepala Sekolah -->
                 <div class="seamless-grid-item">
-                    @if(isset($sambutan) && $sambutan->gambar && file_exists(public_path('storage/' . $sambutan->gambar)))
+                    @if(isset($sambutan) && $sambutan->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($sambutan->gambar))
                         <img src="{{ asset('storage/' . $sambutan->gambar) }}" class="w-100 h-100" 
                             style="object-fit: cover; object-position: top;" 
                             alt="Foto {{ optional($sambutan)->judul ?? 'Kepala Sekolah' }}">
