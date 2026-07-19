@@ -13,7 +13,7 @@ def test_contact():
 
         page.wait_for_timeout(2000)
 
-        # Buka halaman kontak
+        # Buka halaman kontak (scroll ke footer)
         page.get_by_role(
             "link",
             name="Kontak",
@@ -58,6 +58,9 @@ def test_contact():
             name="Bagikan Pesan"
         ).click()
 
-        page.wait_for_timeout(5000)
+        # Tunggu halaman selesai load setelah submit
+        page.wait_for_load_state("networkidle")
+
+        page.wait_for_timeout(3000)
 
         browser.close()

@@ -27,6 +27,10 @@
             <x-admin-icon name="dashboard"/>
             <span>Dashboard</span>
         </a>
+        <a href="{{ route('admin.analitik.index') }}" class="admin-nav-link {{ request()->routeIs('admin.analitik.*') ? 'active' : '' }}" data-tooltip="Analitik">
+            <x-admin-icon name="chart"/>
+            <span>Analitik</span>
+        </a>
 
         <div class="admin-nav-label">Akademik</div>
         <a href="{{ route('admin.siswa.index') }}" class="admin-nav-link {{ request()->routeIs('admin.siswa.*') && !request()->routeIs('admin.siswa.promote.*') ? 'active' : '' }}" data-tooltip="Data Siswa">

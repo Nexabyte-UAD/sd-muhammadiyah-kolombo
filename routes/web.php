@@ -3,6 +3,7 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AdminAccountController;
+use App\Http\Controllers\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -35,6 +36,8 @@ Route::middleware(['auth', 'admin', 'admin.idle'])->group(function () {
     Route::post('admin/ping', function () {
         return response()->json(['status' => 'ok']);
     })->name('admin.ping');
+
+    Route::get('admin/analitik', [AnalyticsController::class, 'index'])->name('admin.analitik.index');
 
     Route::get('admin/akun', [AdminAccountController::class, 'edit'])->name('admin.account.edit');
     Route::put('admin/akun', [AdminAccountController::class, 'update'])->name('admin.account.update');

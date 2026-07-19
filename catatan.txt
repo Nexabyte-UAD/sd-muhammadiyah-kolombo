@@ -1,0 +1,387 @@
+================================================================================
+         CATATAN PRESENTASI FRONTEND - PROJECT AKHIR "KolomboEdu"
+         SD Muhammadiyah Komplek Kolombo Yogyakarta
+         Frontend Developer: M Ilham Nurdin (2300018403)
+================================================================================
+
+Tanggal Persiapan: 14 Juli 2026
+
+================================================================================
+ A. RINGKASAN PERAN FRONTEND
+================================================================================
+
+Sebagai Frontend Developer, tugas utama saya adalah:
+- Mengembangkan SELURUH tampilan antarmuka publik (halaman pengunjung)
+- Membuat template Blade untuk halaman publik dan admin
+- Implementasi layout responsif (desktop, tablet, mobile)
+- Styling menggunakan Custom CSS + Bootstrap 5
+- Interaktivitas menggunakan JavaScript vanilla & library (Swiper, Bootstrap JS)
+- Integrasi data dinamis dari backend via Blade template engine
+
+
+================================================================================
+ B. TECH STACK FRONTEND YANG DIGUNAKAN
+================================================================================
+
+1. Template Engine    : Laravel Blade
+2. CSS Framework      : Bootstrap 5.3.2 (CDN)
+3. Custom Styling     : CSS inline di layout + style per halaman
+4. Font               : Google Fonts (Inter, Barlow Condensed)
+5. Slider/Carousel    : Swiper.js v11
+6. Icon               : Custom SVG Blade Component (x-admin-icon)
+7. JavaScript         : Vanilla JS + jQuery (admin panel)
+8. Admin Dashboard    : Custom CSS (admin-panel.css) + Bootstrap 4 + jQuery
+9. Vendor Assets      : Bootstrap, jQuery, OverlayScrollbars, Popper
+
+
+================================================================================
+ C. FOLDER/FILE YANG HARUS DIJELASKAN SAAT PRESENTASI
+================================================================================
+
+---------------------------------------
+ 1. LAYOUT (Kerangka Utama Halaman)
+---------------------------------------
+File: resources/views/layouts/
+
+  a) public.blade.php (17.343 bytes) ★ PALING PENTING
+     - Layout utama untuk SEMUA halaman publik (pengunjung)
+     - Berisi: top-bar info kontak, running text (marquee), navbar navigasi
+       bertingkat (dropdown), footer dengan peta Google Maps & link sosmed
+     - Fitur: tanggal otomatis format Indonesia di topbar
+     - Styling: warna brand biru navy (#172554), font Inter
+     - Responsive: media queries untuk 3 breakpoint
+     - Jelaskan: @yield('content'), @stack('styles'), @stack('scripts')
+
+  b) admin.blade.php (24.662 bytes)
+     - Layout utama dashboard admin
+     - Berisi: sidebar navigasi, header admin, area konten admin
+     - Menggunakan admin-panel.css + Bootstrap 4
+
+  c) auth.blade.php (1.941 bytes)
+     - Layout halaman login/reset password
+
+  d) layouts/admin/sidebar.blade.php (7.263 bytes)
+     - Sidebar navigasi admin dengan menu icon
+  
+  e) layouts/admin/header.blade.php (1.233 bytes)
+     - Header bar admin
+
+
+---------------------------------------
+ 2. HALAMAN PUBLIK (Portal Pengunjung)
+---------------------------------------
+File: resources/views/pages/
+
+  a) welcome.blade.php (59.411 bytes) ★ HALAMAN TERBESAR
+     Lokasi: resources/views/welcome.blade.php
+     - Landing page / beranda utama
+     - Berisi: Hero slider kustom, profil singkat sekolah, statistik
+       peserta didik & pendidik, kata sambutan kepala sekolah, slider
+       guru & staf (Swiper.js), daftar ekskul, berita terbaru, prestasi,
+       formulir kontak kritik & saran
+     - Jelaskan: carousel Bootstrap, Swiper.js integration, counter animasi
+
+  b) sambutan.blade.php (2.864 bytes)
+     - Halaman kata sambutan kepala sekolah
+
+  c) tentang.blade.php (3.282 bytes)
+     - Halaman tentang sekolah
+
+  d) visimisi.blade.php (5.913 bytes)
+     - Halaman visi & misi sekolah
+
+  e) akreditasi.blade.php (1.527 bytes)
+     - Halaman akreditasi sekolah
+
+  f) guru.blade.php (3.233 bytes)
+     - Halaman profil guru dan staf (dengan filter tipe guru/staf)
+
+  g) prestasi.blade.php (8.592 bytes)
+     - Halaman daftar prestasi siswa/sekolah per kategori
+
+  h) ekstrakurikuler.blade.php (4.013 bytes)
+     - Halaman daftar kegiatan ekstrakurikuler
+
+  i) siswa.blade.php (15.488 bytes)
+     - Halaman data siswa aktif
+
+  j) kelas.blade.php (6.379 bytes)
+     - Halaman data kelas
+
+  k) alumni.blade.php (18.157 bytes)
+     - Halaman data alumni
+
+  l) berita.blade.php (7.166 bytes)
+     - Halaman direktori berita
+
+  m) detail_berita.blade.php (2.330 bytes)
+     - Halaman detail artikel berita
+
+
+---------------------------------------
+ 3. HALAMAN ADMIN DASHBOARD
+---------------------------------------
+File: resources/views/admin/
+
+  a) dashboard.blade.php (17.571 bytes) - Halaman utama dashboard
+
+  b) admin/berita/ (4 file)
+     - index.blade.php  : Tabel daftar berita
+     - create.blade.php : Form tambah berita
+     - edit.blade.php   : Form edit berita
+     - _form.blade.php  : Partial form reusable
+
+  c) admin/guru-staff/ (3 file)
+     - index.blade.php  : Tabel daftar guru/staf
+     - create.blade.php : Form tambah guru/staf
+     - edit.blade.php   : Form edit guru/staf
+
+  d) admin/prestasi/ (3 file)
+     - index/create/edit - CRUD prestasi
+
+  e) admin/ekstrakurikuler/ (3 file)
+     - index/create/edit - CRUD ekskul
+
+  f) admin/kelas/ (4 file)
+     - index/create/edit/_form - CRUD kelas
+
+  g) admin/siswa/ (6 file) ★ MODUL TERBANYAK
+     - index.blade.php   : Tabel daftar siswa
+     - create.blade.php  : Form tambah siswa
+     - edit.blade.php    : Form edit siswa
+     - promote.blade.php : Halaman kenaikan kelas
+     - _data_keluar.blade.php  : Partial data siswa keluar
+     - _riwayat_alumni.blade.php : Partial riwayat alumni
+
+  h) admin/pesan/index.blade.php - Inbox pesan pengunjung
+  i) admin/profil-sekolah/edit.blade.php - Edit profil sekolah
+  j) admin/settings/edit.blade.php - Pengaturan website
+  k) admin/users/ (3 file) - Manajemen pengguna admin
+  l) admin/account/edit.blade.php - Edit akun admin sendiri
+  m) admin/activity-logs/index.blade.php - Log aktivitas sistem
+  n) admin/alumni/index.blade.php - Manajemen data alumni
+
+
+---------------------------------------
+ 4. KOMPONEN BLADE (Reusable Components)
+---------------------------------------
+File: resources/views/components/
+
+  a) admin-icon.blade.php (11.226 bytes)
+     - Komponen SVG icon kustom, digunakan di seluruh halaman
+     - Penggunaan: <x-admin-icon name="nama-icon" size="16"/>
+     - Jelaskan: kenapa pakai SVG inline bukan icon library (performa)
+
+  b) breadcrumb.blade.php (841 bytes)
+     - Komponen breadcrumb navigasi
+
+  c) guru-staff-modal.blade.php (5.420 bytes)
+     - Modal popup detail guru/staf
+
+  d) auto-format-notice.blade.php (596 bytes)
+     - Notifikasi auto-format teks Indonesia
+
+  e) admin-usage-guide.blade.php (977 bytes)
+     - Panduan penggunaan admin
+
+
+---------------------------------------
+ 5. HALAMAN AUTENTIKASI
+---------------------------------------
+File: resources/views/auth/
+
+  a) login.blade.php (5.534 bytes)
+     - Halaman login admin
+
+  b) forgot-password.blade.php (1.223 bytes)
+     - Halaman lupa password
+
+  c) reset-password.blade.php (2.851 bytes)
+     - Halaman reset password
+
+
+---------------------------------------
+ 6. CSS & JAVASCRIPT
+---------------------------------------
+File: public/css/ dan public/js/
+
+  a) public/css/admin-panel.css (72.419 bytes) ★ FILE CSS UTAMA ADMIN
+     - Styling lengkap dashboard admin
+     - 72KB custom CSS (sangat komprehensif)
+     - Jelaskan: design system, color scheme, komponen UI kustom
+
+  b) public/js/admin-panel.js (3.424 bytes)
+     - JavaScript untuk interaktivitas admin panel
+     - Jelaskan: fungsi-fungsi JS yang digunakan
+
+  c) CSS publik inline di layouts/public.blade.php
+     - Styling halaman publik embedded di layout
+     - Jelaskan: design system publik (warna, tipografi, spacing)
+
+
+---------------------------------------
+ 7. ASSETS & VENDOR
+---------------------------------------
+
+  a) public/images/logo-sd-muhammadiyah-kolombo.png (813 KB)
+     - Logo resmi sekolah
+
+  b) public/vendor/ (4 folder)
+     - bootstrap/  : Bootstrap CSS/JS
+     - jquery/     : jQuery library
+     - overlayScrollbars/ : Custom scrollbar admin
+     - popper/     : Popper.js (tooltip/dropdown)
+
+  c) public/assets/icons/ 
+     - Asset icon tambahan
+
+
+---------------------------------------
+ 8. ROUTE PUBLIK (Jalur Navigasi)
+---------------------------------------
+File: routes/web.php
+
+  Route publik yang harus dijelaskan:
+  - GET /              → Beranda (welcome.blade.php)
+  - GET /sambutan      → Kata Sambutan
+  - GET /tentang       → Tentang Sekolah
+  - GET /visi-misi     → Visi & Misi
+  - GET /akreditasi    → Akreditasi
+  - GET /guru          → Guru & Staf (dengan filter ?tipe=guru/staf)
+  - GET /prestasi      → Prestasi
+  - GET /ekstrakurikuler → Ekstrakurikuler
+  - GET /siswa         → Data Siswa
+  - GET /kelas         → Data Kelas
+  - GET /alumni        → Data Alumni
+  - GET /berita        → Daftar Berita
+  - GET /berita/{id}   → Detail Berita
+  - POST /pesan        → Kirim Pesan Pengunjung
+
+
+================================================================================
+ D. POIN-POIN YANG HARUS DIPRESENTASIKAN
+================================================================================
+
+1. ARSITEKTUR FRONTEND
+   - Pola layout: Blade template inheritance (@extends, @section, @yield)
+   - Komponen reusable: Blade components (<x-component>)
+   - Pemisahan layout: public vs admin vs auth
+   - Stack system: @push/@stack untuk CSS/JS per halaman
+
+2. DESIGN SYSTEM & UI
+   - Warna brand: Biru Navy (#172554 primary), Slate tones untuk teks
+   - Tipografi: Inter (body), Barlow Condensed (heading)
+   - Card design: rounded corners, shadow, hover effects
+   - Responsive design: 3 breakpoint (mobile, tablet, desktop)
+
+3. FITUR INTERAKTIF
+   - Hero carousel dengan auto-slide dan manual indicators
+   - Swiper.js slider untuk profil guru
+   - Counter animasi statistik sekolah
+   - Dropdown navigasi bertingkat (hover di desktop, click di mobile)
+   - Running text (marquee) di topbar
+   - Tanggal otomatis format Indonesia (JavaScript)
+   - Google Maps embed di footer
+
+4. RESPONSIVITAS
+   - Fixed top-bar + navbar yang responsif
+   - Navbar collapse menjadi hamburger menu di mobile
+   - Grid system Bootstrap untuk layout konten
+   - Hiding/showing elemen sesuai ukuran layar (d-none, d-md-flex)
+
+5. FORM & INTERAKSI USER
+   - Formulir kontak/pesan pengunjung di beranda
+   - Validasi form (client-side & server-side via Blade @error)
+   - Flash message untuk feedback (sukses/gagal)
+   - File upload preview (gambar berita, foto guru, dll)
+
+6. HALAMAN ADMIN
+   - Dashboard dengan statistik ringkasan
+   - Tabel data dengan aksi CRUD
+   - Form input dengan validasi
+   - Sidebar navigasi dengan icon SVG kustom
+   - Breadcrumb untuk navigasi hierarkis
+
+7. OPTIMASI & BEST PRACTICES
+   - Lazy loading untuk Google Maps iframe
+   - Preconnect untuk Google Fonts
+   - SVG inline icons (tanpa HTTP request tambahan)
+   - Semantic HTML (nav, main, footer, article)
+   - SEO: meta description dinamis, title tag, heading hierarchy
+   - Accessibility: aria-label, alt text, semantic elements
+
+
+================================================================================
+ E. TOTAL FILE FRONTEND YANG DIKERJAKAN
+================================================================================
+
+  Kategori                       | Jumlah File | Total Size (approx)
+  -------------------------------|-------------|--------------------
+  Layout (public+admin+auth)     |     6 file  |  ~52 KB
+  Halaman Publik (pages)         |    12 file  |  ~79 KB
+  Beranda (welcome.blade.php)    |     1 file  |  ~59 KB
+  Halaman Admin (dashboard+CRUD) |    27 file  | ~200 KB
+  Komponen Blade (components)    |     5 file  |  ~19 KB
+  Halaman Auth (login dll)       |     3 file  |  ~10 KB
+  CSS (admin-panel.css)          |     1 file  |  ~72 KB
+  JavaScript (admin-panel.js)    |     1 file  |   ~3 KB
+  -------------------------------|-------------|--------------------
+  TOTAL                          |    56 file  | ~494 KB
+
+
+================================================================================
+ F. TIPS PRESENTASI
+================================================================================
+
+1. BUKA DEMO LANGSUNG (php artisan serve → localhost:8000)
+   - Tunjukkan navigasi halaman publik dari beranda hingga kontak
+   - Tunjukkan responsivitas dengan resize browser
+   - Tunjukkan hero carousel berpindah otomatis
+
+2. TUNJUKKAN KODE PENTING
+   - Buka layouts/public.blade.php → jelaskan struktur layout
+   - Buka welcome.blade.php → jelaskan hero carousel & sections
+   - Buka components/admin-icon.blade.php → jelaskan komponen reusable
+   - Buka public/css/admin-panel.css → tunjukkan custom styling admin
+
+3. JELASKAN KEPUTUSAN DESAIN
+   - Kenapa Bootstrap 5 untuk publik, Bootstrap 4 untuk admin?
+     → Admin panel menggunakan template AdminLTE berbasis Bootstrap 4
+   - Kenapa CSS inline di layout, bukan file terpisah?
+     → Untuk mengurangi HTTP request di halaman publik
+   - Kenapa SVG inline bukan icon library?
+     → Performa: tidak perlu download font file tambahan
+
+4. SIAPKAN JAWABAN UNTUK PERTANYAAN UMUM
+   - "Bagaimana data dari database bisa tampil di halaman?"
+     → Controller query data → kirim ke view → Blade render {{ $variable }}
+   - "Bagaimana halaman bisa responsive?"
+     → Bootstrap grid + media queries custom
+   - "Apa bedanya @extends vs @component?"
+     → @extends untuk layout inheritance, @component untuk reusable parts
+   - "Kenapa tidak pakai React/Vue?"
+     → Proyek ini server-rendered, Blade sudah cukup untuk kebutuhan
+
+5. HIGHLIGHT KONTRIBUSI UNIK
+   - 12 halaman publik + 1 landing page besar (59KB)
+   - 72KB custom CSS untuk admin panel
+   - 5 Blade components reusable
+   - Design system konsisten (warna, tipografi, spacing)
+   - Integrasi Google Maps, Swiper.js, format tanggal Indonesia
+
+
+================================================================================
+ G. URUTAN PRESENTASI YANG 
+================================================================================
+
+1. Perkenalan → peran sebagai Frontend Developer
+2. Tech stack frontend yang digunakan
+3. Demo langsung halaman publik (beranda → profil → berita → kontak)
+4. Jelaskan arsitektur: layout → pages → components
+5. Tunjukkan kode: layouts/public.blade.php (struktur utama)
+6. Tunjukkan kode: welcome.blade.php (fitur interaktif)
+7. Demo admin dashboard (sidebar, tabel, form)
+8. Tunjukkan kode: admin-panel.css (custom styling)
+9. Jelaskan responsivitas (demo resize browser)
+10. Ringkasan total file & kontribusi
+11. Penutup → tantangan & pembelajaran

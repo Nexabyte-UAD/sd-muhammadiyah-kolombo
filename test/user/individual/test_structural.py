@@ -13,39 +13,24 @@ def test_structural():
 
         page.wait_for_timeout(2000)
 
+        navbar = page.locator("#navbarNav")
+
         # =========================
         # Guru
         # =========================
-        page.get_by_role(
-            "link",
-            name="Struktural"
-        ).hover()
-
-        page.wait_for_timeout(1000)
-
-        page.get_by_role(
-            "link",
-            name="Guru"
-        ).click()
+        navbar.get_by_role("button", name="Struktural").click()
+        page.wait_for_timeout(500)
+        navbar.get_by_role("link", name="Guru").click()
 
         page.wait_for_timeout(2000)
 
         # =========================
         # Staf
         # =========================
-        page.get_by_role(
-            "link",
-            name="Struktural"
-        ).hover()
-
-        page.wait_for_timeout(1000)
-
-        page.get_by_role(
-            "link",
-            name="Staf"
-        ).click()
+        navbar.get_by_role("button", name="Struktural").click()
+        page.wait_for_timeout(500)
+        navbar.get_by_role("link", name="Staf").click()
 
         page.wait_for_timeout(5000)
 
         browser.close()
-        

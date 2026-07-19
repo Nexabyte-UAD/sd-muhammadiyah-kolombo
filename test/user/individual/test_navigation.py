@@ -12,8 +12,11 @@ def test_navigation():
         page.goto("http://127.0.0.1:8000")
         page.wait_for_timeout(2000)
 
+        # Scope semua navigasi ke navbar saja (hindari duplikat di footer)
+        navbar = page.locator("#navbarNav")
+
         # Prestasi
-        page.get_by_role(
+        navbar.get_by_role(
             "link",
             name="Prestasi",
             exact=True
@@ -22,7 +25,7 @@ def test_navigation():
         page.wait_for_timeout(2000)
 
         # Berita
-        page.get_by_role(
+        navbar.get_by_role(
             "link",
             name="Berita",
             exact=True
@@ -31,7 +34,7 @@ def test_navigation():
         page.wait_for_timeout(2000)
 
         # Ekstrakurikuler
-        page.get_by_role(
+        navbar.get_by_role(
             "link",
             name="Ekstrakurikuler",
             exact=True
@@ -40,5 +43,3 @@ def test_navigation():
         page.wait_for_timeout(2000)
 
         browser.close()
-
-        
