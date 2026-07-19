@@ -21,13 +21,13 @@
             <div class="modal-body p-4">
                 <div class="row g-4 align-items-start">
                     <div class="col-md-4">
-                        <div class="rounded-3 overflow-hidden bg-light border" style="aspect-ratio: 2 / 3;">
+                        <div class="rounded-3 overflow-hidden" style="aspect-ratio: 2 / 3;">
                             @if($tenaga->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($tenaga->foto))
                                 <img src="{{ asset('storage/' . $tenaga->foto) }}" class="w-100 h-100"
                                      style="object-fit: cover; object-position: center top;" alt="{{ $tenaga->nama }}">
                             @else
                                 <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center text-secondary">
-                                    <x-admin-icon name="user" size="42" class="opacity-25 mb-2"/>
+                                    <x-admin-icon name="person-circle" size="112" class="default-profile-icon opacity-25 mb-2"/>
                                     <span class="small opacity-50">No Image</span>
                                 </div>
                             @endif

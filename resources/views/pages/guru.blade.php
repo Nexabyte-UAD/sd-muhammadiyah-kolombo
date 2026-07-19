@@ -32,8 +32,8 @@
                              class="card-img-top w-100 border-bottom structural-photo"
                              alt="{{ $guru->nama }}">
                     @else
-                        <div class="bg-light d-flex align-items-center justify-content-center text-secondary w-100 border-bottom structural-photo">
-                            <x-admin-icon name="user" size="80" class="opacity-25"/>
+                        <div class="d-flex align-items-center justify-content-center text-secondary w-100 structural-photo">
+                            <x-admin-icon name="person-circle" size="112" class="default-profile-icon opacity-25"/>
                         </div>
                     @endif
                     <div class="card-body p-4">
@@ -68,7 +68,6 @@
         height: auto;
         object-fit: cover;
         object-position: center top;
-        background-color: #f8fafc;
     }
 </style>
 @endpush

@@ -24,10 +24,10 @@
         <!-- Filter Tahun Kelulusan -->
         <div class="row justify-content-center mb-4">
             <div class="col-lg-10">
-                <form method="GET" action="{{ route('alumni') }}" class="d-inline-block bg-light p-3 rounded-4 shadow-sm">
-                    <div class="d-flex align-items-center gap-2">
+                <form method="GET" action="{{ route('alumni') }}" class="d-block d-sm-inline-block bg-light p-3 rounded-4 shadow-sm alumni-year-filter">
+                    <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-2">
                         <label for="tahun" class="text-dark fw-bold small mb-0" style="white-space: nowrap;">Tahun Kelulusan:</label>
-                        <select name="tahun" id="tahun" class="form-select form-select-sm border-secondary-subtle" style="width: 220px;" onchange="this.form.submit()">
+                        <select name="tahun" id="tahun" class="form-select form-select-sm border-secondary-subtle" onchange="this.form.submit()">
                             <option value="">Semua Tahun Lulus</option>
                             @foreach($availableYears as $y)
                                 <option value="{{ $y }}" {{ $tahun == $y ? 'selected' : '' }}>Tahun Lulus {{ $y }}</option>
@@ -42,10 +42,10 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <!-- Controls Row -->
-                <div class="row align-items-center mb-3">
+                <div class="row align-items-center g-3 mb-3 directory-controls">
                     <!-- Show Entries -->
-                    <div class="col-6 col-sm-6">
-                        <div class="d-inline-flex align-items-center gap-2">
+                    <div class="col-12 col-sm-6">
+                        <div class="d-flex align-items-center gap-2 directory-entries">
                             <span class="text-secondary small">Show</span>
                             <select id="show-entries" class="form-select form-select-sm border-secondary-subtle" style="width: 75px;">
                                 <option value="5">5</option>
@@ -57,17 +57,17 @@
                         </div>
                     </div>
                     <!-- Search -->
-                    <div class="col-6 col-sm-6 text-end">
-                        <div class="d-inline-flex align-items-center justify-content-end gap-2 w-100">
+                    <div class="col-12 col-sm-6">
+                        <div class="d-flex align-items-center justify-content-sm-end gap-2 directory-search">
                             <span class="text-secondary small">Search:</span>
-                            <input type="text" id="search-input" class="form-control form-control-sm border-secondary-subtle" style="width: 180px;">
+                            <input type="search" id="search-input" class="form-control form-control-sm border-secondary-subtle" enterkeyhint="search">
                         </div>
                     </div>
                 </div>
 
                 <!-- Simple Table -->
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle text-center" id="table-alumni" style="width:100%">
+                    <table class="table table-bordered table-striped align-middle text-center directory-table" id="table-alumni">
                         <thead class="table-light">
                             <tr>
                                 <th class="py-2.5" style="width: 80px;">No</th>
@@ -109,8 +109,7 @@
                                             data-pendidikan="{{ $item->riwayatPendidikan->map(fn ($r) => trim($r->jenjang.' — '.$r->institusi.($r->jurusan ? ' ('.$r->jurusan.')' : '')))->toJson() }}"
                                             data-pekerjaan="{{ $item->riwayatPekerjaan->map(fn ($r) => trim($r->pekerjaan.($r->perusahaan ? ' — '.$r->perusahaan : '')))->toJson() }}"
                                             data-prestasi="{{ $item->prestasis->map(fn ($r) => trim($r->judul.' — '.$r->prestasi_medali))->toJson() }}"
-                                            data-foto="{{ $item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto) ? asset('storage/' . $item->foto) : '' }}"
-                                            data-huruf="{{ substr($item->nama, 0, 1) }}">
+                                            data-foto="{{ $item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto) ? asset('storage/' . $item->foto) : '' }}">
                                         <x-admin-icon name="eye" size="15" class="me-1"/>
                                         Detail
                                     </button>
@@ -143,8 +142,8 @@
                     <div id="modal-foto-container" class="rounded-circle overflow-hidden shadow-sm border" style="width: 130px; height: 130px; display: none;">
                         <img id="modal-foto" src="" alt="Foto Alumni" class="w-100 h-100" style="object-fit: cover;">
                     </div>
-                    <div id="modal-avatar" class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 130px; height: 130px; font-size: 3.5rem; font-weight: bold;">
-                        A
+                    <div id="modal-avatar" class="text-secondary d-flex align-items-center justify-content-center" style="width: 130px; height: 130px;">
+                        <x-admin-icon name="person-circle" size="112" class="default-profile-icon"/>
                     </div>
                 </div>
 
@@ -195,6 +194,22 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+    .alumni-year-filter .form-select { width: 220px; }
+    .directory-search .form-control { width: 180px; }
+    .directory-table { width: 100%; min-width: 760px; }
+
+    @media (max-width: 575.98px) {
+        .alumni-year-filter .form-select,
+        .directory-search,
+        .directory-search .form-control { width: 100%; }
+        .directory-search .form-control { min-width: 0; }
+        .directory-table { font-size: .875rem; }
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>
@@ -299,7 +314,6 @@
                 const pekerjaan = JSON.parse(this.getAttribute("data-pekerjaan") || "[]");
                 const prestasi = JSON.parse(this.getAttribute("data-prestasi") || "[]");
                 const foto = this.getAttribute("data-foto");
-                const huruf = this.getAttribute("data-huruf");
 
                 modalNama.textContent = nama;
                 modalAlumniBadge.textContent = "Alumni Lulus " + lulus;
@@ -319,7 +333,6 @@
                     modalFotoContainer.style.display = "block";
                     modalAvatar.style.display = "none";
                 } else {
-                    modalAvatar.textContent = huruf;
                     modalFotoContainer.style.display = "none";
                     modalAvatar.style.display = "flex";
                 }

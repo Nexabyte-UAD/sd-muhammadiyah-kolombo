@@ -281,6 +281,23 @@
         color: #0f172a;
         margin-bottom: 2.5rem;
       }
+
+      .default-profile-icon {
+        width: clamp(76px, 9vw, 112px);
+        height: clamp(76px, 9vw, 112px);
+        max-width: 75%;
+        max-height: 75%;
+        flex: 0 0 auto;
+      }
+
+      @media (max-width: 575.98px) {
+        .default-profile-icon {
+          width: clamp(72px, 24vw, 96px);
+          height: clamp(72px, 24vw, 96px);
+          max-width: 70%;
+          max-height: 70%;
+        }
+      }
       
       footer {
         background-color: #172554; /* Disamakan dengan warna top-bar */

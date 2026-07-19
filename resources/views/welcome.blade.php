@@ -906,15 +906,13 @@
                             @forelse($tenagaPendidik as $tenaga)
                                 <div class="swiper-slide">
                                     <div class="guru-slide-card">
-                                        <div class="guru-slide-img {{ $loop->iteration % 2 === 1 ? 'bg-blue-custom' : 'bg-red-custom' }}">
+                                        <div class="guru-slide-img {{ $tenaga->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($tenaga->foto) ? ($loop->iteration % 2 === 1 ? 'bg-blue-custom' : 'bg-red-custom') : '' }}">
                                             @if($tenaga->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($tenaga->foto))
                                                 <img src="{{ asset('storage/' . $tenaga->foto) }}" alt="{{ $tenaga->nama }}">
                                             @else
                                                 <div
                                                     class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute">
-                                                    <svg width="80" height="80" viewBox="0 0 16 16" fill="currentColor" class="text-white opacity-50" aria-hidden="true">
-                                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                                                    </svg>
+                                                    <x-admin-icon name="person-circle" size="112" class="default-profile-icon text-secondary opacity-50"/>
                                                 </div>
                                             @endif
                                         </div>
@@ -939,12 +937,10 @@
                                 @for($i = 1; $i <= 6; $i++)
                                     <div class="swiper-slide">
                                         <div class="guru-slide-card">
-                                            <div class="guru-slide-img {{ $i % 2 === 1 ? 'bg-blue-custom' : 'bg-red-custom' }}">
+                                            <div class="guru-slide-img">
                                                 <div
                                                     class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute">
-                                                    <svg width="80" height="80" viewBox="0 0 16 16" fill="currentColor" class="text-white opacity-50" aria-hidden="true">
-                                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
-                                                    </svg>
+                                                    <x-admin-icon name="person-circle" size="112" class="default-profile-icon text-secondary opacity-50"/>
                                                 </div>
                                             </div>
                                             <div class="guru-slide-info">

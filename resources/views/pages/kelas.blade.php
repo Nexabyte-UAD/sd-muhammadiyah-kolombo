@@ -21,10 +21,10 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <!-- Controls Row -->
-                <div class="row align-items-center mb-3">
+                <div class="row align-items-center g-3 mb-3 directory-controls">
                     <!-- Show Entries -->
-                    <div class="col-6 col-sm-6">
-                        <div class="d-inline-flex align-items-center gap-2">
+                    <div class="col-12 col-sm-6">
+                        <div class="d-flex align-items-center gap-2 directory-entries">
                             <span class="text-secondary small">Show</span>
                             <select id="show-entries" class="form-select form-select-sm border-secondary-subtle" style="width: 75px;">
                                 <option value="5">5</option>
@@ -36,17 +36,17 @@
                         </div>
                     </div>
                     <!-- Search -->
-                    <div class="col-6 col-sm-6 text-end">
-                        <div class="d-inline-flex align-items-center justify-content-end gap-2 w-100">
+                    <div class="col-12 col-sm-6">
+                        <div class="d-flex align-items-center justify-content-sm-end gap-2 directory-search">
                             <span class="text-secondary small">Search:</span>
-                            <input type="text" id="search-input" class="form-control form-control-sm border-secondary-subtle" style="width: 180px;">
+                            <input type="search" id="search-input" class="form-control form-control-sm border-secondary-subtle" enterkeyhint="search">
                         </div>
                     </div>
                 </div>
 
                 <!-- Simple Table -->
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle text-center" id="table-kelas" style="width:100%; font-size: 1rem;">
+                    <table class="table table-bordered table-striped align-middle text-center directory-table" id="table-kelas">
                         <thead class="table-light">
                             <tr>
                                 <th class="py-2.5" style="width: 80px;">No</th>
@@ -76,6 +76,19 @@
     </div>
 </section>
 @endsection
+
+@push('styles')
+<style>
+    .directory-search .form-control { width: 180px; }
+    .directory-table { width: 100%; min-width: 620px; font-size: 1rem; }
+
+    @media (max-width: 575.98px) {
+        .directory-search { width: 100%; }
+        .directory-search .form-control { width: 100%; min-width: 0; }
+        .directory-table { font-size: .875rem; }
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>

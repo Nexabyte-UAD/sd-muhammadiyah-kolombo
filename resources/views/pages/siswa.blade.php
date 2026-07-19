@@ -29,10 +29,10 @@
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <!-- Controls Row -->
-                <div class="row align-items-center mb-3">
+                <div class="row align-items-center g-3 mb-3 directory-controls">
                     <!-- Show Entries -->
-                    <div class="col-6 col-sm-6">
-                        <div class="d-inline-flex align-items-center gap-2">
+                    <div class="col-12 col-sm-6">
+                        <div class="d-flex align-items-center gap-2 directory-entries">
                             <span class="text-secondary small">Show</span>
                             <select id="show-entries" class="form-select form-select-sm border-secondary-subtle" style="width: 75px;">
                                 <option value="5">5</option>
@@ -44,17 +44,17 @@
                         </div>
                     </div>
                     <!-- Search -->
-                    <div class="col-6 col-sm-6 text-end">
-                        <div class="d-inline-flex align-items-center justify-content-end gap-2 w-100">
+                    <div class="col-12 col-sm-6">
+                        <div class="d-flex align-items-center justify-content-sm-end gap-2 directory-search">
                             <span class="text-secondary small">Search:</span>
-                            <input type="text" id="search-input" class="form-control form-control-sm border-secondary-subtle" style="width: 180px;" value="{{ $search }}">
+                            <input type="search" id="search-input" class="form-control form-control-sm border-secondary-subtle" value="{{ $search }}" enterkeyhint="search">
                         </div>
                     </div>
                 </div>
 
                 <!-- Simple Table -->
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle text-center" id="table-siswa" style="width:100%">
+                    <table class="table table-bordered table-striped align-middle text-center directory-table" id="table-siswa">
                         <thead class="table-light">
                             <tr>
                                 <th class="py-2.5" style="width: 80px;">No</th>
@@ -88,8 +88,7 @@
                                             data-jk="{{ $item->jenis_kelamin === 'L' ? 'Laki-laki' : 'Perempuan' }}"
                                             data-ttl="{{ $item->tempat_lahir ?? '-' }}, {{ $item->tanggal_lahir ? $item->tanggal_lahir->translatedFormat('d F Y') : '-' }}"
                                             data-alamat="{{ $item->alamat ?? '-' }}"
-                                            data-foto="{{ $item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto) ? asset('storage/' . $item->foto) : '' }}"
-                                            data-huruf="{{ substr($item->nama, 0, 1) }}">
+                                            data-foto="{{ $item->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->foto) ? asset('storage/' . $item->foto) : '' }}">
                                         <x-admin-icon name="eye" size="15" class="me-1"/>
                                         Detail
                                     </button>
@@ -122,8 +121,8 @@
                     <div id="modal-foto-container" class="rounded-circle overflow-hidden shadow-sm border" style="width: 130px; height: 130px; display: none;">
                         <img id="modal-foto" src="" alt="Foto Siswa" class="w-100 h-100" style="object-fit: cover;">
                     </div>
-                    <div id="modal-avatar" class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 130px; height: 130px; font-size: 3.5rem; font-weight: bold;">
-                        A
+                    <div id="modal-avatar" class="text-secondary d-flex align-items-center justify-content-center" style="width: 130px; height: 130px;">
+                        <x-admin-icon name="person-circle" size="112" class="default-profile-icon"/>
                     </div>
                 </div>
 
@@ -161,6 +160,19 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+    .directory-search .form-control { width: 180px; }
+    .directory-table { width: 100%; min-width: 620px; }
+
+    @media (max-width: 575.98px) {
+        .directory-search { width: 100%; }
+        .directory-search .form-control { width: 100%; min-width: 0; }
+        .directory-table { font-size: .875rem; }
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>
@@ -257,7 +269,6 @@
                 const ttl = this.getAttribute("data-ttl");
                 const alamat = this.getAttribute("data-alamat");
                 const foto = this.getAttribute("data-foto");
-                const huruf = this.getAttribute("data-huruf");
 
                 modalNama.textContent = nama;
                 modalNis.textContent = nis;
@@ -287,7 +298,6 @@
                     modalFotoContainer.style.display = "block";
                     modalAvatar.style.display = "none";
                 } else {
-                    modalAvatar.textContent = huruf;
                     modalFotoContainer.style.display = "none";
                     modalAvatar.style.display = "flex";
                 }
