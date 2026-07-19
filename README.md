@@ -72,7 +72,8 @@ Konten yang diinput dari admin menjadi sumber data untuk halaman publik. Beberap
 | Framework | Laravel 13 |
 | Bahasa | PHP 8.3+ |
 | Template | Blade |
-| Dashboard Admin | Custom CSS, Bootstrap 4, jQuery |
+| Portal Publik | Bootstrap 5.3, Blade, custom CSS |
+| Dashboard Admin | Bootstrap Bundle 4.6.1, Blade, custom CSS (tanpa jQuery) |
 | Database | MySQL atau MariaDB |
 | Testing Laravel | PHPUnit |
 | Testing Browser | Python, Pytest, Playwright |
@@ -207,7 +208,7 @@ public/
   css/                    CSS publik/admin
   js/                     JavaScript admin
   images/                 Aset gambar publik
-  vendor/                 Aset vendor Bootstrap/jQuery/FontAwesome
+  vendor/                 Bootstrap Bundle 4.6.1 untuk panel admin
 resources/views/
   admin/                  Halaman dashboard admin
   auth/                   Halaman login dan reset password
@@ -315,6 +316,47 @@ pytest test/user/test_contact.py
 - Modul guru/staf memakai model `GuruStaff` dengan pembeda `tipe`.
 - Modul kelas dan siswa dibuat dinamis, bukan daftar kelas statis.
 - Setelah mengubah route, controller, migration, atau formatter, jalankan test yang relevan.
+
+---
+
+## 🤖 Integrasi Chatbot FAQ & Gemini AI
+
+Aplikasi ini dilengkapi dengan fitur Asisten Chatbot interaktif pada halaman publik yang bekerja dengan alur pencarian berikut:
+1. **FAQ Lokal**: Chatbot mencocokkan pertanyaan pengguna dengan kata kunci dan pertanyaan pada database FAQ lokal yang dikelola oleh Admin. Jika skor kecocokan berada di atas threshold, jawaban dari database FAQ lokal akan dikirimkan.
+2. **Fallback Gemini AI**: Jika tidak ditemukan FAQ lokal yang cocok, chatbot akan meneruskan pertanyaan secara aman ke API Google Gemini (`gemini-3.5-flash`) untuk memberikan respons pintar dinamis (apabila fitur diaktifkan dan API key dikonfigurasi).
+3. **Fallback Statis Lokal**: Jika Gemini dinonaktifkan, gagal merespons, atau terjadi error jaringan, chatbot akan memberikan jawaban fallback statis yang ramah pengguna yang mengarahkan mereka ke halaman kontak sekolah.
+
+### Konfigurasi Gemini AI
+
+Untuk mengaktifkan integrasi Gemini AI, tambahkan variabel konfigurasi berikut pada file `.env` Anda:
+
+```env
+GEMINI_ENABLED=true
+GEMINI_API_KEY=isi_dengan_api_key_gemini_anda
+GEMINI_MODEL=gemini-3.5-flash
+GEMINI_TIMEOUT=15
+GEMINI_MAX_OUTPUT_TOKENS=1000
+GEMINI_TEMPERATURE=0.3
+CHATBOT_FAQ_THRESHOLD=4
+CHATBOT_HISTORY_LIMIT=4
+CHATBOT_LOG_RETENTION_DAYS=90
+```
+
+> [!NOTE]
+> Jika `GEMINI_ENABLED` disetel ke `false` atau `GEMINI_API_KEY` kosong, chatbot akan secara otomatis melewati pemanggilan API Gemini dan langsung menggunakan fallback statis lokal.
+
+Log pertanyaan dan jawaban chatbot dibersihkan otomatis oleh jadwal `model:prune` setelah 90 hari. Nilainya dapat disesuaikan melalui `CHATBOT_LOG_RETENTION_DAYS`.
+
+Konteks data publik di-cache selama 5 menit dan hanya bagian yang relevan dengan topik pertanyaan yang dikirim ke Gemini. Pengguna juga dapat memberi penilaian Membantu atau Tidak membantu pada setiap jawaban; penilaian dilindungi token khusus per jawaban.
+
+### Pengujian Otomatis
+
+Seluruh pengujian chatbot, baik untuk FAQ lokal maupun integrasi Gemini AI, disimulasikan menggunakan pengujian unit/feature Laravel dengan `Http::fake()` dan `Http::preventStrayRequests()` untuk mencegah panggilan API nyata.
+
+Jalankan test suite chatbot dengan perintah berikut:
+```bash
+php artisan test --filter=Chatbot
+```
 
 ---
 

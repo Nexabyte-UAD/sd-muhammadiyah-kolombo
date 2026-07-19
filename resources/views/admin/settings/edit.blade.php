@@ -42,17 +42,17 @@
 
             <ul class="nav settings-tabs" id="settings-tabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="tabs-identitas-tab" data-toggle="pill" href="#tabs-identitas" role="tab" aria-controls="tabs-identitas" aria-selected="true">
+                    <a class="nav-link active" id="tabs-identitas-tab" data-bs-toggle="pill" href="#tabs-identitas" role="tab" aria-controls="tabs-identitas" aria-selected="true">
                         Identitas Sekolah
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="tabs-beranda-tab" data-toggle="pill" href="#tabs-beranda" role="tab" aria-controls="tabs-beranda" aria-selected="false">
+                    <a class="nav-link" id="tabs-beranda-tab" data-bs-toggle="pill" href="#tabs-beranda" role="tab" aria-controls="tabs-beranda" aria-selected="false">
                         Pengaturan Beranda
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="tabs-kontak-tab" data-toggle="pill" href="#tabs-kontak" role="tab" aria-controls="tabs-kontak" aria-selected="false">
+                    <a class="nav-link" id="tabs-kontak-tab" data-bs-toggle="pill" href="#tabs-kontak" role="tab" aria-controls="tabs-kontak" aria-selected="false">
                         Kontak & Footer
                     </a>
                 </li>

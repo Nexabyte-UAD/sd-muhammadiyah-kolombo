@@ -203,6 +203,12 @@ body.admin-body {
 a { color: inherit; }
 button, input, select, textarea { font: inherit; }
 
+/* Hindari ikon reveal bawaan Edge menumpuk dengan tombol password custom. */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none;
+}
+
 .admin-shell { min-height: 100vh; }
 .admin-sidebar {
     position: fixed;

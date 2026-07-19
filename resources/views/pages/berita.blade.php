@@ -21,9 +21,6 @@
             <form action="{{ route('berita') }}" method="GET" class="d-flex align-items-center gap-2" style="max-width: 420px; width: 100%;">
                 <input type="text" name="search" class="form-control" placeholder="Cari berita..." value="{{ $search ?? '' }}">
                 <button class="btn btn-primary px-4" type="submit">Cari</button>
-                @if(isset($search) && $search !== '')
-                    <a href="{{ route('berita') }}" class="btn btn-outline-secondary">Reset</a>
-                @endif
             </form>
         </div>
 

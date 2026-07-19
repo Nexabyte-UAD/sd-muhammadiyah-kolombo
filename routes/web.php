@@ -19,6 +19,12 @@ Route::get('/alumni', [HomeController::class, 'alumni'])->name('alumni');
 Route::get('/berita', [HomeController::class, 'berita'])->name('berita');
 Route::get('/berita/{berita}', [HomeController::class, 'detailBerita'])->name('berita.detail');
 Route::post('/pesan', [HomeController::class, 'storePesan'])->name('pesan.store');
+Route::post('/chatbot/message', [\App\Http\Controllers\ChatbotController::class, 'send'])
+    ->middleware('throttle:chatbot')
+    ->name('chatbot.send');
+Route::post('/chatbot/feedback', [\App\Http\Controllers\ChatbotController::class, 'feedback'])
+    ->middleware('throttle:chatbot')
+    ->name('chatbot.feedback');
 
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -67,6 +73,14 @@ Route::middleware(['auth', 'admin', 'admin.idle'])->group(function () {
         ->names('admin.kelas')
         ->parameters(['kelas' => 'kelas']);
     Route::resource('admin/siswa', \App\Http\Controllers\SiswaController::class)->except('show')->names('admin.siswa');
+
+    // Chatbot FAQ CRUD
+    Route::resource('admin/chatbot-faqs', \App\Http\Controllers\ChatbotFaqController::class)
+        ->except('show')
+        ->names('admin.chatbot-faqs')
+        ->parameters(['chatbot-faqs' => 'chatbotFaq']);
+    Route::patch('admin/chatbot-faqs/{chatbotFaq}/toggle-status', [\App\Http\Controllers\ChatbotFaqController::class, 'toggleStatus'])
+        ->name('admin.chatbot-faqs.toggle-status');
 });
 
 require __DIR__.'/auth.php';

@@ -178,6 +178,23 @@ class AdminRoutesTest extends TestCase
             ->assertSee(asset('css/admin-panel.css'), false);
     }
 
+    public function test_settings_tabs_use_the_loaded_bootstrap_version(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Pengaturan',
+            'email' => 'pengaturan@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('admin.settings.edit'))
+            ->assertOk()
+            ->assertSee('id="tabs-beranda-tab" data-bs-toggle="pill"', false)
+            ->assertSee('id="tabs-kontak-tab" data-bs-toggle="pill"', false)
+            ->assertDontSee('data-toggle="pill"', false);
+    }
+
     public function test_dashboard_surfaces_actionable_data_and_message_can_be_marked_as_read(): void
     {
         $user = User::create([

@@ -93,6 +93,10 @@
         </details>
 
         <div class="admin-nav-label">Sistem & Pesan</div>
+        <a href="{{ route('admin.chatbot-faqs.index') }}" class="admin-nav-link {{ request()->routeIs('admin.chatbot-faqs.*') ? 'active' : '' }}" data-tooltip="FAQ Chatbot">
+            <x-admin-icon name="chatbot-faq"/>
+            <span>FAQ Chatbot</span>
+        </a>
         <a href="{{ route('admin.pesan.index') }}" class="admin-nav-link {{ request()->routeIs('admin.pesan.*') ? 'active' : '' }}" data-tooltip="Pesan Masuk">
             <x-admin-icon name="message"/>
             <span>Pesan Masuk</span>

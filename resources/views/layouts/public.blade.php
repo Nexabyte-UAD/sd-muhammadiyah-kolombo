@@ -10,6 +10,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="{{ $settings['meta_description'] ?? 'Portal resmi SD Muhammadiyah Komplek Kolombo Yogyakarta. Temukan informasi pendaftaran, kegiatan akademik, prestasi, guru, dan berita terbaru sekolah.' }}">
     <title>{{ $settings['nama_sekolah'] ?? 'SD Muhammadiyah Komplek Kolombo' }}</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo-sd-muhammadiyah-kolombo.png') }}">
@@ -482,6 +483,7 @@
     </script>
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <x-public-chatbot />
     @stack('scripts')
   </body>
 </html>

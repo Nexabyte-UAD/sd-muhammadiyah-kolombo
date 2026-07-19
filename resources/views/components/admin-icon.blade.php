@@ -41,6 +41,7 @@
         'map-pin' => 'geo-alt',
         'menu' => 'list',
         'message' => 'chat-left-text',
+        'chatbot-faq' => 'robot',
         'moon' => 'moon',
         'news' => 'newspaper',
         'palette' => 'palette',

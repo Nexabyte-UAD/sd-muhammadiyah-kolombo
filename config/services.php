@@ -35,4 +35,22 @@ return [
         ],
     ],
 
+    'gemini' => [
+        'enabled' => filter_var(
+            env('GEMINI_ENABLED', false),
+            FILTER_VALIDATE_BOOL
+        ),
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-3.5-flash'),
+        'timeout' => (int) env('GEMINI_TIMEOUT', 15),
+        'max_output_tokens' => (int) env(
+            'GEMINI_MAX_OUTPUT_TOKENS',
+            1000
+        ),
+        'temperature' => (float) env(
+            'GEMINI_TEMPERATURE',
+            0.3
+        ),
+    ],
+
 ];
