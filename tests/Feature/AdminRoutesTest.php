@@ -9,11 +9,14 @@ use App\Models\Kelas;
 use App\Models\Ekstrakurikuler;
 use App\Models\Pesan;
 use App\Models\RiwayatAkademik;
+use App\Models\Setting;
 use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AdminRoutesTest extends TestCase
@@ -193,6 +196,56 @@ class AdminRoutesTest extends TestCase
             ->assertSee('id="tabs-beranda-tab" data-settings-tab', false)
             ->assertSee('id="tabs-kontak-tab" data-settings-tab', false)
             ->assertSee("settingsTabs.forEach(function (tab)", false);
+    }
+
+    public function test_admin_can_upload_homepage_images_from_settings(): void
+    {
+        Storage::fake('public');
+        $user = User::create([
+            'name' => 'Admin Upload',
+            'email' => 'upload@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)
+            ->put(route('admin.settings.update'), [
+                'nama_sekolah' => 'SD Muhammadiyah Komplek Kolombo',
+                'hero_image' => UploadedFile::fake()->image('banner.jpg', 1600, 700),
+                'welcome_image' => UploadedFile::fake()->image('welcome.png', 900, 700),
+            ])
+            ->assertRedirect(route('admin.settings.edit'))
+            ->assertSessionHas('success');
+
+        foreach (['hero_image', 'welcome_image'] as $key) {
+            $path = Setting::where('key', $key)->value('value');
+            $this->assertNotEmpty($path);
+            Storage::disk('public')->assertExists($path);
+        }
+    }
+
+    public function test_admin_can_remove_homepage_image_from_settings(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('settings/banner-lama.jpg', 'image');
+        Setting::create(['key' => 'hero_image', 'value' => 'settings/banner-lama.jpg']);
+        $user = User::create([
+            'name' => 'Admin Hapus Gambar',
+            'email' => 'hapus-gambar@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)
+            ->put(route('admin.settings.update'), [
+                'nama_sekolah' => 'SD Muhammadiyah Komplek Kolombo',
+                'remove_hero_image' => '1',
+            ])
+            ->assertRedirect(route('admin.settings.edit'))
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseMissing('settings', ['key' => 'hero_image']);
+        Storage::disk('public')->assertMissing('settings/banner-lama.jpg');
     }
 
     public function test_dashboard_surfaces_actionable_data_and_message_can_be_marked_as_read(): void

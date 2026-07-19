@@ -6,6 +6,7 @@ use App\Models\Setting;
 use App\Services\IndonesianTextFormatter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 /**
  * Controller SettingController
@@ -37,8 +38,23 @@ class SettingController extends Controller
      */
     public function update(Request $request, IndonesianTextFormatter $formatter)
     {
+        $request->validate([
+            'hero_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:4096'],
+            'hero_image_2' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:4096'],
+            'hero_image_3' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:4096'],
+            'welcome_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:4096'],
+            'remove_hero_image' => ['nullable', 'boolean'],
+            'remove_hero_image_2' => ['nullable', 'boolean'],
+            'remove_hero_image_3' => ['nullable', 'boolean'],
+            'remove_welcome_image' => ['nullable', 'boolean'],
+        ]);
+
         // Mendapatkan semua parameter input teks kecuali token, metode, dan berkas gambar
-        $data = $request->except(['_token', '_method', 'logo', 'hero_image', 'hero_image_2', 'hero_image_3', 'welcome_image']); 
+        $data = $request->except([
+            '_token', '_method', 'logo',
+            'hero_image', 'hero_image_2', 'hero_image_3', 'welcome_image',
+            'remove_hero_image', 'remove_hero_image_2', 'remove_hero_image_3', 'remove_welcome_image',
+        ]);
         
         // Bersihkan format input teks
         $data = $formatter->fields($data, [
@@ -56,74 +72,51 @@ class SettingController extends Controller
             Setting::updateOrCreate(['key' => $key], ['value' => $value]);
         }
 
-        // Jalankan upload file Gambar Hero Banner Utama ke-1 jika ada
-        if ($request->hasFile('hero_image')) {
-            $request->validate([
-                'hero_image' => 'image|mimes:jpeg,png,jpg|max:4096',
-            ]);
-
-            $path = $request->file('hero_image')->store('settings', 'public');
-
-            // Hapus gambar hero lama di disk
-            $oldHero = Setting::where('key', 'hero_image')->first();
-            if ($oldHero && $oldHero->value) {
-                Storage::disk('public')->delete($oldHero->value);
+        foreach (['hero_image', 'hero_image_2', 'hero_image_3', 'welcome_image'] as $imageKey) {
+            if ($request->hasFile($imageKey)) {
+                $this->storeSettingImage($request, $imageKey);
+            } elseif ($request->boolean('remove_'.$imageKey)) {
+                $this->removeSettingImage($imageKey);
             }
-
-            Setting::updateOrCreate(['key' => 'hero_image'], ['value' => $path]);
-        }
-
-        // Jalankan upload file Gambar Hero Banner Utama ke-2 jika ada
-        if ($request->hasFile('hero_image_2')) {
-            $request->validate([
-                'hero_image_2' => 'image|mimes:jpeg,png,jpg|max:4096',
-            ]);
-
-            $path = $request->file('hero_image_2')->store('settings', 'public');
-
-            // Hapus gambar hero lama di disk
-            $oldHero = Setting::where('key', 'hero_image_2')->first();
-            if ($oldHero && $oldHero->value) {
-                Storage::disk('public')->delete($oldHero->value);
-            }
-
-            Setting::updateOrCreate(['key' => 'hero_image_2'], ['value' => $path]);
-        }
-
-        // Jalankan upload file Gambar Hero Banner Utama ke-3 jika ada
-        if ($request->hasFile('hero_image_3')) {
-            $request->validate([
-                'hero_image_3' => 'image|mimes:jpeg,png,jpg|max:4096',
-            ]);
-
-            $path = $request->file('hero_image_3')->store('settings', 'public');
-
-            // Hapus gambar hero lama di disk
-            $oldHero = Setting::where('key', 'hero_image_3')->first();
-            if ($oldHero && $oldHero->value) {
-                Storage::disk('public')->delete($oldHero->value);
-            }
-
-            Setting::updateOrCreate(['key' => 'hero_image_3'], ['value' => $path]);
-        }
-
-        // Jalankan upload file Gambar Selamat Datang jika ada
-        if ($request->hasFile('welcome_image')) {
-            $request->validate([
-                'welcome_image' => 'image|mimes:jpeg,png,jpg,gif|max:4096',
-            ]);
-
-            $path = $request->file('welcome_image')->store('settings', 'public');
-
-            // Hapus gambar lama di disk
-            $oldImage = Setting::where('key', 'welcome_image')->first();
-            if ($oldImage && $oldImage->value) {
-                Storage::disk('public')->delete($oldImage->value);
-            }
-
-            Setting::updateOrCreate(['key' => 'welcome_image'], ['value' => $path]);
         }
 
         return redirect()->route('admin.settings.edit')->with('success', 'Konfigurasi Sistem berhasil diperbarui.');
+    }
+
+    private function storeSettingImage(Request $request, string $key): void
+    {
+        try {
+            $path = $request->file($key)->store('settings', 'public');
+        } catch (\Throwable $exception) {
+            report($exception);
+            $path = false;
+        }
+
+        if (!$path) {
+            throw ValidationException::withMessages([
+                $key => 'Gambar gagal disimpan. Pastikan folder storage di server dapat ditulis.',
+            ]);
+        }
+
+        $oldPath = Setting::where('key', $key)->value('value');
+        Setting::updateOrCreate(['key' => $key], ['value' => $path]);
+
+        if ($oldPath && $oldPath !== $path) {
+            Storage::disk('public')->delete($oldPath);
+        }
+    }
+
+    private function removeSettingImage(string $key): void
+    {
+        $setting = Setting::where('key', $key)->first();
+        if (!$setting) {
+            return;
+        }
+
+        if ($setting->value) {
+            Storage::disk('public')->delete($setting->value);
+        }
+
+        $setting->delete();
     }
 }

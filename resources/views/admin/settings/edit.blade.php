@@ -100,6 +100,10 @@
                                         @endif
                                     </div>
                                     <input type="file" class="form-control-admin form-file" name="hero_image" id="hero_image" accept="image/*">
+                                    <input type="hidden" name="remove_hero_image" id="remove_hero_image" value="0">
+                                    @if(!empty($settings['hero_image']))
+                                        <button type="button" class="action-button action-danger mt-2" data-remove-setting-image="hero_image">Hapus Gambar</button>
+                                    @endif
                                 </div>
 
                                 <!-- Banner 2 -->
@@ -114,6 +118,10 @@
                                         @endif
                                     </div>
                                     <input type="file" class="form-control-admin form-file" name="hero_image_2" id="hero_image_2" accept="image/*">
+                                    <input type="hidden" name="remove_hero_image_2" id="remove_hero_image_2" value="0">
+                                    @if(!empty($settings['hero_image_2']))
+                                        <button type="button" class="action-button action-danger mt-2" data-remove-setting-image="hero_image_2">Hapus Gambar</button>
+                                    @endif
                                 </div>
 
                                 <!-- Banner 3 -->
@@ -128,6 +136,10 @@
                                         @endif
                                     </div>
                                     <input type="file" class="form-control-admin form-file" name="hero_image_3" id="hero_image_3" accept="image/*">
+                                    <input type="hidden" name="remove_hero_image_3" id="remove_hero_image_3" value="0">
+                                    @if(!empty($settings['hero_image_3']))
+                                        <button type="button" class="action-button action-danger mt-2" data-remove-setting-image="hero_image_3">Hapus Gambar</button>
+                                    @endif
                                 </div>
                             </div>
 
@@ -167,6 +179,10 @@
                                         @endif
                                     </div>
                                     <input type="file" class="form-control-admin form-file" name="welcome_image" id="welcome_image" accept="image/*">
+                                    <input type="hidden" name="remove_welcome_image" id="remove_welcome_image" value="0">
+                                    @if(!empty($settings['welcome_image']))
+                                        <button type="button" class="action-button action-danger mt-2" data-remove-setting-image="welcome_image">Hapus Gambar</button>
+                                    @endif
                                     <div class="form-help">Gambar default yang tampil di sebelah teks Selamat Datang beranda.</div>
                                 </div>
 
@@ -274,6 +290,23 @@
                 });
             });
 
+            document.querySelectorAll('[data-remove-setting-image]').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const inputId = button.dataset.removeSettingImage;
+                    const removeInput = document.getElementById('remove_' + inputId);
+                    const fileInput = document.getElementById(inputId);
+                    const preview = document.getElementById('preview-el-' + inputId);
+
+                    if (!removeInput || !confirm('Hapus gambar ini setelah perubahan disimpan?')) return;
+
+                    removeInput.value = '1';
+                    if (fileInput) fileInput.value = '';
+                    if (preview) preview.style.display = 'none';
+                    button.disabled = true;
+                    button.textContent = 'Gambar akan dihapus';
+                });
+            });
+
             // Function to handle image preview
             function setupImagePreview(inputId) {
                 const input = document.getElementById(inputId);
@@ -281,6 +314,8 @@
                     input.addEventListener('change', function(event) {
                         const file = event.target.files[0];
                         if (file) {
+                            const removeInput = document.getElementById('remove_' + inputId);
+                            if (removeInput) removeInput.value = '0';
                             if (file.size > 2 * 1024 * 1024) {
                                 alert('Ukuran file terlalu besar! Maksimal 2 MB.');
                                 event.target.value = '';
