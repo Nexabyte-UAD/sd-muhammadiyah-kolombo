@@ -13,7 +13,7 @@
         $heroSlides = [];
         
         // Cek slide kustom 1
-        if (isset($settings['hero_image']) && $settings['hero_image'] && file_exists(public_path('storage/' . $settings['hero_image']))) {
+        if (isset($settings['hero_image']) && $settings['hero_image'] && \Illuminate\Support\Facades\Storage::disk('public')->exists($settings['hero_image'])) {
             $heroSlides[] = [
                 'url' => asset('storage/' . $settings['hero_image']),
                 'alt' => $settings['nama_sekolah'] ?? 'Sekolah'
@@ -21,13 +21,13 @@
         }
         
         // Dukungan untuk slide kustom tambahan di masa mendatang
-        if (isset($settings['hero_image_2']) && $settings['hero_image_2'] && file_exists(public_path('storage/' . $settings['hero_image_2']))) {
+        if (isset($settings['hero_image_2']) && $settings['hero_image_2'] && \Illuminate\Support\Facades\Storage::disk('public')->exists($settings['hero_image_2'])) {
             $heroSlides[] = [
                 'url' => asset('storage/' . $settings['hero_image_2']),
                 'alt' => 'Slide 2'
             ];
         }
-        if (isset($settings['hero_image_3']) && $settings['hero_image_3'] && file_exists(public_path('storage/' . $settings['hero_image_3']))) {
+        if (isset($settings['hero_image_3']) && $settings['hero_image_3'] && \Illuminate\Support\Facades\Storage::disk('public')->exists($settings['hero_image_3'])) {
             $heroSlides[] = [
                 'url' => asset('storage/' . $settings['hero_image_3']),
                 'alt' => 'Slide 3'
@@ -561,7 +561,7 @@
                     <div class="welcome-image-container" data-tilt>
                         <div class="welcome-image-accent"></div>
                         <div class="welcome-img-wrapper">
-                            @if(isset($settings['welcome_image']) && $settings['welcome_image'] && file_exists(public_path('storage/' . $settings['welcome_image'])))
+                            @if(isset($settings['welcome_image']) && $settings['welcome_image'] && \Illuminate\Support\Facades\Storage::disk('public')->exists($settings['welcome_image']))
                                 <img src="{{ asset('storage/' . $settings['welcome_image']) }}" alt="SD Muhammadiyah Komplek Kolombo Yogyakarta">
                             @else
                                 <img src="{{ asset('assets/images/no-image-available.jpg') }}" class="w-100 h-100" style="object-fit: contain; object-position: center; transform: none;" alt="Gambar tidak tersedia">
