@@ -68,12 +68,27 @@
                         @error('judul')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
 
-                    <div class="form-field form-field-full">
-                        <label for="konten" class="form-label">Isi Konten / Penjelasan <span>*</span></label>
-                        <textarea name="konten" id="konten" class="form-control-admin @error('konten') is-invalid @enderror" rows="12" placeholder="Ketik isi dari halaman ini..." required style="line-height: 1.6;">{{ old('konten', $profil->konten) }}</textarea>
-                        <div class="form-help">Gunakan tombol <code>Enter</code> pada keyboard untuk memisahkan paragraf satu dengan yang lainnya.</div>
-                        @error('konten')<div class="form-error">{{ $message }}</div>@enderror
-                    </div>
+                    @if($type === 'visi_misi')
+                        <div class="form-field form-field-full">
+                            <label for="visi" class="form-label">Visi Sekolah <span>*</span></label>
+                            <textarea name="visi" id="visi" class="form-control-admin @error('visi') is-invalid @enderror" rows="5" placeholder="Tuliskan visi sekolah..." required style="line-height: 1.6;">{{ old('visi', $visiMisi['visi'] ?? '') }}</textarea>
+                            @error('visi')<div class="form-error">{{ $message }}</div>@enderror
+                        </div>
+
+                        <div class="form-field form-field-full">
+                            <label for="misi" class="form-label">Misi Sekolah <span>*</span></label>
+                            <textarea name="misi" id="misi" class="form-control-admin @error('misi') is-invalid @enderror" rows="10" placeholder="Tulis satu poin misi pada setiap baris..." required style="line-height: 1.6;">{{ old('misi', implode("\n", $visiMisi['misi'] ?? [])) }}</textarea>
+                            <div class="form-help">Gunakan satu baris untuk setiap poin misi. Nomor urut akan dibuat otomatis pada halaman publik.</div>
+                            @error('misi')<div class="form-error">{{ $message }}</div>@enderror
+                        </div>
+                    @else
+                        <div class="form-field form-field-full">
+                            <label for="konten" class="form-label">Isi Konten / Penjelasan <span>*</span></label>
+                            <textarea name="konten" id="konten" class="form-control-admin @error('konten') is-invalid @enderror" rows="12" placeholder="Ketik isi dari halaman ini..." required style="line-height: 1.6;">{{ old('konten', $profil->konten) }}</textarea>
+                            <div class="form-help">Gunakan tombol <code>Enter</code> pada keyboard untuk memisahkan paragraf satu dengan yang lainnya.</div>
+                            @error('konten')<div class="form-error">{{ $message }}</div>@enderror
+                        </div>
+                    @endif
 
                     @if($type !== 'visi_misi')
                         <div class="form-field form-field-full">
@@ -120,12 +135,12 @@
 @endpush
 
 @push('scripts')
-    @if($type !== 'akreditasi')
+    @if(!in_array($type, ['akreditasi', 'visi_misi'], true))
         <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@39.0.1/build/ckeditor.js"></script>
     @endif
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            @if($type !== 'akreditasi')
+            @if(!in_array($type, ['akreditasi', 'visi_misi'], true))
                 // Initialize CKEditor 5
                 ClassicEditor
                     .create(document.querySelector('#konten'), {

@@ -51,9 +51,9 @@
                 </div>
 
                 <div class="form-field">
-                    <label for="status_kepegawaian" class="form-label">Status Kepegawaian <span>*</span></label>
-                    <select name="status_kepegawaian" id="status_kepegawaian" class="form-control-admin @error('status_kepegawaian') is-invalid @enderror" required>
-                        <option value="">Pilih status kepegawaian</option>
+                    <label for="status_kepegawaian" class="form-label">Status Kepegawaian</label>
+                    <select name="status_kepegawaian" id="status_kepegawaian" class="form-control-admin @error('status_kepegawaian') is-invalid @enderror">
+                        <option value="">Pilih status kepegawaian (Opsional)</option>
                         @foreach($statusKepegawaian as $value => $label)
                             <option value="{{ $value }}" @selected(old('status_kepegawaian') === $value)>{{ $label }}</option>
                         @endforeach

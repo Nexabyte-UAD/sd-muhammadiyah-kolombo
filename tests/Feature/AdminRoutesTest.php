@@ -8,6 +8,7 @@ use App\Models\GuruStaff;
 use App\Models\Kelas;
 use App\Models\Ekstrakurikuler;
 use App\Models\Pesan;
+use App\Models\ProfilSekolah;
 use App\Models\RiwayatAkademik;
 use App\Models\Setting;
 use App\Models\Siswa;
@@ -414,6 +415,38 @@ class AdminRoutesTest extends TestCase
         $this->assertDatabaseMissing('profil_sekolahs', ['type' => 'profil_singkat']);
     }
 
+    public function test_vision_and_mission_use_separate_plain_text_inputs(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Visi Misi',
+            'email' => 'visi-misi@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+        ProfilSekolah::create([
+            'type' => 'visi_misi',
+            'judul' => 'Visi & Misi',
+            'konten' => "Visi\nVisi lama\n\nMisi\nMisi lama",
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('admin.profil-sekolah.editType', 'visi_misi'))
+            ->assertOk()
+            ->assertSee('name="visi"', false)
+            ->assertSee('name="misi"', false)
+            ->assertDontSee('ClassicEditor', false);
+
+        $this->put(route('admin.profil-sekolah.updateType', 'visi_misi'), [
+            'judul' => 'Visi & Misi',
+            'visi' => 'Menjadi sekolah unggul dan islami.',
+            'misi' => "Meningkatkan kualitas pembelajaran.\nMembentuk karakter peserta didik.",
+        ])->assertRedirect();
+
+        $parts = ProfilSekolah::where('type', 'visi_misi')->firstOrFail()->visiMisiParts();
+        $this->assertCount(2, $parts['misi']);
+        $this->assertStringContainsString('sekolah unggul', strtolower($parts['visi']));
+    }
+
     public function test_guru_staff_edit_route_binds_the_model(): void
     {
         $user = User::create([
@@ -471,6 +504,31 @@ class AdminRoutesTest extends TestCase
             'status_kepegawaian' => 'PNS',
             'pendidikan_terakhir' => 'S1',
             'agama' => 'Islam',
+        ]);
+    }
+
+    public function test_guru_staff_status_kepegawaian_is_optional(): void
+    {
+        $user = User::create([
+            'name' => 'Admin Pegawai Opsional',
+            'email' => 'pegawai-opsional@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)->post(route('admin.guru-staff.store'), [
+            'tipe' => 'guru',
+            'nama' => 'Guru Tanpa Status',
+            'jenis_kelamin' => 'laki_laki',
+            'jabatan' => 'Guru Kelas',
+            'status_kepegawaian' => '',
+            'pendidikan_terakhir' => 'S1',
+            'agama' => 'Islam',
+        ])->assertRedirect(route('admin.guru-staff.index', ['tipe' => 'guru']));
+
+        $this->assertDatabaseHas('guru_staffs', [
+            'nama' => 'Guru Tanpa Status',
+            'status_kepegawaian' => null,
         ]);
     }
 

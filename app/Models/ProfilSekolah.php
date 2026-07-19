@@ -30,4 +30,43 @@ class ProfilSekolah extends Model
         'konten', // Konten teks/HTML lengkap profil sekolah
         'gambar'  // Foto/ilustrasi pendukung profil sekolah
     ];
+
+    public function visiMisiParts(): array
+    {
+        $content = (string) ($this->konten ?? '');
+        $plainText = preg_replace('/<\s*br\s*\/?>/i', "\n", $content);
+        $plainText = preg_replace('/<\/\s*(p|div|li|h[1-6])\s*>/i', "\n", $plainText);
+        $plainText = html_entity_decode(strip_tags($plainText), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $lines = preg_split('/\R/u', str_replace("\xC2\xA0", ' ', $plainText)) ?: [];
+        $visi = [];
+        $misi = [];
+        $inMission = false;
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '') {
+                continue;
+            }
+
+            if (preg_match('/^misi(?:\s+(?:sekolah|kami))?\s*:?$/iu', $line)) {
+                $inMission = true;
+                continue;
+            }
+
+            if (!$inMission && preg_match('/^visi(?:\s+(?:sekolah|kami))?\s*:?$/iu', $line)) {
+                continue;
+            }
+
+            if ($inMission) {
+                $misi[] = preg_replace('/^(?:\d+[.)]|[-*])\s*/u', '', $line);
+            } else {
+                $visi[] = $line;
+            }
+        }
+
+        return [
+            'visi' => trim(implode("\n", $visi)),
+            'misi' => array_values(array_filter(array_map('trim', $misi))),
+        ];
+    }
 }

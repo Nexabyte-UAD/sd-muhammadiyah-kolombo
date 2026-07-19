@@ -36,7 +36,9 @@ class ProfilSekolahController extends Controller
 
         $judul = $profil->judul ?: $judulDefault;
 
-        return view('admin.profil-sekolah.edit', compact('profil', 'type', 'judul'));
+        $visiMisi = $type === 'visi_misi' ? $profil->visiMisiParts() : null;
+
+        return view('admin.profil-sekolah.edit', compact('profil', 'type', 'judul', 'visiMisi'));
     }
 
     /**
@@ -56,7 +58,11 @@ class ProfilSekolahController extends Controller
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
 
-        if ($type !== 'akreditasi') {
+        if ($type === 'visi_misi') {
+            $rules['judul'] = 'required|string|max:255';
+            $rules['visi'] = 'required|string|max:3000';
+            $rules['misi'] = 'required|string|max:10000';
+        } elseif ($type !== 'akreditasi') {
             $rules['judul'] = 'required|string|max:255';
             $rules['konten'] = 'required';
         } else {
@@ -69,7 +75,10 @@ class ProfilSekolahController extends Controller
         $profil = ProfilSekolah::where('type', $type)->firstOrFail();
 
         $data = [];
-        if ($type !== 'akreditasi') {
+        if ($type === 'visi_misi') {
+            $data['judul'] = $request->judul;
+            $data['konten'] = "Visi\n".trim($request->visi)."\n\nMisi\n".trim($request->misi);
+        } elseif ($type !== 'akreditasi') {
             $data['judul'] = $request->judul;
             $data['konten'] = $request->konten;
         } else {
@@ -78,7 +87,10 @@ class ProfilSekolahController extends Controller
         }
         
         // Memformat konten teks dan tag HTML
-        $data = $formatter->fields($data, ['judul' => 'title', 'konten' => 'html']);
+        $data = $formatter->fields($data, [
+            'judul' => 'title',
+            'konten' => $type === 'visi_misi' ? 'sentence' : 'html',
+        ]);
 
         // Upload berkas gambar pendukung baru (serta menghapus berkas lama)
         if ($request->hasFile('gambar')) {

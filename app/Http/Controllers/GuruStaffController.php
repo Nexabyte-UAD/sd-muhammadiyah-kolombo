@@ -94,7 +94,7 @@ class GuruStaffController extends Controller
             'jabatan' => 'required|string|max:255',
             'bidang_tugas' => 'nullable|string|max:255',
             'nip' => ['nullable', 'string', 'max:50', Rule::unique('guru_staffs', 'nip')],
-            'status_kepegawaian' => ['required', Rule::in(array_keys(GuruStaff::STATUS_KEPEGAWAIAN))],
+            'status_kepegawaian' => ['nullable', Rule::in(array_keys(GuruStaff::STATUS_KEPEGAWAIAN))],
             'pendidikan_terakhir' => ['required', Rule::in(array_keys(GuruStaff::PENDIDIKAN_TERAKHIR))],
             'agama' => ['required', Rule::in(array_keys(GuruStaff::AGAMA))],
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -118,6 +118,9 @@ class GuruStaffController extends Controller
             'jabatan' => 'title',
             'bidang_tugas' => 'title',
         ]);
+        $data['status_kepegawaian'] = $request->filled('status_kepegawaian')
+            ? $request->status_kepegawaian
+            : null;
 
         // Proses upload foto profil guru/staf
         $fotoBaru = $request->hasFile('foto')
@@ -190,7 +193,7 @@ class GuruStaffController extends Controller
                 'max:50',
                 Rule::unique('guru_staffs', 'nip')->ignore($guruStaff->id),
             ],
-            'status_kepegawaian' => ['required', Rule::in(array_keys(GuruStaff::STATUS_KEPEGAWAIAN))],
+            'status_kepegawaian' => ['nullable', Rule::in(array_keys(GuruStaff::STATUS_KEPEGAWAIAN))],
             'pendidikan_terakhir' => ['required', Rule::in(array_keys(GuruStaff::PENDIDIKAN_TERAKHIR))],
             'agama' => ['required', Rule::in(array_keys(GuruStaff::AGAMA))],
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -212,6 +215,9 @@ class GuruStaffController extends Controller
             'jabatan' => 'title',
             'bidang_tugas' => 'title',
         ]);
+        $data['status_kepegawaian'] = $request->filled('status_kepegawaian')
+            ? $request->status_kepegawaian
+            : null;
 
         $fotoLama = $guruStaff->foto;
         $fotoBaru = $request->hasFile('foto')
