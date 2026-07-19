@@ -55,76 +55,69 @@
         </header>
 
         <div class="admin-card-body flush">
-            @if($beritas->isNotEmpty())
-                <div class="admin-table-wrap">
-                    <table class="admin-table berita-admin-table">
-                        <thead>
+            <div class="admin-table-wrap">
+                <table class="admin-table berita-admin-table">
+                    <thead>
+                        <tr>
+                            <th>Berita</th>
+                            <th class="text-center">Tanggal Rilis</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center" style="width: 150px;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($beritas as $item)
                             <tr>
-                                <th>Berita</th>
-                                <th class="text-center">Tanggal Rilis</th>
-                                <th class="text-center">Status</th>
-                                <th class="text-center" style="width: 150px;">Aksi</th>
+                                <td>
+                                    <div class="content-cell">
+                                        <div class="content-thumb content-thumb-lg">
+                                            @if($item->gambar)
+                                                <img src="{{ asset('storage/' . $item->gambar) }}" alt="">
+                                            @else
+                                                <x-admin-icon name="news" size="21"/>
+                                            @endif
+                                        </div>
+                                        <div>
+                                            <div class="content-title">
+                                                <a href="{{ route('berita.detail', $item) }}" target="_blank" style="text-decoration: none; color: inherit;" title="Pratinjau Berita">
+                                                    {{ $item->judul }} <x-admin-icon name="external" size="12" class="text-muted" style="margin-left: 4px;"/>
+                                                </a>
+                                            </div>
+                                            <div class="content-meta">{{ Str::limit(strip_tags($item->isi), 78) }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="text-center">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
+                                <td class="text-center">
+                                    <span class="status-badge {{ $item->status === 'published' ? 'status-success' : 'status-muted' }}">
+                                        {{ $item->status === 'published' ? 'Terbit' : 'Draft' }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="table-actions">
+                                        <a href="{{ route('admin.berita.edit', $item) }}" class="action-button" title="Edit berita">
+                                            Edit
+                                        </a>
+                                        <form action="{{ route('admin.berita.destroy', $item) }}" method="POST"
+                                              onsubmit="return confirm('Hapus berita ini? Tindakan ini tidak dapat dibatalkan.')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="action-button action-danger">Hapus</button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                             @foreach($beritas as $item)
-                                <tr>
-                                    <td>
-                                        <div class="content-cell">
-                                            <div class="content-thumb content-thumb-lg">
-                                                @if($item->gambar)
-                                                    <img src="{{ asset('storage/' . $item->gambar) }}" alt="">
-                                                @else
-                                                    <x-admin-icon name="news" size="21"/>
-                                                @endif
-                                            </div>
-                                            <div>
-                                                <div class="content-title">
-                                                    <a href="{{ route('berita.detail', $item) }}" target="_blank" style="text-decoration: none; color: inherit;" title="Pratinjau Berita">
-                                                        {{ $item->judul }} <x-admin-icon name="external" size="12" class="text-muted" style="margin-left: 4px;"/>
-                                                    </a>
-                                                </div>
-                                                <div class="content-meta">{{ Str::limit(strip_tags($item->isi), 78) }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-center">{{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('d M Y') }}</td>
-                                    <td class="text-center">
-                                        <span class="status-badge {{ $item->status === 'published' ? 'status-success' : 'status-muted' }}">
-                                            {{ $item->status === 'published' ? 'Terbit' : 'Draft' }}
-                                        </span>
-                                    </td>
-                                    <td class="text-center">
-                                        <div class="table-actions">
-                                            <a href="{{ route('admin.berita.edit', $item) }}" class="action-button" title="Edit berita">
-                                                Edit
-                                            </a>
-                                            <form action="{{ route('admin.berita.destroy', $item) }}" method="POST"
-                                                  onsubmit="return confirm('Hapus berita ini? Tindakan ini tidak dapat dibatalkan.')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="action-button action-danger">Hapus</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <div class="empty-state">
-                    @if($search !== '')
-                        <strong>Berita tidak ditemukan</strong>
-                        <p>Tidak ada berita yang cocok dengan pencarian "{{ $search }}".</p>
-                        <a href="{{ route('admin.berita.index') }}" class="btn-admin">Tampilkan Semua</a>
-                    @else
-                        <strong>Belum ada berita</strong>
-                        <p>Mulai dengan menambahkan publikasi pertama sekolah.</p>
-                        <a href="{{ route('admin.berita.create') }}" class="btn-admin">Tulis Berita</a>
-                    @endif
-                </div>
-            @endif
+                        @empty
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <x-admin-icon name="news" size="42" style="color: #b4bdc9; display: block; margin: 0 auto 12px;"/>
+                                    {{ $search !== '' ? 'Berita tidak ditemukan.' : 'Belum ada data berita.' }}
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         @if($beritas->hasPages())

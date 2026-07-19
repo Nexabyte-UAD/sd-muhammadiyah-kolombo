@@ -773,8 +773,10 @@ input[type="password"]::-ms-clear {
 .admin-usage-heading strong, .admin-usage-heading small { display: block; }
 .admin-usage-heading strong { color: var(--admin-navy); font-size: 13px; }
 .admin-usage-heading small { margin-top: 3px; color: var(--admin-muted); font-size: 11px; line-height: 1.4; }
-.admin-usage-chevron { color: var(--admin-muted); transition: transform .15s ease; }
-.admin-usage-guide[open] .admin-usage-chevron { transform: rotate(90deg); }
+.admin-usage-chevron { color: var(--admin-muted); }
+.admin-usage-chevron-open { display: none; }
+.admin-usage-guide[open] .admin-usage-chevron-closed { display: none; }
+.admin-usage-guide[open] .admin-usage-chevron-open { display: block; }
 .admin-usage-body { padding: 0 18px 16px 66px; border-top: 1px solid #e5edf6; }
 .admin-usage-body ol { margin: 14px 0 0; padding-left: 18px; color: #52606f; }
 .admin-usage-body li { padding-left: 4px; font-size: 12px; line-height: 1.65; }
@@ -859,7 +861,7 @@ html.dark-mode .account-security-note {
 .settings-tabs {
     display: flex;
     flex-wrap: wrap;
-    gap: 0;
+    gap: 0 30px;
     margin: 0 0 20px;
     padding: 0;
     list-style: none;
@@ -870,15 +872,12 @@ html.dark-mode .account-security-note {
     min-height: 42px;
     align-items: center;
     margin-bottom: -1px;
-    padding: 0 30px 0 0;
+    padding: 0;
     color: #344050;
     border-bottom: 3px solid transparent;
     text-decoration: none;
     font-size: 12px;
     font-weight: 700;
-}
-.settings-tabs li:last-child a {
-    padding-right: 0;
 }
 .settings-tabs a:hover {
     color: var(--admin-primary);
@@ -1530,7 +1529,7 @@ textarea.form-control { min-height: 120px; resize: vertical; line-height: 1.6; }
     min-height: 42px;
     align-items: center;
     margin-bottom: -1px;
-    padding: 0 30px 0 0;
+    padding: 0;
     border-bottom-width: 3px;
     font-size: 12px;
     font-weight: 700;

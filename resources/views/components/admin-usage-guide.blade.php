@@ -18,7 +18,8 @@
             <strong>{{ $title }}</strong>
             <small>{{ $description }}</small>
         </span>
-        <x-admin-icon name="arrow-right" size="16" class="admin-usage-chevron"/>
+        <x-admin-icon name="chevron-left" size="15" class="admin-usage-chevron admin-usage-chevron-closed"/>
+        <x-admin-icon name="chevron-down" size="15" class="admin-usage-chevron admin-usage-chevron-open"/>
     </summary>
     <div class="admin-usage-body">
         <ol>

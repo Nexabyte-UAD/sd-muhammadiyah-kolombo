@@ -42,17 +42,17 @@
 
             <ul class="nav settings-tabs" id="settings-tabs" role="tablist">
                 <li class="nav-item">
-                    <a class="nav-link active" id="tabs-identitas-tab" data-bs-toggle="pill" href="#tabs-identitas" role="tab" aria-controls="tabs-identitas" aria-selected="true">
+                    <a class="nav-link active" id="tabs-identitas-tab" data-settings-tab href="#tabs-identitas" role="tab" aria-controls="tabs-identitas" aria-selected="true">
                         Identitas Sekolah
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="tabs-beranda-tab" data-bs-toggle="pill" href="#tabs-beranda" role="tab" aria-controls="tabs-beranda" aria-selected="false">
+                    <a class="nav-link" id="tabs-beranda-tab" data-settings-tab href="#tabs-beranda" role="tab" aria-controls="tabs-beranda" aria-selected="false">
                         Pengaturan Beranda
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" id="tabs-kontak-tab" data-bs-toggle="pill" href="#tabs-kontak" role="tab" aria-controls="tabs-kontak" aria-selected="false">
+                    <a class="nav-link" id="tabs-kontak-tab" data-settings-tab href="#tabs-kontak" role="tab" aria-controls="tabs-kontak" aria-selected="false">
                         Kontak & Footer
                     </a>
                 </li>
@@ -247,6 +247,33 @@
 @push('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            const settingsTabs = document.querySelectorAll('[data-settings-tab]');
+            const settingsPanes = document.querySelectorAll('#settings-tabs-content .tab-pane');
+
+            function activateSettingsTab(tab) {
+                const target = document.querySelector(tab.getAttribute('href'));
+                if (!target) return;
+
+                settingsTabs.forEach(function (item) {
+                    const isActive = item === tab;
+                    item.classList.toggle('active', isActive);
+                    item.setAttribute('aria-selected', isActive ? 'true' : 'false');
+                });
+
+                settingsPanes.forEach(function (pane) {
+                    const isActive = pane === target;
+                    pane.classList.toggle('active', isActive);
+                    pane.classList.toggle('show', isActive);
+                });
+            }
+
+            settingsTabs.forEach(function (tab) {
+                tab.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    activateSettingsTab(tab);
+                });
+            });
+
             // Function to handle image preview
             function setupImagePreview(inputId) {
                 const input = document.getElementById(inputId);

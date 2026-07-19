@@ -178,7 +178,7 @@ class AdminRoutesTest extends TestCase
             ->assertSee(asset('css/admin-panel.css'), false);
     }
 
-    public function test_settings_tabs_use_the_loaded_bootstrap_version(): void
+    public function test_settings_tabs_have_native_navigation(): void
     {
         $user = User::create([
             'name' => 'Admin Pengaturan',
@@ -190,9 +190,9 @@ class AdminRoutesTest extends TestCase
         $this->actingAs($user)
             ->get(route('admin.settings.edit'))
             ->assertOk()
-            ->assertSee('id="tabs-beranda-tab" data-bs-toggle="pill"', false)
-            ->assertSee('id="tabs-kontak-tab" data-bs-toggle="pill"', false)
-            ->assertDontSee('data-toggle="pill"', false);
+            ->assertSee('id="tabs-beranda-tab" data-settings-tab', false)
+            ->assertSee('id="tabs-kontak-tab" data-settings-tab', false)
+            ->assertSee("settingsTabs.forEach(function (tab)", false);
     }
 
     public function test_dashboard_surfaces_actionable_data_and_message_can_be_marked_as_read(): void
