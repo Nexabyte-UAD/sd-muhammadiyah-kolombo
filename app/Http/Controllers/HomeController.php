@@ -141,7 +141,10 @@ class HomeController extends Controller
         if (! in_array($tipe, ['guru', 'staf'], true)) {
             $tipe = 'guru';
         }
-        $gurus = GuruStaff::where('tipe', $tipe)->orderBy('nama', 'asc')->get();
+        $gurus = GuruStaff::where('tipe', $tipe)
+            ->orderBy('nama', 'asc')
+            ->paginate(8)
+            ->withQueryString();
 
         return view('pages.guru', compact('gurus', 'tipe'));
     }
@@ -239,11 +242,22 @@ class HomeController extends Controller
     /**
      * Menampilkan halaman daftar Ekstrakurikuler sekolah.
      */
-    public function ekstrakurikuler()
+    public function ekstrakurikuler(Request $request)
     {
-        $ekstrakurikulers = Ekstrakurikuler::all();
+        $search = trim((string) $request->query('search', ''));
 
-        return view('pages.ekstrakurikuler', compact('ekstrakurikulers'));
+        $ekstrakurikulers = Ekstrakurikuler::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('nama', 'like', "%{$search}%")
+                        ->orWhere('jadwal', 'like', "%{$search}%")
+                        ->orWhere('pembina', 'like', "%{$search}%")
+                        ->orWhere('deskripsi', 'like', "%{$search}%");
+                });
+            })
+            ->get();
+
+        return view('pages.ekstrakurikuler', compact('ekstrakurikulers', 'search'));
     }
 
     /**

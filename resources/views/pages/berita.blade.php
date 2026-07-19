@@ -18,9 +18,12 @@
                     Kumpulan informasi, pengumuman, dan artikel terbaru dari SD Muhammadiyah Komplek Kolombo.
                 </p>
             </div>
-            <form action="{{ route('berita') }}" method="GET" class="d-flex align-items-center gap-2" style="max-width: 420px; width: 100%;">
-                <input type="text" name="search" class="form-control" placeholder="Cari berita..." value="{{ $search ?? '' }}">
-                <button class="btn btn-primary px-4" type="submit">Cari</button>
+            <form action="{{ route('berita') }}" method="GET" class="d-flex align-items-center justify-content-md-end gap-2 news-search-form">
+                <label for="news-search-input" class="text-secondary small">Search:</label>
+                <input type="search" id="news-search-input" name="search"
+                       class="form-control form-control-sm border-secondary-subtle"
+                       value="{{ $search ?? '' }}" enterkeyhint="search"
+                       aria-label="Cari berita">
             </form>
         </div>
 
@@ -92,6 +95,19 @@
 
 @push('styles')
 <style>
+    .news-search-form {
+        width: 100%;
+    }
+    .news-search-form .form-control {
+        width: 180px;
+    }
+    @media (max-width: 767.98px) {
+        .news-search-form .form-control {
+            width: 100%;
+            min-width: 0;
+        }
+    }
+
     /* Minimalist Circular Pagination Styles */
     .pagination-wrapper .pagination {
         display: flex;

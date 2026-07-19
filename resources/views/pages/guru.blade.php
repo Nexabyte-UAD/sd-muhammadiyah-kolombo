@@ -53,6 +53,12 @@
             @endforelse
         </div>
 
+        @if($gurus->hasPages())
+            <div class="d-flex justify-content-center mt-5 structural-pagination">
+                {{ $gurus->links('pagination::bootstrap-5') }}
+            </div>
+        @endif
+
     </div>
 </section>
 
@@ -68,6 +74,55 @@
         height: auto;
         object-fit: cover;
         object-position: center top;
+    }
+
+    .structural-pagination .pagination {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 0;
+    }
+
+    .structural-pagination .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        padding: 0;
+        border: 0;
+        border-radius: 50% !important;
+        color: #475569;
+        background: transparent;
+        font-weight: 600;
+    }
+
+    .structural-pagination .page-item.active .page-link {
+        color: #fff;
+        background: #172554;
+        box-shadow: 0 4px 10px rgba(23, 37, 84, .2);
+    }
+
+    .structural-pagination .page-item:not(.active):not(.disabled) .page-link:hover {
+        color: #0f172a;
+        background: #f1f5f9;
+    }
+
+    .structural-pagination .page-item.disabled .page-link {
+        color: #cbd5e1;
+        background: transparent;
+    }
+
+    .structural-pagination p.small.text-muted {
+        display: none !important;
+    }
+
+    @media (max-width: 575.98px) {
+        .structural-pagination nav > div:first-child .page-link {
+            width: auto;
+            padding: 0 .9rem;
+            border-radius: 999px !important;
+        }
     }
 </style>
 @endpush
