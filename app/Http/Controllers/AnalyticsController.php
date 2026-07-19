@@ -27,17 +27,54 @@ class AnalyticsController extends Controller
      */
     public function index(): View
     {
-        // ── Statistik Pengunjung ──────────────────────────────────────────────
-        $pengunjungHariIni   = PageView::todayCount();
-        $pengunjungBulanIni  = PageView::lastDaysCount(30);
-        $uniqueVisitor30Hari = PageView::uniqueVisitors(30);
-        $totalAllTime        = PageView::count();
+        // ── Statistik Pengunjung (Google Analytics 4) ─────────────────────────
+        $pengunjungHariIni   = 0;
+        $pengunjungBulanIni  = 0;
+        $uniqueVisitor30Hari = 0;
+        $totalAllTime        = 0;
+        $trendHarian         = ['labels' => [], 'data' => []];
+        $topHalaman          = collect();
 
-        // Tren harian 30 hari terakhir untuk Line Chart
-        $trendHarian = PageView::dailyTrend(30);
+        try {
+            $period30 = \Spatie\Analytics\Period::days(30);
+            
+            // Tren harian 30 hari
+            $dailyAnalytics = \Spatie\Analytics\Facades\Analytics::fetchTotalVisitorsAndPageViews($period30);
+            
+            // Ambil data hari ini (berdasarkan tanggal hari ini)
+            $today = \Carbon\Carbon::today();
+            $todayData = $dailyAnalytics->first(function($item) use ($today) {
+                return isset($item['date']) && $item['date']->isSameDay($today);
+            });
+            $pengunjungHariIni = $todayData ? ($todayData['screenPageViews'] ?? 0) : 0;
 
-        // Top 8 halaman paling banyak dikunjungi (30 hari)
-        $topHalaman = PageView::topPages(8, 30);
+            $pengunjungBulanIni = $dailyAnalytics->sum('screenPageViews');
+
+            // Unique Visitors (activeUsers) & Total Kunjungan (screenPageViews) 30 Hari (agregat total)
+            $totals30 = \Spatie\Analytics\Facades\Analytics::get($period30, ['activeUsers', 'screenPageViews']);
+            $uniqueVisitor30Hari = $totals30->first()['activeUsers'] ?? $dailyAnalytics->sum('activeUsers');
+
+            // Total Kunjungan All Time (Dibatasi 1 Tahun/12 Bulan karena kebijakan retensi data GA4)
+            $totalsYear = \Spatie\Analytics\Facades\Analytics::get(\Spatie\Analytics\Period::months(12), ['screenPageViews']);
+            $totalAllTime = $totalsYear->first()['screenPageViews'] ?? 0;
+
+            // Format data trendHarian untuk Chart.js
+            $trendHarian = [
+                'labels' => $dailyAnalytics->pluck('date')->map(fn($d) => $d->format('d M'))->toArray(),
+                'data'   => $dailyAnalytics->pluck('screenPageViews')->toArray(),
+            ];
+
+            // Top 8 halaman paling banyak dikunjungi (30 hari)
+            $topPagesData = \Spatie\Analytics\Facades\Analytics::fetchMostVisitedPages($period30, 8);
+            $topHalaman = $topPagesData->map(function($page) {
+                return (object)[
+                    'page_label' => $page['pageTitle'] ?: $page['url'],
+                    'total'      => $page['screenPageViews'],
+                ];
+            });
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('GA4 Fetch Error: ' . $e->getMessage());
+        }
 
         // ── Statistik Siswa ───────────────────────────────────────────────────
 
