@@ -72,8 +72,7 @@
                         <x-admin-icon name="news" size="48" class="text-secondary opacity-25 mb-3"/>
                         @if(isset($search) && $search !== '')
                             <h5 class="fw-bold text-dark mb-2">Pencarian Tidak Ditemukan</h5>
-                            <p class="text-secondary mb-3">Tidak ada berita yang cocok dengan kata kunci "{{ $search }}".</p>
-                            <a href="{{ route('berita') }}" class="btn btn-sm btn-primary rounded-pill px-4">Lihat Semua Berita</a>
+                            <p class="text-secondary mb-0">Tidak ada berita yang cocok dengan kata kunci "{{ $search }}".</p>
                         @else
                             <h5 class="fw-bold text-dark mb-2">Belum Ada Berita</h5>
                             <p class="text-secondary mb-0">Saat ini belum ada publikasi berita terbaru.</p>
