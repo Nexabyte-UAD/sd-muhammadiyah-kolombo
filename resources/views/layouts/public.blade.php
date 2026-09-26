@@ -513,11 +513,16 @@
                 observer.unobserve(entry.target);
               }
             });
-          }, { threshold: 0.12, rootMargin: '0px 0px -45px' });
+          }, { threshold: 0.05, rootMargin: '50px 0px' });
 
           revealTargets.forEach((target) => {
-            target.classList.add('scroll-reveal');
-            revealObserver.observe(target);
+            const rect = target.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+              target.classList.add('is-visible');
+            } else {
+              target.classList.add('scroll-reveal');
+              revealObserver.observe(target);
+            }
           });
         }
 
