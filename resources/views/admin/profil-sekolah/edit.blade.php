@@ -56,10 +56,19 @@
                 @else
                     <!-- Tipe Umum (Visi Misi, Sejarah, dsb.) -->
                     <div class="form-field form-field-full">
-                        <label for="judul" class="form-label">Judul Halaman <span>*</span></label>
-                        <input type="text" name="judul" id="judul" class="form-control-admin @error('judul') is-invalid @enderror" value="{{ old('judul', $profil->judul) }}" required>
+                        <label for="judul" class="form-label">{{ $type === 'sambutan' ? 'Nama Kepala Sekolah' : 'Judul Halaman' }} <span>*</span></label>
+                        <input type="text" name="judul" id="judul" class="form-control-admin @error('judul') is-invalid @enderror" value="{{ old('judul', $profil->judul) }}" required placeholder="{{ $type === 'sambutan' ? 'Contoh: Drs. H. Ahmad Dahlan, M.Pd.' : '' }}">
                         @error('judul')<div class="form-error">{{ $message }}</div>@enderror
                     </div>
+
+                    @if($type === 'sambutan')
+                        <div class="form-field form-field-full">
+                            <label for="sub_judul" class="form-label">Jabatan / Sub Judul Kepala Sekolah</label>
+                            <input type="text" name="sub_judul" id="sub_judul" class="form-control-admin @error('sub_judul') is-invalid @enderror" value="{{ old('sub_judul', $sambutanData['sub_judul'] ?? 'Kepala Sekolah SD Muhammadiyah Komplek Kolombo') }}" placeholder="Contoh: Kepala Sekolah SD Muhammadiyah Komplek Kolombo">
+                            <div class="form-help">Jabatan atau keterangan yang akan ditampilkan tepat di bawah nama Kepala Sekolah pada halaman publik.</div>
+                            @error('sub_judul')<div class="form-error">{{ $message }}</div>@enderror
+                        </div>
+                    @endif
 
                     @if($type === 'visi_misi')
                         <div class="form-field form-field-full">
@@ -287,7 +296,7 @@
                     @else
                         <div class="form-field form-field-full">
                             <label for="konten" class="form-label">Isi Konten / Penjelasan <span>*</span></label>
-                            <textarea name="konten" id="konten" class="form-control-admin @error('konten') is-invalid @enderror" rows="12" placeholder="Ketik isi dari halaman ini..." required style="line-height: 1.6;">{{ old('konten', $profil->konten) }}</textarea>
+                            <textarea name="konten" id="konten" class="form-control-admin @error('konten') is-invalid @enderror" rows="12" placeholder="Ketik isi dari halaman ini..." required style="line-height: 1.6;">{{ old('konten', $type === 'sambutan' ? ($sambutanData['konten'] ?? '') : $profil->konten) }}</textarea>
                             <div class="form-help">Gunakan tombol <code>Enter</code> pada keyboard untuk memisahkan paragraf satu dengan yang lainnya.</div>
                             @error('konten')<div class="form-error">{{ $message }}</div>@enderror
                         </div>
