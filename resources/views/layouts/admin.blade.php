@@ -56,10 +56,22 @@
                     @endif
 
                     @if(session('success'))
-                        <div class="admin-alert admin-alert-success" role="alert">{{ session('success') }}</div>
+                        <div class="admin-alert admin-alert-success" id="adminSuccessAlert" role="alert" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; margin-bottom: 20px; background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; border-radius: 8px; font-weight: 500;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <x-admin-icon name="check-circle" size="18"/>
+                                <span>{{ session('success') }}</span>
+                            </div>
+                            <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; color: #047857; cursor: pointer; padding: 0 4px; font-size: 20px; line-height: 1; font-weight: bold;" aria-label="Tutup">&times;</button>
+                        </div>
                     @endif
                     @if(session('error'))
-                        <div class="admin-alert admin-alert-danger" role="alert">{{ session('error') }}</div>
+                        <div class="admin-alert admin-alert-danger" id="adminErrorAlert" role="alert" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; margin-bottom: 20px; background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 8px; font-weight: 500;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <x-admin-icon name="alert-circle" size="18"/>
+                                <span>{{ session('error') }}</span>
+                            </div>
+                            <button type="button" onclick="this.parentElement.remove()" style="background: none; border: none; color: #b91c1c; cursor: pointer; padding: 0 4px; font-size: 20px; line-height: 1; font-weight: bold;" aria-label="Tutup">&times;</button>
+                        </div>
                     @endif
 
                     @yield('content')
@@ -481,6 +493,17 @@
             activityEvents.forEach(function (eventName) {
                 document.addEventListener(eventName, resetIdleTimer, { passive: true });
             });
+
+            // Auto dismiss admin success alert after 4 seconds
+            setTimeout(function() {
+                const alertEl = document.getElementById('adminSuccessAlert');
+                if (alertEl) {
+                    alertEl.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                    alertEl.style.opacity = '0';
+                    alertEl.style.transform = 'translateY(-8px)';
+                    setTimeout(() => alertEl.remove(), 400);
+                }
+            }, 4000);
 
             // Start the timer initially
             resetIdleTimer();

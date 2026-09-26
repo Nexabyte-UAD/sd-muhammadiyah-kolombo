@@ -14,9 +14,12 @@ Route::get('/akreditasi', [HomeController::class, 'akreditasi'])->name('akredita
 Route::get('/guru', [HomeController::class, 'guru'])->name('guru');
 Route::get('/prestasi', [HomeController::class, 'prestasi'])->name('prestasi');
 Route::get('/ekstrakurikuler', [HomeController::class, 'ekstrakurikuler'])->name('ekstrakurikuler');
-Route::get('/siswa', [HomeController::class, 'siswa'])->name('siswa');
-Route::get('/kelas', [HomeController::class, 'kelas'])->name('kelas');
-Route::get('/alumni', [HomeController::class, 'alumni'])->name('alumni');
+Route::get('/galeri/foto', [HomeController::class, 'galeriFoto'])->name('galeri.foto');
+Route::get('/galeri/foto/{galeriFoto}', [HomeController::class, 'detailGaleriFoto'])->name('galeri.foto.detail');
+Route::get('/galeri/video', [HomeController::class, 'galeriVideo'])->name('galeri.video');
+Route::get('/spmb', [HomeController::class, 'spmb'])->name('spmb');
+Route::get('/guru-menulis', [HomeController::class, 'guruMenulis'])->name('guru-menulis');
+Route::get('/guru-menulis/{guruMenulis:slug}', [HomeController::class, 'detailGuruMenulis'])->name('guru-menulis.detail');
 Route::get('/berita', [HomeController::class, 'berita'])->name('berita');
 Route::get('/berita/{berita}', [HomeController::class, 'detailBerita'])->name('berita.detail');
 Route::post('/pesan', [HomeController::class, 'storePesan'])->name('pesan.store');
@@ -52,6 +55,18 @@ Route::middleware(['auth', 'admin', 'admin.idle'])->group(function () {
         ->parameters(['guru-staff' => 'guruStaff']);
     Route::resource('admin/prestasi', \App\Http\Controllers\PrestasiController::class)->except('show')->names('admin.prestasi');
     Route::resource('admin/ekstrakurikuler', \App\Http\Controllers\EkstrakurikulerController::class)->except('show')->names('admin.ekstrakurikuler');
+    Route::resource('admin/guru-menulis', \App\Http\Controllers\GuruMenulisController::class)
+        ->except('show')
+        ->names('admin.guru-menulis')
+        ->parameters(['guru-menulis' => 'guruMenuli']);
+    Route::resource('admin/galeri-foto', \App\Http\Controllers\GaleriFotoController::class)
+        ->except('show')
+        ->names('admin.galeri-foto')
+        ->parameters(['galeri-foto' => 'galeriFoto']);
+    Route::resource('admin/galeri-video', \App\Http\Controllers\GaleriVideoController::class)
+        ->except('show')
+        ->names('admin.galeri-video')
+        ->parameters(['galeri-video' => 'galeriVideo']);
     Route::get('admin/pesan', [\App\Http\Controllers\PesanController::class, 'index'])->name('admin.pesan.index');
     Route::patch('admin/pesan/{pesan}/baca', [\App\Http\Controllers\PesanController::class, 'markAsRead'])->name('admin.pesan.read');
     Route::delete('admin/pesan/{pesan}', [\App\Http\Controllers\PesanController::class, 'destroy'])->name('admin.pesan.destroy');

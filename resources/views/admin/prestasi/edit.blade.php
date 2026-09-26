@@ -25,7 +25,6 @@
             <p>Perubahan akan diterapkan setelah disimpan.</p>
         </div>
         <div class="form-card-body">
-            <x-auto-format-notice />
             <div class="form-grid">
                 <div class="form-field form-field-full">
                     <label for="judul" class="form-label">Nama Lomba <span>*</span></label>
@@ -76,26 +75,32 @@
 
                 <div class="form-field form-field-full">
                     <label for="deskripsi" class="form-label">Keterangan / Tingkat <span>*</span></label>
-                    <textarea name="deskripsi" id="deskripsi" class="form-control-admin @error('deskripsi') is-invalid @enderror" rows="3" required>{{ old('deskripsi', $prestasi->deskripsi) }}</textarea>
+                    <textarea name="deskripsi" id="deskripsi" class="form-control-admin @error('deskripsi') is-invalid @enderror" rows="5" placeholder="Tuliskan keterangan / tingkat prestasi..." required>{{ old('deskripsi', $prestasi->deskripsi) }}</textarea>
                     @error('deskripsi')<div class="form-error">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="form-field form-field-full">
-                    <label for="gambar" class="form-label">Foto / Bukti</label>
+                    <label class="form-label">Gambar Saat Ini / Pratinjau Baru</label>
                     
-                    <div class="current-image" id="image-preview-box">
-                        <span class="current-image-placeholder"><x-admin-icon name="award" size="30"/></span>
-                        <img src="{{ $prestasi->gambar ? asset('storage/' . $prestasi->gambar) : '#' }}" id="image-preview-element" alt="Pratinjau Gambar">
-                        <div>
-                            <strong id="image-preview-title">{{ $prestasi->gambar ? 'Foto saat ini' : 'Pratinjau gambar baru' }}</strong>
-                            <small id="image-preview-help">{{ $prestasi->gambar ? 'Pilih file baru jika ingin menggantinya.' : 'Gambar belum disimpan.' }}</small>
+                    <!-- Instant Image Preview Box -->
+                    <div class="current-image mb-2" id="image-preview-box">
+                        <div style="max-width: 280px; border-radius: 8px; overflow: hidden; border: 1px solid var(--admin-border);">
+                            @if($prestasi->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($prestasi->gambar))
+                                <img src="{{ asset('storage/' . $prestasi->gambar) }}" id="image-preview-element" alt="{{ $prestasi->judul }}" style="width: 100%; height: auto; display: block;">
+                            @else
+                                <img src="{{ asset('assets/images/no-image-available.jpg') }}" id="image-preview-element" alt="Default" style="width: 100%; height: auto; display: block;">
+                            @endif
                         </div>
+                        <small id="image-preview-help" class="form-help text-primary mt-1" style="display: block; font-weight: 500;">
+                            {{ $prestasi->gambar ? 'Gambar tersimpan saat ini.' : 'Belum ada gambar.' }}
+                        </small>
                     </div>
 
+                    <label for="gambar" class="form-label">Ganti Foto / Bukti Baru (Opsional)</label>
                     <input type="file" name="gambar" id="gambar"
                            class="form-control-admin form-file @error('gambar') is-invalid @enderror"
-                           accept="image/jpeg,image/png,image/gif">
-                    <div class="form-help">JPG, PNG, atau GIF. Maksimal 2 MB.</div>
+                           accept="image/jpeg,image/png,image/jpg,image/webp">
+                    <div class="form-help">Biarkan kosong jika tidak ingin mengubah foto. Maksimal 2MB.</div>
                     @error('gambar')<div class="form-error">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -107,9 +112,48 @@
     </form>
 @endsection
 
+@push('styles')
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 200px;
+        }
+    </style>
+@endpush
+
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@39.0.1/build/ckeditor.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Initialize CKEditor 5
+            const deskripsiEl = document.querySelector('#deskripsi');
+            if (deskripsiEl && typeof ClassicEditor !== 'undefined') {
+                ClassicEditor
+                    .create(deskripsiEl, {
+                        toolbar: [
+                            'heading', '|', 
+                            'bold', 'italic', 'link', '|',
+                            'bulletedList', 'numberedList', '|',
+                            'blockQuote', 'undo', 'redo'
+                        ],
+                        heading: {
+                            options: [
+                                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                            ]
+                        }
+                    })
+                    .then(editor => {
+                        editor.model.document.on('change:data', () => {
+                            deskripsiEl.value = editor.getData();
+                            window.isFormDirty = true;
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+
             // Instant Image Preview & Size Validation
             const gambarInput = document.getElementById('gambar');
             if (gambarInput) {
@@ -126,14 +170,12 @@
                         reader.onload = function(e) {
                             const previewBox = document.getElementById('image-preview-box');
                             const previewEl = document.getElementById('image-preview-element');
-                            const previewTitle = document.getElementById('image-preview-title');
                             const previewHelp = document.getElementById('image-preview-help');
 
                             if (previewEl && previewBox) {
                                 previewEl.src = e.target.result;
-                                previewBox.style.display = 'flex';
-                                if (previewTitle) previewTitle.textContent = 'Pratinjau gambar baru';
-                                if (previewHelp) previewHelp.textContent = 'Gambar terpilih (belum disimpan).';
+                                previewBox.style.display = 'block';
+                                if (previewHelp) previewHelp.textContent = 'Pratinjau gambar baru (belum disimpan).';
                             }
                         };
                         reader.readAsDataURL(file);

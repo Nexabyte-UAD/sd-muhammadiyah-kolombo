@@ -39,29 +39,31 @@ Konten yang diinput dari admin menjadi sumber data untuk halaman publik. Beberap
 
 ### Portal Publik
 
-- Beranda dengan hero, statistik, sambutan, berita terbaru, dan penghargaan.
-- Halaman profil sekolah: sambutan, tentang, visi misi, dan akreditasi.
-- Halaman guru dan staf dengan biodata.
-- Halaman prestasi berbasis kategori.
-- Halaman ekstrakurikuler.
-- Halaman kelas, siswa, dan alumni.
-- Direktori berita dan detail berita.
-- Form kontak/pesan pengunjung.
+- Beranda dengan hero banner, statistik siswa, kata sambutan, berita terbaru, dan galeri kegiatan.
+- Halaman profil sekolah: sambutan kepala sekolah, tentang sekolah, visi & misi, dan akreditasi A.
+- Halaman SPMB (PPDB) interaktif: Informasi umum, kuota pendaftaran per tahun ajaran, syarat berkas, alur pendaftaran, dan kontak WhatsApp Panitia PPDB.
+- Halaman Guru Menulis: Direktori karya tulis, opini, & artikel ilmiah guru dilengkapi tata letak 2 kolom (sidebar artikel lainnya) dan fitur tombol bagikan ke media sosial (WhatsApp, Facebook, Twitter/X).
+- Menu Kesiswaan: Prestasi siswa berdasar kategori kejuaraan dan direktori kegiatan ekstrakurikuler.
+- Halaman Struktural: Profil biodata guru dan staf kependidikan.
+- Galeri Sekolah: Album galeri foto dan galeri video kegiatan sekolah.
+- Chatbot AI Interaktif: Layanan informasi otomatis 24/7 berbasis kata kunci FAQ & fallback integrasi Google Gemini AI.
+- Form kontak/pesan pengunjung terintegrasi.
 
 ### Dashboard Admin
 
-- Login admin dengan proteksi middleware.
-- Manajemen akun admin.
-- CRUD berita.
-- CRUD guru dan staf.
-- CRUD prestasi.
-- CRUD ekstrakurikuler.
-- CRUD kelas dan siswa.
-- Kenaikan kelas siswa.
-- Inbox pesan pengunjung.
-- Pengelolaan profil sekolah.
-- Pengaturan website seperti logo, kontak, hero, dan sambutan.
-- Activity log untuk aktivitas sistem.
+- Login admin dengan proteksi middleware ganda & idle session timeout.
+- Dashboard analitik pengunjung (grafik tren harian, perangkat, browser, & halaman terpopuler).
+- CRUD Berita Sekolah.
+- CRUD Guru Menulis (Artikel & Opini Guru).
+- CRUD Guru dan Staf Kependidikan.
+- CRUD Prestasi Siswa & Ekstrakurikuler.
+- CRUD Data Siswa, Pengarsipan Alumni, & Kenaikan Kelas Otomatis.
+- CRUD Galeri Foto & Video Kegiatan.
+- Inbox Pesan Kontak Pengunjung.
+- Manajemen Chatbot FAQ & Audit Log Rating Kepuasan Pengunjung.
+- Pengelolaan Profil Sekolah (Sambutan, Tentang, Visi Misi, Akreditasi).
+- Pengaturan Website (Logo, Kontak, Hero Banner, & Sosial Media).
+- Activity Log Audit Trail untuk memantau seluruh riwayat perubahan sistem oleh admin.
 
 ---
 

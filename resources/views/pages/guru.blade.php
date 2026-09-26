@@ -32,8 +32,10 @@
                              class="card-img-top w-100 border-bottom structural-photo"
                              alt="{{ $guru->nama }}">
                     @else
-                        <div class="d-flex align-items-center justify-content-center text-secondary w-100 structural-photo">
-                            <x-admin-icon name="person-circle" size="112" class="default-profile-icon opacity-25"/>
+                        <div class="d-flex align-items-center justify-content-center text-secondary w-100 structural-photo bg-light">
+                            <svg width="96" height="96" viewBox="0 0 16 16" fill="currentColor" class="text-secondary opacity-25" aria-hidden="true">
+                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                            </svg>
                         </div>
                     @endif
                     <div class="card-body p-4">
@@ -53,11 +55,7 @@
             @endforelse
         </div>
 
-        @if($gurus->hasPages())
-            <div class="d-flex justify-content-center mt-5 structural-pagination">
-                {{ $gurus->links('pagination::bootstrap-5') }}
-            </div>
-        @endif
+        <x-public-pagination :paginator="$gurus" />
 
     </div>
 </section>

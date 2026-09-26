@@ -25,7 +25,6 @@
             <p>Kolom bertanda bintang wajib diisi.</p>
         </div>
         <div class="form-card-body">
-            <x-auto-format-notice />
             <div class="form-grid">
                 <div class="form-field form-field-full">
                     <label for="nama" class="form-label">Nama Lengkap <span>*</span></label>
@@ -99,21 +98,20 @@
                 </div>
 
                 <div class="form-field form-field-full">
-                    <label for="foto" class="form-label">Foto Profil</label>
+                    <label for="foto" class="form-label">Foto Profil (Opsional)</label>
                     
-                    <div class="current-image" id="image-preview-box">
-                        <span class="current-image-placeholder"><x-admin-icon name="person-circle" size="30"/></span>
-                        <img src="#" id="image-preview-element" alt="Pratinjau Gambar">
-                        <div>
-                            <strong id="image-preview-title">Pratinjau gambar baru</strong>
-                            <small id="image-preview-help">Belum ada gambar yang dipilih.</small>
+                    <!-- Instant Image Preview Box -->
+                    <div class="current-image mb-2" id="image-preview-box" style="display: none;">
+                        <div style="max-width: 280px; border-radius: 8px; overflow: hidden; border: 1px solid var(--admin-border);">
+                            <img src="#" id="image-preview-element" alt="Pratinjau Gambar" style="width: 100%; height: auto; display: block;">
                         </div>
+                        <small id="image-preview-help" class="form-help text-primary mt-1" style="display: block; font-weight: 500;">Pratinjau foto baru (belum disimpan).</small>
                     </div>
 
                     <input type="file" name="foto" id="foto"
                            class="form-control-admin form-file @error('foto') is-invalid @enderror"
-                           accept="image/jpeg,image/png,image/gif">
-                    <div class="form-help">JPG, PNG, atau GIF. Maksimal 2 MB.</div>
+                           accept="image/jpeg,image/png,image/jpg,image/webp">
+                    <div class="form-help">Format: JPG, PNG, WEBP. Maksimal ukuran file: 2MB.</div>
                     @error('foto')<div class="form-error">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -144,14 +142,12 @@
                         reader.onload = function(e) {
                             const previewBox = document.getElementById('image-preview-box');
                             const previewEl = document.getElementById('image-preview-element');
-                            const previewTitle = document.getElementById('image-preview-title');
                             const previewHelp = document.getElementById('image-preview-help');
 
                             if (previewEl && previewBox) {
                                 previewEl.src = e.target.result;
-                                previewBox.style.display = 'flex';
-                                if (previewTitle) previewTitle.textContent = 'Pratinjau gambar baru';
-                                if (previewHelp) previewHelp.textContent = 'Gambar terpilih (belum disimpan).';
+                                previewBox.style.display = 'block';
+                                if (previewHelp) previewHelp.textContent = 'Pratinjau foto baru (belum disimpan).';
                             }
                         };
                         reader.readAsDataURL(file);

@@ -62,9 +62,9 @@
                                 @endif
                             </div>
 
-                            <p class="text-secondary mb-0 flex-grow-1" style="font-size: 0.95rem; line-height: 1.7;">
-                                {{ $ekskul->deskripsi }}
-                            </p>
+                            <div class="text-secondary mb-0 flex-grow-1 ck-content" style="font-size: 0.95rem; line-height: 1.7;">
+                                {!! $ekskul->deskripsi !!}
+                            </div>
                         </div>
                     </article>
                 </div>

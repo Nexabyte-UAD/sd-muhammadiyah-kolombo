@@ -334,9 +334,8 @@
           </marquee>
         </div>
 
-        <!-- Kontak Cepat (Kanan) -->
-        <div class="d-none d-md-flex align-items-center gap-2 ps-3 border-start border-white border-opacity-25" style="white-space: nowrap; font-size: 0.85rem; font-weight: 500; color: white;">
-          <x-admin-icon name="phone-out" size="16" class="text-warning me-1"/>
+        <!-- Kontak Cepat (Kanan - Tanpa Icon) -->
+        <div class="d-none d-md-flex align-items-center ps-3 border-start border-white border-opacity-25" style="white-space: nowrap; font-size: 0.85rem; font-weight: 500; color: white;">
           {{ $settings['telepon'] ?? '(0274) 585755' }}
         </div>
 
@@ -373,8 +372,15 @@
                 <li><a class="dropdown-item" href="{{ route('akreditasi') }}">Akreditasi</a></li>
               </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link {{ request()->routeIs('prestasi') ? 'active' : '' }}" href="{{ route('prestasi') }}">Prestasi</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle {{ request()->routeIs('spmb', 'berita*', 'guru-menulis*') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Informasi
+              </a>
+              <ul class="dropdown-menu border-0 shadow-sm">
+                <li><a class="dropdown-item" href="{{ route('spmb') }}">SPMB</a></li>
+                <li><a class="dropdown-item" href="{{ route('berita') }}">Berita Sekolah</a></li>
+                <li><a class="dropdown-item" href="{{ route('guru-menulis') }}">Guru Menulis</a></li>
+              </ul>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle {{ request()->routeIs('guru') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -386,20 +392,22 @@
               </ul>
             </li>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle {{ request()->routeIs('siswa', 'kelas', 'alumni') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <a class="nav-link dropdown-toggle {{ request()->routeIs('prestasi', 'ekstrakurikuler') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Kesiswaan
               </a>
               <ul class="dropdown-menu border-0 shadow-sm">
-                <li><a class="dropdown-item" href="{{ route('siswa') }}">Data Siswa</a></li>
-                <li><a class="dropdown-item" href="{{ route('kelas') }}">Data Kelas</a></li>
-                <li><a class="dropdown-item" href="{{ route('alumni') }}">Data Alumni</a></li>
+                <li><a class="dropdown-item" href="{{ route('prestasi') }}">Prestasi Siswa</a></li>
+                <li><a class="dropdown-item" href="{{ route('ekstrakurikuler') }}">Ekstrakurikuler</a></li>
               </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link {{ request()->routeIs('berita') ? 'active' : '' }}" href="{{ route('berita') }}">Berita</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {{ request()->routeIs('ekstrakurikuler') ? 'active' : '' }}" href="{{ route('ekstrakurikuler') }}">Ekstrakurikuler</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle {{ request()->routeIs('galeri.*') ? 'active' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Galeri
+              </a>
+              <ul class="dropdown-menu border-0 shadow-sm">
+                <li><a class="dropdown-item" href="{{ route('galeri.foto') }}">Galeri Foto</a></li>
+                <li><a class="dropdown-item" href="{{ route('galeri.video') }}">Galeri Video</a></li>
+              </ul>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{{ route('home') }}#footer">Kontak</a>
@@ -471,10 +479,8 @@
           <!-- Lokasi Sekolah -->
           <div class="col-lg-5 col-md-12">
             <h5 class="fw-bold text-white mb-4">Lokasi Kami</h5>
-            <div class="position-relative rounded-4 overflow-hidden" style="transform: translateZ(0); border-radius: 16px;">
-              <!-- Overlay link to open Google Maps directly in new tab -->
-              <a href="https://www.google.com/maps/search/?api=1&query=SD+Muhammadiyah+Komplek+Kolombo" target="_blank" class="position-absolute top-0 start-0 w-100 h-100 d-block" style="z-index: 10; background: rgba(0,0,0,0);" title="Buka di Google Maps" aria-label="Buka Peta Lokasi di Google Maps"></a>
-              <iframe src="https://maps.google.com/maps?q=SD%20Muhammadiyah%20Komplek%20Kolombo&t=&z=17&ie=UTF8&iwloc=&output=embed" width="100%" height="200" style="border:0; border-radius: 16px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Peta Lokasi SD Muhammadiyah Komplek Kolombo"></iframe>
+            <div class="position-relative rounded-4 overflow-hidden shadow-sm" style="border-radius: 16px;">
+              <iframe src="https://maps.google.com/maps?q=SD%20Muhammadiyah%20Komplek%20Kolombo&t=&z=17&ie=UTF8&iwloc=&output=embed" width="100%" height="220" style="border:0; border-radius: 16px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Peta Lokasi SD Muhammadiyah Komplek Kolombo"></iframe>
             </div>
           </div>
         </div>

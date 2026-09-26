@@ -26,7 +26,11 @@
             <div class="col-lg-10 col-xl-9">
                 <h6 class="text-uppercase fw-bold text-primary mb-2" style="font-size: 0.9rem; letter-spacing: 1.5px;">Tentang Sekolah</h6>
                 <h3 class="fw-bold text-dark mb-4 lh-sm" style="font-size: 1.8rem; letter-spacing: -0.5px;">
-                    Membentuk Generasi <span class="text-primary">{{ optional($profil)->judul ?? 'Islami & Berprestasi' }}</span>
+                    @php
+                        $fullTitle = optional($profil)->judul ?: 'Membentuk Generasi Islami & Berprestasi';
+                        $formattedTitle = preg_replace('/(Islami\s*&\s*Berprestasi)/i', '<span class="text-primary">$1</span>', e($fullTitle));
+                    @endphp
+                    {!! $formattedTitle !!}
                 </h3>
                 
                 <div class="text-secondary" style="line-height: 1.8; font-size: 1rem; text-align: justify;">

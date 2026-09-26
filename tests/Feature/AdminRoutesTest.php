@@ -447,6 +447,48 @@ class AdminRoutesTest extends TestCase
         $this->assertStringContainsString('sekolah unggul', strtolower($parts['visi']));
     }
 
+    public function test_spmb_profile_can_be_edited_and_viewed_on_public_page(): void
+    {
+        $user = User::create([
+            'name' => 'Admin SPMB',
+            'email' => 'spmb-admin@example.test',
+            'password' => 'password',
+            'role' => 'Admin',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('admin.profil-sekolah.editType', 'spmb'))
+            ->assertOk()
+            ->assertSee('name="nomor_wa"', false)
+            ->assertSee('kuota_items', false);
+
+        $this->actingAs($user)
+            ->put(route('admin.profil-sekolah.updateType', 'spmb'), [
+                'judul' => 'Penerimaan Siswa Baru TA 2026/2027',
+                'nomor_wa' => '081299998888',
+                'pengantar' => 'Pengantar SPMB pengujian sistem.',
+                'persyaratan_umum' => 'Syarat umum testing.',
+                'persyaratan_berkas' => "1. Fotokopi Akta\n2. Fotokopi KK",
+                'alur_pendaftaran' => "1. Pengisian Formulir: Isi formulir online\n2. Penyerahan Berkas: Bawa berkas ke sekolah",
+                'kuota_items' => [
+                    ['tahun_ajaran' => 'Tahun Ajaran 2026/2027', 'status' => 'Masih Ada Kuota'],
+                    ['tahun_ajaran' => 'Tahun Ajaran 2027/2028', 'status' => 'Ditutup'],
+                ],
+            ])
+            ->assertRedirect();
+
+        $spmb = ProfilSekolah::where('type', 'spmb')->firstOrFail();
+        $parts = $spmb->spmbParts();
+        $this->assertEquals('6281299998888', $parts['nomor_wa']);
+        $this->assertEquals('Pendaftaran Masih Dibuka', $parts['status_pendaftaran']);
+
+        $this->get('/spmb')
+            ->assertOk()
+            ->assertSee($spmb->fresh()->judul)
+            ->assertSee('Pendaftaran Masih Dibuka')
+            ->assertSee('wa.me/6281299998888', false);
+    }
+
     public function test_guru_staff_edit_route_binds_the_model(): void
     {
         $user = User::create([

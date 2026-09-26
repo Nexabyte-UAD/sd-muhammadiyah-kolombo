@@ -38,8 +38,6 @@
             @csrf
             @method('PUT')
 
-            <x-auto-format-notice />
-
             <ul class="nav settings-tabs" id="settings-tabs" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active" id="tabs-identitas-tab" data-settings-tab href="#tabs-identitas" role="tab" aria-controls="tabs-identitas" aria-selected="true">

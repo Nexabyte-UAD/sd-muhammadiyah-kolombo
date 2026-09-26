@@ -20,6 +20,7 @@ class ChatbotTest extends TestCase
     {
         parent::setUp();
         Cache::forget('chatbot.public-data.v1');
+        config(['services.gemini.enabled' => false]);
     }
 
     public function test_public_page_provides_csrf_token_for_chatbot_request(): void

@@ -99,7 +99,7 @@
                                                     </div>
                                                     <div class="d-flex gap-2">
                                                         <dt class="text-secondary flex-shrink-0" style="width: 105px;">Tingkat</dt>
-                                                        <dd class="text-dark mb-0">{{ $prestasi->deskripsi }}</dd>
+                                                        <dd class="text-dark mb-0 ck-content">{!! $prestasi->deskripsi !!}</dd>
                                                     </div>
                                                 </dl>
                                             </div>

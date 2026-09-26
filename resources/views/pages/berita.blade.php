@@ -84,11 +84,9 @@
                 </div>
             @endforelse
 
-            @if($beritas->hasPages())
-                <div class="col-12 d-flex justify-content-center mt-5 pagination-wrapper">
-                    {{ $beritas->links('pagination::bootstrap-5') }}
-                </div>
-            @endif
+            <div class="col-12">
+                <x-public-pagination :paginator="$beritas" />
+            </div>
         </div>
     </div>
 </section>

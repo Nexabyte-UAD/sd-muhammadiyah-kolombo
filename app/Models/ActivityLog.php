@@ -33,6 +33,19 @@ class ActivityLog extends Model
     }
 
     /**
+     * Catat log aktivitas admin secara singkat.
+     */
+    public static function record(string $module, string $actionType, string $description): self
+    {
+        return static::create([
+            'user_id' => auth()->id(),
+            'module' => $module,
+            'action_type' => $actionType,
+            'description' => $description,
+        ]);
+    }
+
+    /**
      * Tentukan kriteria data log yang akan dihapus secara otomatis (pruning).
      * Menghapus log aktivitas yang usianya sudah lebih dari 6 bulan (180 hari).
      */

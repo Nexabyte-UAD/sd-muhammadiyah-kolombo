@@ -817,6 +817,19 @@
                 height: 4rem;
             }
         }
+
+        .extra-home-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .extra-home-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12) !important;
+        }
+
+        .extra-home-card:hover .extra-card-img {
+            transform: scale(1.05);
+        }
     </style>
 
     <section class="py-5 bg-white">
@@ -870,7 +883,7 @@
                             style="object-fit: cover; object-position: top;" 
                             alt="Foto {{ optional($sambutan)->judul ?? 'Kepala Sekolah' }}">
                     @else
-                        <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
+                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #fcfaf7; border: 1px solid #f1eecb;">
                             <svg width="96" height="96" viewBox="0 0 16 16" fill="currentColor" class="text-secondary opacity-25" aria-hidden="true">
                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                             </svg>
@@ -906,13 +919,15 @@
                             @forelse($tenagaPendidik as $tenaga)
                                 <div class="swiper-slide">
                                     <div class="guru-slide-card">
-                                        <div class="guru-slide-img {{ $tenaga->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($tenaga->foto) ? ($loop->iteration % 2 === 1 ? 'bg-blue-custom' : 'bg-red-custom') : '' }}">
+                                        <div class="guru-slide-img {{ $tenaga->tipe === 'guru' ? 'bg-blue-custom' : 'bg-red-custom' }}">
                                             @if($tenaga->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($tenaga->foto))
                                                 <img src="{{ asset('storage/' . $tenaga->foto) }}" alt="{{ $tenaga->nama }}">
                                             @else
                                                 <div
                                                     class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute">
-                                                    <x-admin-icon name="person-circle" size="112" class="default-profile-icon text-secondary opacity-50"/>
+                                                    <svg width="96" height="96" viewBox="0 0 16 16" fill="currentColor" class="text-white opacity-75" aria-hidden="true">
+                                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                                    </svg>
                                                 </div>
                                             @endif
                                         </div>
@@ -937,10 +952,12 @@
                                 @for($i = 1; $i <= 6; $i++)
                                     <div class="swiper-slide">
                                         <div class="guru-slide-card">
-                                            <div class="guru-slide-img">
+                                            <div class="guru-slide-img {{ $i % 2 === 1 ? 'bg-blue-custom' : 'bg-red-custom' }}">
                                                 <div
                                                     class="w-100 h-100 d-flex align-items-center justify-content-center position-absolute">
-                                                    <x-admin-icon name="person-circle" size="112" class="default-profile-icon text-secondary opacity-50"/>
+                                                    <svg width="96" height="96" viewBox="0 0 16 16" fill="currentColor" class="text-white opacity-75" aria-hidden="true">
+                                                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                                    </svg>
                                                 </div>
                                             </div>
                                             <div class="guru-slide-info">
@@ -972,31 +989,36 @@
     <section class="py-5 bg-white">
         <div class="container">
             <div class="d-flex justify-content-between align-items-end mb-4">
-                <h3 class="section-title fw-bold mb-0" style="font-size: 1.5rem;">Ekstrakurikuler</h3>
-                <a href="{{ route('ekstrakurikuler') }}" class="btn btn-outline-primary rounded-1 btn-sm fw-bold">Lihat Semua</a>
+                <div>
+                    <h3 class="section-title fw-bold mb-2" style="font-size: 1.5rem;">Ekstrakurikuler</h3>
+                    <p class="text-secondary mb-0">Wadah pengembangan minat dan bakat siswa</p>
+                </div>
+                <a href="{{ route('ekstrakurikuler') }}" class="btn btn-outline-primary rounded-pill btn-sm px-3 py-2 fw-bold">Lihat Semua</a>
             </div>
             <div class="row g-4">
                 @forelse($ekstrakurikulers as $ekstra)
                     <div class="col-md-6 col-xl-3">
-                        <div class="card h-100 border-0 rounded-3 shadow-sm overflow-hidden group-hover">
-                            <div class="position-relative" style="height: 200px;">
-                                @if($ekstra->foto)
-                                    <img src="{{ asset('storage/' . $ekstra->foto) }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ $ekstra->nama }}">
-                                @else
-                                    <div class="w-100 h-100 bg-secondary bg-opacity-25 d-flex align-items-center justify-content-center">
-                                        <x-admin-icon name="ekstrakurikuler" size="48" class="text-secondary opacity-50"/>
-                                    </div>
-                                @endif
+                        <a href="{{ route('ekstrakurikuler') }}" class="text-decoration-none d-block h-100">
+                            <div class="card h-100 border-0 rounded-4 shadow-sm overflow-hidden extra-home-card">
+                                <div class="position-relative overflow-hidden" style="height: 200px;">
+                                    @if($ekstra->foto && \Illuminate\Support\Facades\Storage::disk('public')->exists($ekstra->foto))
+                                        <img src="{{ asset('storage/' . $ekstra->foto) }}" class="w-100 h-100 extra-card-img" style="object-fit: cover; transition: transform 0.4s ease;" alt="{{ $ekstra->nama }}">
+                                    @else
+                                        <div class="w-100 h-100 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center">
+                                            <x-admin-icon name="ekstrakurikuler" size="48" class="text-secondary opacity-50"/>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="card-body p-4 d-flex flex-column">
+                                    <h4 class="card-title fw-bold text-dark mb-2 lh-base" style="font-size: 1.1rem;">
+                                        {{ Str::limit($ekstra->nama, 60) }}
+                                    </h4>
+                                    <p class="card-text text-secondary mb-0 flex-grow-1" style="font-size: 0.9rem; line-height: 1.6;">
+                                        {{ Str::limit(strip_tags($ekstra->deskripsi), 80) }}
+                                    </p>
+                                </div>
                             </div>
-                            <div class="card-body p-4">
-                                <h4 class="card-title fw-bold mb-3 lh-base" style="font-size: 1.15rem;">
-                                    <a href="{{ route('ekstrakurikuler') }}" class="text-dark text-decoration-none hover-primary">{{ Str::limit($ekstra->nama, 60) }}</a>
-                                </h4>
-                                <p class="card-text text-secondary mb-0" style="font-size: 0.95rem;">
-                                    {{ Str::limit(strip_tags($ekstra->deskripsi), 80) }}
-                                </p>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 @empty
                     <div class="col-12">

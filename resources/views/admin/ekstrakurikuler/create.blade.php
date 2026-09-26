@@ -24,7 +24,6 @@
             <p>Kolom bertanda bintang wajib diisi.</p>
         </div>
         <div class="form-card-body">
-            <x-auto-format-notice />
             <div class="form-grid">
                 <div class="form-field form-field-full">
                     <label for="nama" class="form-label">Nama Ekstrakurikuler <span>*</span></label>
@@ -46,26 +45,25 @@
 
                 <div class="form-field form-field-full">
                     <label for="deskripsi" class="form-label">Deskripsi <span>*</span></label>
-                    <textarea name="deskripsi" id="deskripsi" class="form-control-admin @error('deskripsi') is-invalid @enderror" rows="4" required placeholder="Deskripsi kegiatan...">{{ old('deskripsi') }}</textarea>
+                    <textarea name="deskripsi" id="deskripsi" class="form-control-admin @error('deskripsi') is-invalid @enderror" rows="6" placeholder="Tuliskan deskripsi lengkap kegiatan ekstrakurikuler..." required>{{ old('deskripsi') }}</textarea>
                     @error('deskripsi')<div class="form-error">{{ $message }}</div>@enderror
                 </div>
 
                 <div class="form-field form-field-full">
                     <label for="foto" class="form-label">Foto Kegiatan (Opsional)</label>
                     
-                    <div class="current-image" id="image-preview-box">
-                        <span class="current-image-placeholder"><x-admin-icon name="ekstrakurikuler" size="30"/></span>
-                        <img src="#" id="image-preview-element" alt="Pratinjau Gambar">
-                        <div>
-                            <strong id="image-preview-title">Pratinjau gambar baru</strong>
-                            <small id="image-preview-help">Belum ada gambar yang dipilih.</small>
+                    <!-- Instant Image Preview Box -->
+                    <div class="current-image mb-2" id="image-preview-box" style="display: none;">
+                        <div style="max-width: 280px; border-radius: 8px; overflow: hidden; border: 1px solid var(--admin-border);">
+                            <img src="#" id="image-preview-element" alt="Pratinjau Gambar" style="width: 100%; height: auto; display: block;">
                         </div>
+                        <small id="image-preview-help" class="form-help text-primary mt-1" style="display: block; font-weight: 500;">Pratinjau gambar baru (belum disimpan).</small>
                     </div>
 
                     <input type="file" name="foto" id="foto"
                            class="form-control-admin form-file @error('foto') is-invalid @enderror"
-                           accept="image/jpeg,image/png,image/gif">
-                    <div class="form-help">JPG, PNG, atau GIF. Maksimal 2 MB.</div>
+                           accept="image/jpeg,image/png,image/jpg,image/webp">
+                    <div class="form-help">Format: JPG, PNG, WEBP. Maksimal ukuran file: 2MB.</div>
                     @error('foto')<div class="form-error">{{ $message }}</div>@enderror
                 </div>
             </div>
@@ -77,9 +75,48 @@
     </form>
 @endsection
 
+@push('styles')
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 200px;
+        }
+    </style>
+@endpush
+
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/@ckeditor/ckeditor5-build-classic@39.0.1/build/ckeditor.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Initialize CKEditor 5
+            const deskripsiEl = document.querySelector('#deskripsi');
+            if (deskripsiEl && typeof ClassicEditor !== 'undefined') {
+                ClassicEditor
+                    .create(deskripsiEl, {
+                        toolbar: [
+                            'heading', '|', 
+                            'bold', 'italic', 'link', '|',
+                            'bulletedList', 'numberedList', '|',
+                            'blockQuote', 'undo', 'redo'
+                        ],
+                        heading: {
+                            options: [
+                                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                            ]
+                        }
+                    })
+                    .then(editor => {
+                        editor.model.document.on('change:data', () => {
+                            deskripsiEl.value = editor.getData();
+                            window.isFormDirty = true;
+                        });
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+
             // Instant Image Preview & Size Validation
             const fotoInput = document.getElementById('foto');
             if (fotoInput) {
@@ -96,14 +133,12 @@
                         reader.onload = function(e) {
                             const previewBox = document.getElementById('image-preview-box');
                             const previewEl = document.getElementById('image-preview-element');
-                            const previewTitle = document.getElementById('image-preview-title');
                             const previewHelp = document.getElementById('image-preview-help');
 
                             if (previewEl && previewBox) {
                                 previewEl.src = e.target.result;
-                                previewBox.style.display = 'flex';
-                                if (previewTitle) previewTitle.textContent = 'Pratinjau gambar baru';
-                                if (previewHelp) previewHelp.textContent = 'Gambar terpilih (belum disimpan).';
+                                previewBox.style.display = 'block';
+                                if (previewHelp) previewHelp.textContent = 'Pratinjau gambar baru (belum disimpan).';
                             }
                         };
                         reader.readAsDataURL(file);

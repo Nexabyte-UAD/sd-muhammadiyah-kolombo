@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Berita;
 use App\Models\Ekstrakurikuler;
+use App\Models\GaleriFoto;
+use App\Models\GaleriVideo;
+use App\Models\GuruMenulis;
 use App\Models\GuruStaff;
 use App\Models\Kelas;
 use App\Models\Pesan;
@@ -53,8 +56,8 @@ class HomeController extends Controller
     }
 
     /**
-     * Menyebarkan staf administrasi/pendukung secara merata/proporsional di antara
-     * baris/daftar guru agar tampilan card visual seimbang dan rapi.
+     * Menyebarkan staf administrasi/pendukung secara 2 kelompok seimbang di antara
+     * kelompok guru agar tampilan card visual di beranda seimbang (contoh: 7 Guru -> 2 Staf -> 7 Guru -> 2 Staf).
      */
     private function seimbangkanTenagaPendidik(Collection $guru, Collection $staf): Collection
     {
@@ -66,26 +69,31 @@ class HomeController extends Controller
             return $guru->values();
         }
 
-        $hasil = collect();
         $jumlahGuru = $guru->count();
         $jumlahStaf = $staf->count();
-        $stafPerPosisi = [];
 
-        // Hitung posisi penempatan staf di sela-sela guru
-        foreach ($staf->values() as $index => $item) {
-            $posisi = (int) round((($index + 1) * $jumlahGuru) / ($jumlahStaf + 1));
-            $posisi = max(1, min($jumlahGuru - 1, $posisi));
-            $stafPerPosisi[$posisi][] = $item;
-        }
+        // Bagi Guru & Staf masing-masing menjadi 2 bagian seimbang
+        $guruHalf = (int) ceil($jumlahGuru / 2);
+        $stafHalf = (int) ceil($jumlahStaf / 2);
 
-        // Susun daftar gabungan
-        foreach ($guru->values() as $index => $item) {
+        $guruPart1 = $guru->slice(0, $guruHalf)->values();
+        $guruPart2 = $guru->slice($guruHalf)->values();
+
+        $stafPart1 = $staf->slice(0, $stafHalf)->values();
+        $stafPart2 = $staf->slice($stafHalf)->values();
+
+        $hasil = collect();
+        foreach ($guruPart1 as $item) {
             $hasil->push($item);
-            $posisi = $index + 1;
-
-            foreach ($stafPerPosisi[$posisi] ?? [] as $itemStaf) {
-                $hasil->push($itemStaf);
-            }
+        }
+        foreach ($stafPart1 as $item) {
+            $hasil->push($item);
+        }
+        foreach ($guruPart2 as $item) {
+            $hasil->push($item);
+        }
+        foreach ($stafPart2 as $item) {
+            $hasil->push($item);
         }
 
         return $hasil;
@@ -147,83 +155,6 @@ class HomeController extends Controller
             ->withQueryString();
 
         return view('pages.guru', compact('gurus', 'tipe'));
-    }
-
-    /**
-     * Menampilkan daftar Siswa aktif sekolah dengan pencarian dan filter kelas.
-     */
-    public function siswa(Request $request)
-    {
-        $kelas = $request->query('kelas');
-        $search = $request->query('search');
-
-        $query = Siswa::aktif()->with([
-            'prestasis' => fn ($query) => $query->orderBy('tanggal', 'desc'),
-            'ekstrakurikulers' => fn ($query) => $query->orderBy('nama'),
-        ]);
-
-        if ($kelas && Kelas::where('tingkat', $kelas)->exists()) {
-            $query->kelas($kelas);
-        }
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('nama', 'like', "%{$search}%")
-                    ->orWhere('nis', 'like', "%{$search}%");
-            });
-        }
-
-        $siswas = $query->orderBy('nama', 'asc')->get();
-
-        return view('pages.siswa', compact('siswas', 'kelas', 'search'));
-    }
-
-    /**
-     * Menampilkan halaman daftar kelas dan Wali Kelas.
-     */
-    public function kelas()
-    {
-        $classes = Kelas::with('waliKelas')
-            ->orderByRaw('urutan IS NULL')
-            ->orderBy('urutan')
-            ->orderBy('tingkat')
-            ->get()
-            ->map(fn (Kelas $kelas, int $index) => [
-                'no' => $index + 1,
-                'filter' => $kelas->tingkat,
-                'kelas' => $kelas->tingkat,
-                'jurusan' => $kelas->jurusan ?: '-',
-                'wali_kelas' => $kelas->waliKelas?->nama ?? '-',
-            ]);
-
-        return view('pages.kelas', compact('classes'));
-    }
-
-    /**
-     * Menampilkan halaman Tracer Study / Alumni beserta riwayat pendidikan/pekerjaan lanjutan.
-     */
-    public function alumni(Request $request)
-    {
-        $tahun = $request->query('tahun');
-
-        // Mendapatkan daftar tahun kelulusan unik
-        $availableYears = Siswa::alumni()
-            ->select('tahun_lulus')
-            ->distinct()
-            ->orderBy('tahun_lulus', 'desc')
-            ->pluck('tahun_lulus');
-
-        $query = Siswa::alumni()->with([
-            'riwayatPendidikan',
-            'riwayatPekerjaan',
-            'prestasis' => fn ($query) => $query->orderBy('tanggal', 'desc'),
-        ]);
-        if ($tahun) {
-            $query->where('tahun_lulus', $tahun);
-        }
-        $alumni = $query->orderBy('tahun_lulus', 'desc')->orderBy('nama', 'asc')->get();
-
-        return view('pages.alumni', compact('alumni', 'availableYears', 'tahun'));
     }
 
     /**
@@ -321,5 +252,130 @@ class HomeController extends Controller
         Pesan::create($data);
 
         return redirect()->back()->with('success_pesan', 'Pesan / Masukan Anda berhasil dikirim secara anonim atau teridentifikasi!');
+    }
+
+    /**
+     * Menampilkan halaman Galeri Foto publik.
+     */
+    public function galeriFoto(Request $request)
+    {
+        $kategori = $request->query('kategori');
+        $search = trim((string) $request->query('search', ''));
+
+        $query = GaleriFoto::query();
+
+        if ($kategori) {
+            $query->where('kategori', $kategori);
+        }
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                    ->orWhere('keterangan', 'like', "%{$search}%");
+            });
+        }
+
+        $fotos = $query->orderBy('tanggal', 'desc')->orderBy('id', 'desc')->paginate(12)->withQueryString();
+        $kategoriList = GaleriFoto::KATEGORI;
+
+        return view('pages.galeri_foto', compact('fotos', 'kategoriList', 'kategori', 'search'));
+    }
+
+    /**
+     * Menampilkan halaman detail foto galeri kegiatan.
+     */
+    public function detailGaleriFoto(GaleriFoto $galeriFoto)
+    {
+        $recentFotos = GaleriFoto::where('id', '!=', $galeriFoto->id)
+            ->latest('tanggal')
+            ->latest('id')
+            ->take(4)
+            ->get();
+
+        return view('pages.detail_galeri_foto', compact('galeriFoto', 'recentFotos'));
+    }
+
+    /**
+     * Menampilkan halaman Galeri Video publik.
+     */
+    public function galeriVideo(Request $request)
+    {
+        $kategori = $request->query('kategori');
+        $search = trim((string) $request->query('search', ''));
+
+        $query = GaleriVideo::query();
+
+        if ($kategori) {
+            $query->where('kategori', $kategori);
+        }
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                    ->orWhere('keterangan', 'like', "%{$search}%");
+            });
+        }
+
+        $videos = $query->orderBy('tanggal', 'desc')->orderBy('id', 'desc')->paginate(12)->withQueryString();
+        $kategoriList = GaleriVideo::KATEGORI;
+
+        return view('pages.galeri_video', compact('videos', 'kategoriList', 'kategori', 'search'));
+    }
+
+    /**
+     * Menampilkan halaman informasi SPMB (Pendaftaran Siswa Baru).
+     */
+    public function spmb()
+    {
+        $spmb = ProfilSekolah::where('type', 'spmb')->first();
+        $spmbData = $spmb ? $spmb->spmbParts() : (new ProfilSekolah())->spmbParts();
+
+        return view('pages.spmb', compact('spmb', 'spmbData'));
+    }
+
+    /**
+     * Menampilkan daftar karya artikel Guru Menulis.
+     */
+    public function guruMenulis(Request $request)
+    {
+        $kategori = $request->query('kategori');
+        $search = trim((string) $request->query('search', ''));
+
+        $query = GuruMenulis::query()->where('status', 'published');
+
+        if ($kategori) {
+            $query->where('kategori', $kategori);
+        }
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                    ->orWhere('penulis', 'like', "%{$search}%")
+                    ->orWhere('isi', 'like', "%{$search}%");
+            });
+        }
+
+        $artikels = $query->orderBy('tanggal', 'desc')->orderBy('id', 'desc')->paginate(9)->withQueryString();
+        $kategoriList = GuruMenulis::KATEGORI;
+
+        return view('pages.guru_menulis', compact('artikels', 'kategoriList', 'kategori', 'search'));
+    }
+
+    /**
+     * Menampilkan detail artikel Guru Menulis.
+     */
+    public function detailGuruMenulis(GuruMenulis $guruMenulis)
+    {
+        if ($guruMenulis->status !== 'published' && !auth()->check()) {
+            abort(404);
+        }
+
+        $recentArtikels = GuruMenulis::where('status', 'published')
+            ->where('id', '!=', $guruMenulis->id)
+            ->latest('tanggal')
+            ->take(4)
+            ->get();
+
+        return view('pages.detail_guru_menulis', compact('guruMenulis', 'recentArtikels'));
     }
 }

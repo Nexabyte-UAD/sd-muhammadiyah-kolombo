@@ -4,8 +4,6 @@
     yang digunakan bersama oleh halaman tambah (create) dan sunting (edit) berita, serta
     mengintegrasikan editor WYSIWYG CKEditor 5 dan skrip pratinjau gambar instant.
 --}}
-<x-auto-format-notice />
-
 <div class="form-grid">
     <div class="form-field form-field-full">
         <label for="judul" class="form-label">Judul Berita <span>*</span></label>
@@ -47,21 +45,40 @@
     </div>
 
     <div class="form-field form-field-full">
-        <label for="gambar" class="form-label">{{ isset($berita) ? 'Ganti Gambar' : 'Gambar Berita' }}</label>
-        
-        <div class="current-image" id="image-preview-box">
-            <span class="current-image-placeholder"><x-admin-icon name="image" size="30"/></span>
-            <img src="{{ (isset($berita) && $berita->gambar) ? asset('storage/' . $berita->gambar) : '#' }}" id="image-preview-element" alt="Pratinjau Gambar">
-            <div>
-                <strong id="image-preview-title">{{ isset($berita) ? 'Gambar saat ini' : 'Pratinjau gambar baru' }}</strong>
-                <small id="image-preview-help">{{ isset($berita) ? 'Pilih file baru jika ingin menggantinya.' : 'Gambar belum disimpan.' }}</small>
+        @if(isset($berita))
+            <label class="form-label">Gambar Saat Ini / Pratinjau Baru</label>
+            
+            <!-- Instant Image Preview Box -->
+            <div class="current-image mb-2" id="image-preview-box">
+                <div style="max-width: 280px; border-radius: 8px; overflow: hidden; border: 1px solid var(--admin-border);">
+                    @if($berita->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($berita->gambar))
+                        <img src="{{ asset('storage/' . $berita->gambar) }}" id="image-preview-element" alt="{{ $berita->judul }}" style="width: 100%; height: auto; display: block;">
+                    @else
+                        <img src="{{ asset('assets/images/no-image-available.jpg') }}" id="image-preview-element" alt="Default" style="width: 100%; height: auto; display: block;">
+                    @endif
+                </div>
+                <small id="image-preview-help" class="form-help text-primary mt-1" style="display: block; font-weight: 500;">
+                    {{ $berita->gambar ? 'Gambar tersimpan saat ini.' : 'Belum ada gambar.' }}
+                </small>
             </div>
-        </div>
+
+            <label for="gambar" class="form-label">Ganti Gambar Baru (Opsional)</label>
+        @else
+            <label for="gambar" class="form-label">Gambar Utama / Cover Berita (Opsional)</label>
+            
+            <!-- Instant Image Preview Box -->
+            <div class="current-image mb-2" id="image-preview-box" style="display: none;">
+                <div style="max-width: 280px; border-radius: 8px; overflow: hidden; border: 1px solid var(--admin-border);">
+                    <img src="#" id="image-preview-element" alt="Pratinjau Gambar" style="width: 100%; height: auto; display: block;">
+                </div>
+                <small id="image-preview-help" class="form-help text-primary mt-1" style="display: block; font-weight: 500;">Pratinjau gambar baru (belum disimpan).</small>
+            </div>
+        @endif
 
         <input type="file" name="gambar" id="gambar"
                class="form-control-admin form-file @error('gambar') is-invalid @enderror"
-               accept="image/jpeg,image/png,image/gif">
-        <div class="form-help">JPG, PNG, atau GIF. Maksimal 2 MB.</div>
+               accept="image/jpeg,image/png,image/jpg,image/webp">
+        <div class="form-help">{{ isset($berita) ? 'Biarkan kosong jika tidak ingin mengubah gambar berita. Maksimal 2MB.' : 'Format: JPG, PNG, WEBP. Maksimal ukuran file: 2MB.' }}</div>
         @error('gambar')<div class="form-error">{{ $message }}</div>@enderror
     </div>
 </div>
@@ -123,14 +140,12 @@
                         reader.onload = function(e) {
                             const previewBox = document.getElementById('image-preview-box');
                             const previewEl = document.getElementById('image-preview-element');
-                            const previewTitle = document.getElementById('image-preview-title');
                             const previewHelp = document.getElementById('image-preview-help');
 
                             if (previewEl && previewBox) {
                                 previewEl.src = e.target.result;
-                                previewBox.style.display = 'flex';
-                                if (previewTitle) previewTitle.textContent = 'Pratinjau gambar baru';
-                                if (previewHelp) previewHelp.textContent = 'Gambar terpilih (belum disimpan).';
+                                previewBox.style.display = 'block';
+                                if (previewHelp) previewHelp.textContent = 'Pratinjau gambar baru (belum disimpan).';
                             }
                         };
                         reader.readAsDataURL(file);

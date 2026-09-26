@@ -29,7 +29,6 @@
             <p>Perubahan akan diterapkan setelah disimpan.</p>
         </div>
         <div class="form-card-body">
-            <x-auto-format-notice />
             <div class="row">
                 <!-- Nama Lengkap -->
                 <div class="col-md-6 mb-3">

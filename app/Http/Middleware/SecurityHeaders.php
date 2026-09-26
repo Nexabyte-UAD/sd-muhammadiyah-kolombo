@@ -41,16 +41,17 @@ class SecurityHeaders
         // Membatasi akses sensor perangkat keras client (kamera, mikrofon, lokasi geografis) demi privasi
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
-        // Menerapkan Content Security Policy (CSP) untuk membatasi asal sumber file skrip, css, font, gambar, iframe
+        // Memeriksa skema (http atau https) secara dinamis untuk environment lokal dan produksi
         $appHost = $request->getHost();
+        $scheme = $request->getScheme();
         $response->headers->set(
             'Content-Security-Policy',
-            "default-src 'self' https://{$appHost}; base-uri 'self'; form-action 'self' https://{$appHost}; frame-ancestors 'self'; ".
-            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://{$appHost}; ".
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://{$appHost}; ".
+            "default-src 'self' {$scheme}://{$appHost}; base-uri 'self'; form-action 'self' {$scheme}://{$appHost}; frame-ancestors 'self'; ".
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net {$scheme}://{$appHost}; ".
+            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com {$scheme}://{$appHost}; ".
             "font-src 'self' data: https://cdn.jsdelivr.net https://fonts.gstatic.com; ".
-            "img-src 'self' data: blob: https://{$appHost} https://images.unsplash.com; connect-src 'self' https://{$appHost}; ".
-            "frame-src 'self' https://maps.google.com https://www.google.com"
+            "img-src 'self' data: blob: {$scheme}://{$appHost} https://images.unsplash.com https://img.youtube.com https://i.ytimg.com; connect-src 'self' {$scheme}://{$appHost}; ".
+            "frame-src 'self' https://maps.google.com https://www.google.com https://www.youtube.com https://www.youtube-nocookie.com"
         );
 
         // Aktifkan HSTS (HTTP Strict Transport Security) jika koneksi menggunakan protokol HTTPS aman

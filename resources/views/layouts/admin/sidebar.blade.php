@@ -41,20 +41,28 @@
             <x-admin-icon name="graduation"/>
             <span>Data Alumni</span>
         </a>
-        <a href="{{ route('admin.kelas.index') }}" class="admin-nav-link {{ request()->routeIs('admin.kelas.*') ? 'active' : '' }}" data-tooltip="Data Kelas">
-            <x-admin-icon name="classes"/>
-            <span>Data Kelas</span>
-        </a>
         <a href="{{ route('admin.siswa.promote.page') }}" class="admin-nav-link {{ request()->routeIs('admin.siswa.promote.*') ? 'active' : '' }}" data-tooltip="Kenaikan Kelas">
             <x-admin-icon name="class-promotion"/>
             <span>Kenaikan Kelas</span>
         </a>
 
         <div class="admin-nav-label">Konten Website</div>
-        <a href="{{ route('admin.berita.index') }}" class="admin-nav-link {{ request()->routeIs('admin.berita.*') ? 'active' : '' }}" data-tooltip="Berita">
-            <x-admin-icon name="news"/>
-            <span>Berita</span>
-        </a>
+        <details class="admin-nav-group" @if((request()->routeIs('admin.profil-sekolah.*') && request()->route('type') === 'spmb') || request()->routeIs('admin.berita.*', 'admin.guru-menulis.*')) open @endif>
+            <summary class="admin-nav-link {{ (request()->routeIs('admin.profil-sekolah.*') && request()->route('type') === 'spmb') || request()->routeIs('admin.berita.*', 'admin.guru-menulis.*') ? 'active' : '' }}" data-tooltip="Informasi">
+                <x-admin-icon name="news"/>
+                <span>Informasi</span>
+                <x-admin-icon name="chevron-left" size="15" class="nav-group-chevron nav-group-chevron-closed"/>
+                <x-admin-icon name="chevron-down" size="15" class="nav-group-chevron nav-group-chevron-open"/>
+            </summary>
+            <div class="admin-nav-children">
+                <a href="{{ route('admin.profil-sekolah.editType', 'spmb') }}"
+                   class="{{ request()->routeIs('admin.profil-sekolah.*') && request()->route('type') === 'spmb' ? 'active' : '' }}">Informasi SPMB</a>
+                <a href="{{ route('admin.berita.index') }}"
+                   class="{{ request()->routeIs('admin.berita.*') ? 'active' : '' }}">Berita Sekolah</a>
+                <a href="{{ route('admin.guru-menulis.index') }}"
+                   class="{{ request()->routeIs('admin.guru-menulis.*') ? 'active' : '' }}">Guru Menulis</a>
+            </div>
+        </details>
         <a href="{{ route('admin.prestasi.index') }}" class="admin-nav-link {{ request()->routeIs('admin.prestasi.*') ? 'active' : '' }}" data-tooltip="Prestasi">
             <x-admin-icon name="award"/>
             <span>Prestasi</span>
@@ -63,6 +71,18 @@
             <x-admin-icon name="ekstrakurikuler"/>
             <span>Ekstrakurikuler</span>
         </a>
+        <details class="admin-nav-group" @if(request()->routeIs('admin.galeri-foto.*', 'admin.galeri-video.*')) open @endif>
+            <summary class="admin-nav-link {{ request()->routeIs('admin.galeri-foto.*', 'admin.galeri-video.*') ? 'active' : '' }}" data-tooltip="Galeri">
+                <x-admin-icon name="camera"/>
+                <span>Galeri Sekolah</span>
+                <x-admin-icon name="chevron-left" size="15" class="nav-group-chevron nav-group-chevron-closed"/>
+                <x-admin-icon name="chevron-down" size="15" class="nav-group-chevron nav-group-chevron-open"/>
+            </summary>
+            <div class="admin-nav-children">
+                <a href="{{ route('admin.galeri-foto.index') }}" class="{{ request()->routeIs('admin.galeri-foto.*') ? 'active' : '' }}">Galeri Foto</a>
+                <a href="{{ route('admin.galeri-video.index') }}" class="{{ request()->routeIs('admin.galeri-video.*') ? 'active' : '' }}">Galeri Video</a>
+            </div>
+        </details>
         <details class="admin-nav-group" @if(request()->routeIs('admin.guru-staff.*')) open @endif>
             <summary class="admin-nav-link {{ request()->routeIs('admin.guru-staff.*') ? 'active' : '' }}" data-tooltip="Guru & Staf">
                 <x-admin-icon name="guru_staff"/>
@@ -77,8 +97,8 @@
                    class="{{ request('tipe') === 'staf' && request()->routeIs('admin.guru-staff.*') ? 'active' : '' }}">Data Staf</a>
             </div>
         </details>
-        <details class="admin-nav-group" @if(request()->routeIs('admin.profil-sekolah.*')) open @endif>
-            <summary class="admin-nav-link {{ request()->routeIs('admin.profil-sekolah.*') ? 'active' : '' }}" data-tooltip="Profil Sekolah">
+        <details class="admin-nav-group" @if(request()->routeIs('admin.profil-sekolah.*') && request()->route('type') !== 'spmb') open @endif>
+            <summary class="admin-nav-link {{ request()->routeIs('admin.profil-sekolah.*') && request()->route('type') !== 'spmb' ? 'active' : '' }}" data-tooltip="Profil Sekolah">
                 <x-admin-icon name="school"/>
                 <span>Profil Sekolah</span>
                 <x-admin-icon name="chevron-left" size="15" class="nav-group-chevron nav-group-chevron-closed"/>

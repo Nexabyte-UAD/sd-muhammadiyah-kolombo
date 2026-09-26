@@ -46,9 +46,10 @@ class PublicPagesTest extends TestCase
             '/guru',
             '/prestasi',
             '/ekstrakurikuler',
-            '/siswa',
-            '/kelas',
-            '/alumni',
+            '/galeri/foto',
+            '/galeri/video',
+            '/spmb',
+            '/guru-menulis',
             '/berita',
         ] as $uri) {
             $this->get($uri)->assertOk();
@@ -182,8 +183,7 @@ class PublicPagesTest extends TestCase
 
         $this->get('/')
             ->assertOk()
-            ->assertSee('1<span class="text-success"', false)
-            ->assertSee(route('siswa'), false);
+            ->assertSee('1<span class="text-success"', false);
     }
 
     public function test_student_text_is_capitalized_when_saved(): void
@@ -243,33 +243,5 @@ class PublicPagesTest extends TestCase
             ->assertDontSee('icon-prestasi.png')
             ->assertDontSee('No Image')
             ->assertSee('kategori-keagamaan');
-    }
-
-    public function test_class_page_uses_the_teacher_selected_from_guru_data(): void
-    {
-        $guru = GuruStaff::create([
-            'tipe' => 'guru',
-            'nama' => 'Wali Kelas Tiga',
-            'jabatan' => 'Guru Kelas',
-        ]);
-        Kelas::create([
-            'tingkat' => 'Kelas 3A',
-            'jurusan' => 'Tahfiz',
-            'wali_kelas_id' => $guru->id,
-        ]);
-        Siswa::create([
-            'nama' => 'Siswa Kelas Tiga',
-            'jenis_kelamin' => 'L',
-            'kelas' => 'Kelas 3A',
-            'status' => 'aktif',
-            'tahun_masuk' => 2024,
-        ]);
-
-        $this->get('/kelas')
-            ->assertOk()
-            ->assertSee('Kelas 3A')
-            ->assertDontSee('Kelas 6')
-            ->assertSee('Tahfiz')
-            ->assertSee('Wali Kelas Tiga');
     }
 }

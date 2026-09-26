@@ -24,19 +24,20 @@
                             </div>
                         </div>
                     @endif
-                </div>
-                <!-- Nama Kepala Sekolah bisa diambil dari profil->judul atau hardcoded -->
-                <h5 class="fw-bold text-dark mt-3 mb-1">{{ optional($profil)->judul ?? 'Kepala Sekolah' }}</h5>
-                <p class="text-secondary small">SD Muhammadiyah Komplek Kolombo</p>
+                @php
+                    $sData = isset($profil) ? $profil->sambutanParts() : (new \App\Models\ProfilSekolah())->sambutanParts();
+                @endphp
+                <h5 class="fw-bold text-dark mt-3 mb-1">{{ $sData['nama'] }}</h5>
+                <p class="text-secondary small">{{ $sData['sub_judul'] }}</p>
             </div>
             <div class="col-lg-8">
                 <h3 class="fw-bold text-dark mb-4" style="font-size: 1.8rem;">Kata Sambutan</h3>
                 <div class="text-secondary" style="line-height: 1.8; font-size: 1rem;">
-                    @if(isset($profil) && $profil->konten)
-                        @if(strip_tags($profil->konten) !== $profil->konten)
-                            {!! $profil->konten !!}
+                    @if($sData['konten'])
+                        @if(strip_tags($sData['konten']) !== $sData['konten'])
+                            {!! $sData['konten'] !!}
                         @else
-                            {!! nl2br(e($profil->konten)) !!}
+                            {!! nl2br(e($sData['konten'])) !!}
                         @endif
                     @else
                         <p>Assalamualaikum Warahmatullahi Wabarakatuh,</p>
