@@ -204,7 +204,7 @@ class ProfilSekolahController extends Controller
         // Memformat konten teks dan tag HTML
         if ($type !== 'spmb') {
             $data = $formatter->fields($data, [
-                'judul' => 'title',
+                'judul' => $type === 'sambutan' ? 'name' : 'title',
                 'konten' => $type === 'visi_misi' ? 'sentence' : 'html',
             ]);
         } else {

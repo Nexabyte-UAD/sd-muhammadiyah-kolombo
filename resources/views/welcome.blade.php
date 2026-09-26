@@ -993,7 +993,7 @@
                     <h3 class="section-title fw-bold mb-2" style="font-size: 1.5rem;">Ekstrakurikuler</h3>
                     <p class="text-secondary mb-0">Wadah pengembangan minat dan bakat siswa</p>
                 </div>
-                <a href="{{ route('ekstrakurikuler') }}" class="btn btn-outline-primary rounded-pill btn-sm px-3 py-2 fw-bold">Lihat Semua</a>
+                <a href="{{ route('ekstrakurikuler') }}" class="btn btn-outline-primary rounded-1 btn-sm fw-bold">Lihat Semua</a>
             </div>
             <div class="row g-4">
                 @forelse($ekstrakurikulers as $ekstra)
