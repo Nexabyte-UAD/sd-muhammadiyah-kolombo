@@ -874,6 +874,12 @@
     <!-- Sambutan & Daftar Guru Layour Kustom -->
     <section class="py-5" style="background-color: #f8fafc;">
         <div class="container">
+            @php
+                $sambutanData = isset($sambutan)
+                    ? $sambutan->sambutanParts()
+                    : (new \App\Models\ProfilSekolah())->sambutanParts();
+            @endphp
+
             <div class="seamless-grid-container">
 
                 <!-- Grid 1: Foto Kepala Sekolah -->
@@ -881,7 +887,7 @@
                     @if(isset($sambutan) && $sambutan->gambar && \Illuminate\Support\Facades\Storage::disk('public')->exists($sambutan->gambar))
                         <img src="{{ asset('storage/' . $sambutan->gambar) }}" class="w-100 h-100" 
                             style="object-fit: cover; object-position: top;" 
-                            alt="Foto {{ optional($sambutan)->judul ?? 'Kepala Sekolah' }}">
+                            alt="Foto {{ $sambutanData['nama'] }}">
                     @else
                         <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background-color: #fcfaf7; border: 1px solid #f1eecb;">
                             <svg width="96" height="96" viewBox="0 0 16 16" fill="currentColor" class="text-secondary opacity-25" aria-hidden="true">
@@ -895,14 +901,14 @@
                 <div class="seamless-grid-item p-3 p-xl-4 d-flex flex-column justify-content-center border-0"
                     style="background-color: #1e3a8a;">
                     <h4 class="text-white fw-bold mb-1 lh-sm" style="font-size: 1.1rem;">
-                        {{ optional($sambutan)->judul ?? 'Drs. Ahmad Dahlan, M.Pd.' }}</h4>
-                    <span class="text-warning mb-3 d-block" style="font-size: 0.85rem;">Kepala Sekolah</span>
+                        {{ $sambutanData['nama'] }}</h4>
+                    <span class="text-warning mb-3 d-block" style="font-size: 0.85rem;">{{ $sambutanData['sub_judul'] }}</span>
 
                     <h6 class="text-white fw-bold text-uppercase mb-2" style="font-size: 0.9rem;">Kata Sambutan</h6>
 
                     <p class="text-white-50 small mb-4"
                         style="line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;">
-                        {{ strip_tags(optional($sambutan)->konten ?? "Assalamu'alaikum warahmatullahi wabarakaatuh. Alhamdulillahirobbil 'aalamiin. Salam Bahagia... Kita panjatkan puji syukur ke hadirat Allah SWT, atas limpahan rahmat, taufik, hidayah, dan inayah-Nya.") }}
+                        {{ strip_tags($sambutanData['konten']) ?: "Assalamu'alaikum warahmatullahi wabarakaatuh. Alhamdulillahirobbil 'aalamiin. Salam Bahagia... Kita panjatkan puji syukur ke hadirat Allah SWT, atas limpahan rahmat, taufik, hidayah, dan inayah-Nya." }}
                     </p>
 
                     <div>
