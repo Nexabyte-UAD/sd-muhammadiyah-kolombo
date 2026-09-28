@@ -48,6 +48,30 @@ class IndonesianTextFormatter
     }
 
     /**
+     * Memformat jabatan dalam Title Case sambil mempertahankan angka Romawi.
+     * Contoh: "guru kelas iii" -> "Guru Kelas III"
+     *
+     * @param  string|null  $value
+     * @return string|null
+     */
+    public function position(?string $value): ?string
+    {
+        $value = $this->title($value);
+
+        if ($value === null || $value === '') {
+            return $value;
+        }
+
+        return preg_replace_callback(
+            '/\b[ivxlcdm]+\b/iu',
+            fn (array $match): string => $this->isRomanNumeral($match[0])
+                ? Str::upper($match[0])
+                : $match[0],
+            $value
+        ) ?? $value;
+    }
+
+    /**
      * Memformat string Nama Orang beserta partikel dan gelar akademik secara profesional.
      * Contoh: "dr. budi santoso, s.pd." -> "Dr. Budi Santoso, S.Pd."
      * 
@@ -360,6 +384,17 @@ class IndonesianTextFormatter
     private function isAmbiguousDoctorTitle(string $word): bool
     {
         return (bool) preg_match('/^(?:dr|Dr|DR)\.[,;:]?$/u', $word);
+    }
+
+    /**
+     * Memeriksa angka Romawi baku agar kata biasa seperti "di" tidak ikut diubah.
+     */
+    private function isRomanNumeral(string $value): bool
+    {
+        return (bool) preg_match(
+            '/^M{0,3}(?:CM|CD|D?C{0,3})(?:XC|XL|L?X{0,3})(?:IX|IV|V?I{0,3})$/',
+            Str::upper($value)
+        );
     }
 
     /**

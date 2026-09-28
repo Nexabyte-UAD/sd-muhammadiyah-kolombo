@@ -23,6 +23,12 @@ class IndonesianTextFormatterTest extends TestCase
         );
     }
 
+    public function test_formats_positions_without_lowercasing_roman_numerals(): void
+    {
+        $this->assertSame('Guru Kelas III', $this->formatter->position('guru kelas iii'));
+        $this->assertSame('Wakil Kepala Sekolah', $this->formatter->position('wakil kepala sekolah'));
+    }
+
     public function test_preserves_configured_school_terms(): void
     {
         $this->assertSame(

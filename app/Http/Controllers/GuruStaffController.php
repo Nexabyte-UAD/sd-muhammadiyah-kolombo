@@ -115,7 +115,7 @@ class GuruStaffController extends Controller
         // Merapikan format nama dan jabatan guru
         $data = $formatter->fields($data, [
             'nama' => 'name',
-            'jabatan' => 'title',
+            'jabatan' => 'position',
             'bidang_tugas' => 'title',
         ]);
         $data['status_kepegawaian'] = $request->filled('status_kepegawaian')
@@ -212,7 +212,7 @@ class GuruStaffController extends Controller
         ]);
         $data = $formatter->fields($data, [
             'nama' => 'name',
-            'jabatan' => 'title',
+            'jabatan' => 'position',
             'bidang_tugas' => 'title',
         ]);
         $data['status_kepegawaian'] = $request->filled('status_kepegawaian')

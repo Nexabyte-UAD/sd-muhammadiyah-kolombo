@@ -529,7 +529,7 @@ class AdminRoutesTest extends TestCase
             'tipe' => 'guru',
             'nama' => 'Guru Matematika',
             'jenis_kelamin' => 'laki_laki',
-            'jabatan' => 'Guru Kelas',
+            'jabatan' => 'Guru Kelas III',
             'bidang_tugas' => 'Matematika',
             'nip' => '001234567890123456',
             'status_kepegawaian' => 'PNS',
@@ -540,6 +540,7 @@ class AdminRoutesTest extends TestCase
         $this->assertDatabaseHas('guru_staffs', [
             'tipe' => 'guru',
             'nama' => 'Guru Matematika',
+            'jabatan' => 'Guru Kelas III',
             'bidang_tugas' => 'Matematika',
             'nip' => '001234567890123456',
             'jenis_kelamin' => 'laki_laki',
